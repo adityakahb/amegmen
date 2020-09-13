@@ -1,48 +1,7 @@
 @import (reference) './config/_breakpoints.less';
+@import (reference) './config/_variables.less';
 
-._c-megamenu {
-  position: relative;
-  background-color: #ddd;
-  display: block;
-  height: 32px;
-
-  & > ul {
-    display: block;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-
-    & > li {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-      
-      & > a {
-        display: block;
-        line-height: 32px;
-        padding: 0 16px;
-        &.active {
-          background-color: #aaa;
-        }
-      }
-
-      & > section {
-        position: absolute;
-        visibility: hidden;
-        background-color: #aaa;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 2;
-
-        &.active {
-          visibility: visible;
-          top: 32px;
-        }
-      }
-
-    }
-
-  }
+@import './amegmen/_default.less';
+@media (min-width: @md) {
+  @import './amegmen/_md.less';
 }
