@@ -4,7 +4,10 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "generatedata": "node ./scripts/generatedata.js",
+    "compile:sass": "node-sass --source-map true src/sass/ -o dist/styles/",
+    "compile:ts": "tsc",
+    "build:dev": "npm run compile:ts && npm run compile:sass"
   },
   "repository": {
     "type": "git",
@@ -16,13 +19,9 @@
     "url": "https://github.com/adityakahb/amegmen/issues"
   },
   "homepage": "https://github.com/adityakahb/amegmen#readme",
-  "devDependencies": {
-    "ts-loader": "^8.0.3",
-    "typescript": "^4.0.2",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
-  },
   "dependencies": {
-    "tslib": "^2.0.1"
+    "node-sass": "^4.14.1",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
   }
 }
