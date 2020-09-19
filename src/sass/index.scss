@@ -1,0 +1,6 @@
+@import './config';
+
+@import './viewports/small';
+@media (min-width: $breakpoint) {
+  @import './viewports/large';
+}
