@@ -1,55 +1,42 @@
 .__amegmen {
-  header {
-    display: block;
-    height: $amegmen_common_height;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: $amegmen_common_width;
-    z-index: 10;
+  &, * {
+    box-sizing: border-box;
   }
-
-  .__amegmen--back-cta,
-  .__amegmen--close-cta,
-  .__amegmen--main-cta,
-  .__amegmen--toggle-cta {
-    border: 1px solid transparent;
-    color: $anchorLink;
-    display: block;
+  .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
+    border-radius: 100%;
+    display: inline-block;
     height: $amegmen_common_height;
     margin: 0;
     padding: 0;
+    vertical-align: top;
     width: $amegmen_common_width;
-
-    &:hover {
-      color: $anchorHover;
-    }
-    &:focus {
-      color: $anchorActive;
-    }
-  }
-
-  .__amegmen--back-cta {
-    background-color: $amegmen_nav_l2;
-  }
-  .__amegmen--close-cta {
-    background-color: $amegmen_nav_bg;
-  }
-  .__amegmen--main-cta {
-    background-color: $amegmen_nav_l1;
   }
   .__amegmen--toggle-cta {
     background-color: $amegmen_nav_bg;
+    border: 1px solid $amegmen_nav_bg;
+  }
+  .__amegmen--close-cta {
+    background-color: $amegmen_nav_bg;
+    border: 1px solid $amegmen_nav_bg;
+  }
+  .__amegmen--main-cta {
+    background-color: $amegmen_nav_l1;
+    border: 1px solid $amegmen_nav_l1;
+  }
+  .__amegmen--back-cta {
+    background-color: $amegmen_nav_l2;
+    border: 1px solid $amegmen_nav_l2;
   }
 
   .__amegmen--canvas {
+    @include amegmen-animation();
+    background-color: $amegmen_nav_bg;
     height: 100%;
     left: 0;
     overflow: hidden;
     position: fixed;
     top: 0;
     transform: translate(-100.5%, 0);
-    transition: all 250ms ease;
     width: 100%;
     z-index: 1040;
 
@@ -58,25 +45,109 @@
     }
   }
 
+  header {
+    height: $amegmen_common_height;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: $amegmen_common_width;
+    z-index: 10;
+  }
+
   .__amegmen--main {
     height: 100%;
     left: 0;
+    overflow-y: scroll;
     position: absolute;
     top: 0;
     width: 100%;
     z-index: 8;
-    overflow-y: scroll;
 
     & > ul {
+      display: block;
       letter-spacing: normal;
-      padding-top: $amegmen_common_height;
+      list-style: none;
+      margin: 0;
+      padding: $amegmen_common_height 0 0 0;
+
       & > li {
         display: block;
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+
+  .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+    display: block;
+    text-decoration: none;
+    transition: all 250ms ease;
+    &:link {
+      color: $anchorLink;
+    }
+    &:visited {
+      color: $anchorVisited;
+    }
+    &:hover, &.hover {
+      color: $anchorHover;
+    }
+    &:active {
+      color: $anchorActive;
+    }
+    &:focus, &.focus {
+      color: $anchorFocus;
+    }
+  }
+
+  .__amegmen--anchor-l0 {
+    background-color: $amegmen_nav_bg;
+    display: block;
+    font-size: 17px;
+    line-height: $amegmen_common_height;
+    padding: 0 11px;
+
+    &:hover,
+    &.active {
+      background-color: $amegmen_nav_l1;
+    }
+  }
+
+  .__amegmen--anchor-l1 {
+    background-color: $amegmen_nav_l1;
+    display: block;
+    font-size: 15px;
+    padding: 13px;
+
+    &:hover,
+    &.active {
+      background-color: $amegmen_nav_l2;
+    }
+  }
+
+  .__amegmen--anchor-l2 {
+    display: block;
+    font-size: 15px;
+    padding: 13px;
+
+    &:hover,
+    &.active {
+      background-color: $amegmen_nav_l3;
+    }
+  }
+
+  .__amegmen--col {
+    & > ul {
+      &, & > li {
+        display: block;
+        list-style: none;
+        margin: 0;
+        padding: 0;
       }
     }
   }
 
   .__amegmen--panel {
+    @include amegmen-animation();
     height: 100%;
     left: 0;
     opacity: 0;
@@ -90,92 +161,5 @@
       transform: translate(0, 0);
       visibility: visible;
     }
-
-    &.__amegmen--panel-l0 {
-      height: 0;
-      overflow: hidden;
-      top: 0;
-      z-index: 1050;
-
-      .__amegmen--landing {
-        width: calc(100% - #{$amegmen_common_width});
-      }
-      &.active {
-        height: 100%;
-
-        & > nav {
-          height: calc(100% - #{$amegmen_common_height});
-          left: 0;
-          overflow-y: scroll;
-          position: absolute;
-          top: $amegmen_common_height;
-          width: 100%;
-        }
-      }
-    }
-
-    &.__amegmen--panel-l1 {
-      height: 0;
-      left: 0;
-      overflow: hidden;
-      top: 0;
-      z-index: 1060;
-      &.active {
-        height: calc(100% + (2 * #{$amegmen_common_height}));
-        & > nav {
-          height: 100%;
-        }
-      }
-    }
-  }
-
-  .__amegmen--col {
-    display: block;
-    letter-spacing: normal;
-    min-height: 100%;
-    position: relative;
-
-    &.__amegmen--col-5 {
-      width: 100%;
-    }
-
-    &.__amegmen--col-4 {
-      width: 100%;
-    }
-
-    &.__amegmen--col-3 {
-      width: 100%;
-    }
-
-    &.__amegmen--col-2 {
-      width: 100%;
-    }
-
-    &.__amegmen--col-1 {
-      width: 100%;
-    }
-  }
-
-  .__amegmen--landing {
-    letter-spacing: -4px;
-    button {
-      display: inline-block;
-      letter-spacing: normal;
-    }
-    a {
-      display: inline-block;
-      letter-spacing: normal;
-      line-height: $amegmen_common_height;
-      overflow: hidden;
-      padding: 0 11px;
-      text-overflow: ellipsis;
-      vertical-align: top;
-      white-space: nowrap;
-      width: calc(100% - #{$amegmen_common_width});
-    }
-  }
-
-  .__amegmen--nooverflow {
-    overflow: hidden !important;
   }
 }

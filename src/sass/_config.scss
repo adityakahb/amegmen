@@ -2,15 +2,23 @@ $breakpoint: 768px;
 
 $amegmen_menuheight: 480px;
 
-$amegmen_nav_bg: #F8146A;
+$amegmen_nav_bg: #eee;
 $amegmen_nav_l1: darken($amegmen_nav_bg, 7.5%);
 $amegmen_nav_l2: darken($amegmen_nav_l1, 7.5%);
 $amegmen_nav_l3: darken($amegmen_nav_l2, 7.5%);
 
-$anchorLink: #fff;
-$anchorVisited: #fff;
-$anchorHover: #fff;
-$anchorActive: #fff;
+$anchorLink: #000;
+$anchorVisited: #222;
+$anchorHover: #444;
+$anchorActive: #666;
+$anchorFocus: #888;
 
 $amegmen_common_width: 60px;
 $amegmen_common_height: 60px;
+
+$amegmen_animation_time: 250ms;
+$amegmen_animation_easing: ease;
+
+@mixin amegmen-animation($property: all) {
+  transition: $property $amegmen_animation_time $amegmen_animation_easing;
+}

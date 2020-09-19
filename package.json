@@ -7,7 +7,10 @@
     "generatedata": "node ./scripts/generatedata.js",
     "compile:sass": "node-sass --source-map true src/sass/ -o dist/styles/",
     "compile:ts": "tsc",
-    "build:dev": "npm run compile:ts && npm run compile:sass"
+    "uglify:js": "uglifyjs dist/scripts/index.js -o dist/scripts/index.min.js -c -m",
+    "uglify:css": "uglifycss dist/styles/index.css --output dist/styles/index.min.css",
+    "build:dev": "npm run compile:ts && npm run compile:sass",
+    "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,8 @@
   "dependencies": {
     "node-sass": "^4.14.1",
     "tslib": "^2.0.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "uglify-js": "^3.10.4",
+    "uglifycss": "0.0.29"
   }
 }
