@@ -1,5 +1,99 @@
 .__amegmen {
-  .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
+  header, .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
     display: none;
+  }
+  .__amegmen--canvas {
+    height: auto;
+    overflow: visible;
+    position: static;
+    transform: translate(0, 0);
+  }
+  .__amegmen--main {
+    height: auto;
+    overflow-y: visible;
+    position: relative;
+    & > ul {
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+    }
+    &.__amegmen--nooverflow {
+      overflow: visible;
+    }
+  }
+  .__amegmen--anchor-l0 {
+    align-items: center;
+    display: flex;
+    height: $amegmen_common_height;
+    justify-content: center;
+    padding-bottom: 5px;
+    padding-top: 5px;
+  }
+  .__amegmen--panel {
+    // @include amegmen-animation('opacity');
+    transform: translate(0, 0);
+    top: $amegmen_common_height;
+  }
+  .__amegmen--panel-l0 {
+    height: auto;
+    overflow: visible;
+    & > nav {
+      flex-direction: row;
+      height: auto;
+      overflow: hidden;
+      position: static;
+      top: auto;
+
+      &.__amegmen--nooverflow {
+        overflow: visible;
+      }
+
+      &.active {
+        overflow: visible;
+      }
+    }
+  }
+  .__amegmen--panel-l1 {
+    height: auto;
+    left: 100%;
+    top: 0;
+
+    & > nav {
+      flex-direction: row;
+      height: auto;
+      overflow-y: visible;
+      position: static;
+      top: auto;
+    }
+  }
+  .__amegmen--col {
+    position: relative;
+    min-height: $amegmen_menuheight;
+  }
+  .__amegmen--col-5 {
+    width: 20%;
+  }
+  .__amegmen--col-4 {
+    width: 25%;
+  }
+  .__amegmen--col-3 {
+    width: 33.33334%;
+  }
+  .__amegmen--col-2 {
+    width: 50%;
+  }
+  .__amegmen--col-1 {
+    width: 100%;
+  }
+  .__amegmen--landing {
+    a {
+      display: inline-block;
+      line-height: normal;
+      overflow: visible;
+      text-overflow: inherit;
+      white-space: normal;
+      width: auto;
+      padding: 13px;
+    }
   }
 }

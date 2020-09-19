@@ -20,5 +20,5 @@ $amegmen_animation_time: 250ms;
 $amegmen_animation_easing: ease;
 
 @mixin amegmen-animation($property: all) {
-  transition: $property $amegmen_animation_time $amegmen_animation_easing;
+  transition: #{$property} $amegmen_animation_time $amegmen_animation_easing;
 }

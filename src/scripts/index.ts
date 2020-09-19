@@ -192,11 +192,7 @@ namespace AMegMen {
     }
   };
 
-  const _AddUniqueId = (
-    element: HTMLElement,
-    settings: IAMegMenSettings,
-    uuid: number
-  ) => {
+  const _AddUniqueId = (element: HTMLElement, settings: IAMegMenSettings, uuid: number) => {
     if (!element.getAttribute('id')) {
       element.setAttribute(
         'id',
@@ -205,15 +201,10 @@ namespace AMegMen {
     }
   };
 
-  const amm_document_out = (
-    overflowHiddenClass: string,
-    activeClass: string
-  ) => {
+  const amm_document_out = (overflowHiddenClass: string, activeClass: string) => {
     return () => {
-      if (event) {
-        const closest = (event.target as HTMLElement).closest(
-          '#' + active_amegmen.closestl0li
-        );
+      if (event && _StringTrim(active_amegmen.closestl0li || '').length > 0) {
+        const closest = (event.target as HTMLElement).closest('#' + active_amegmen.closestl0li);
         if (!closest) {
           amm_subnavclose(true, overflowHiddenClass, activeClass);
         }
@@ -234,11 +225,7 @@ namespace AMegMen {
     };
   };
 
-  const amm_subnavclose = (
-    closeOnlyTopLevel: boolean,
-    overflowHiddenClass: string,
-    activeClass: string
-  ) => {
+  const amm_subnavclose = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string) => {
     for (let i = 0; i < AllAMegMenCores.length; i++) {
       const mainElem = AllAMegMenCores[i].mainElem;
       const l0nav = AllAMegMenCores[i].l0nav || [];
@@ -259,11 +246,7 @@ namespace AMegMen {
     }
   };
 
-  const amm_gotoLevel = (
-    closeOnlyTopLevel: boolean,
-    overflowHiddenClass: string,
-    activeClass: string
-  ) => {
+  const amm_gotoLevel = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string) => {
     return () => {
       if (event) {
         event.preventDefault();
@@ -368,14 +351,7 @@ namespace AMegMen {
     };
   };
 
-  const amm_l0ClickFn = (
-    l0anchor: HTMLElement,
-    l0panel: HTMLElement,
-    parent: HTMLElement,
-    mainElem: HTMLElement,
-    overflowHiddenClass: string,
-    activeClass: string
-  ) => {
+  const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, overflowHiddenClass: string, activeClass: string) => {
     return () => {
       if (event && l0panel) {
         event.preventDefault();
@@ -452,7 +428,7 @@ namespace AMegMen {
     };
   };
 
-  const amm_eventScheduler = (shouldAdd: Boolean, element: HTMLElement, eventtype: string, fn: EventListenerOrEventListenerObject) => {
+  const amm_eventScheduler = (shouldAdd: Boolean, element: HTMLElement | HTMLDocument, eventtype: string, fn: EventListenerOrEventListenerObject) => {
     shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
   };
 
@@ -543,15 +519,8 @@ namespace AMegMen {
       }
     }
 
-    shouldAddEevents
-      ? (document as HTMLDocument).addEventListener(
-        'click',
-        amm_document_out(overflowHiddenClass, activeClass)
-      )
-      : (document as HTMLDocument).removeEventListener(
-        'click',
-        amm_document_out(overflowHiddenClass, activeClass)
-      );
+    amm_eventScheduler(shouldAddEevents, document as HTMLDocument, 'click', amm_document_out(overflowHiddenClass, activeClass));
+
   };
 
   const amm_init = (core: any, rootelem: HTMLElement, settings: IAMegMenSettings) => {

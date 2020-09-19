@@ -13,7 +13,7 @@ const htmltop = `<!DOCTYPE html>
 const htmlbottom = `
     <script src="./dist/scripts/index.js"></script>
     <script>
-      var mm_instance1 = AMegMen.Root.getRoot();
+      var mm_instance1 = AMegMen.Root.getInstance();
       mm_instance1.init('.__amegmen');
     </script>
   </body>
@@ -80,7 +80,7 @@ const genName = (length) => {
 const genPageMenu = (len, count) => {
   let navlength = len;
   let mainnavstr = '<nav class="__amegmen">';
-  if (count === 2) {
+  if (count === 1) {
     mainnavstr = '<nav class="__amegmen" id="__amegmen_123">';
   }
   
@@ -96,17 +96,19 @@ const genPageMenu = (len, count) => {
     <section class="__amegmen--main">
   <ul>`;
   for (let i = 0; i < navlength; i++) {
-    let link0Str = '<li><a href="#">'
-    link0Str += genName(randomNum(1, 2)) + '</a>';
+    let link0StrLink = genName(randomNum(1, 2));
+    let link0Str = '<li><a href="#' + link0StrLink + '">'
+    link0Str += link0StrLink + '</a>';
 
     // let hasSubnav = randomNum(1, 2);
     let hasSubnav = 1;
 
     if (hasSubnav === 1) {
       let subnav0str = '<section class="__amegmen--panel">';
+      let landing0StrLink = genName(randomNum(3, 6));
       let landing0link = `<div class="__amegmen--landing">
       <button class="__amegmen--main-cta">Main</button>
-      <a href="#">Landing page: ` + genName(randomNum(3, 6)) + `</a></div>`;
+      <a href="#${landing0StrLink}">Landing page: ` + landing0StrLink + `</a></div>`;
       subnav0str += landing0link;
       // let hasSubnav1 = randomNum(1, 2);
       let hasSubnav1 = 1;
@@ -121,13 +123,15 @@ const genPageMenu = (len, count) => {
           let subnavlinks1str = '<ul>';
 
           for (let k = 0; k < subnav1len; k++) {
-            subnavlinks1str += '<li><a href="#">' + genName(randomNum(3, 6)) + '</a>';
+            let link1StrLink = genName(randomNum(3, 6));
+            subnavlinks1str += '<li><a href="#' + link1StrLink + '">' + link1StrLink + '</a>';
 
             // let hasSubnav2 = randomNum(1, 2);
             let hasSubnav2 = 1;
             if (hasSubnav2 === 1) {
               let subnav2str = '<section class="__amegmen--panel">';
-              let landing2link = '<div class="__amegmen--landing"><button class="__amegmen--back-cta">Back</button><a href="#">Landing page: ' + genName(randomNum(3, 6)) + '</a></div>';
+              let landing2linkStr = genName(randomNum(3, 6));
+              let landing2link = '<div class="__amegmen--landing"><button class="__amegmen--back-cta">Back</button><a href="#' + landing2linkStr + '">Landing page: ' + landing2linkStr + '</a></div>';
               subnav2str += landing2link;
 
               let columns2 = 1;
@@ -169,11 +173,11 @@ const genPageMenu = (len, count) => {
 
 const generateData = () => {
   let m1 = genPageMenu(8, 1);
-  let m2 = genPageMenu(4, 2);
-  let m3 = genPageMenu(3, 3);
-  let m4 = genPageMenu(1, 4);
+  // let m2 = genPageMenu(4, 2);
+  // let m3 = genPageMenu(3, 3);
+  // let m4 = genPageMenu(1, 4);
   
-  fs.writeFile('./index.html', htmltop + m1 + m2 + m3 + m4 + htmlbottom, function (err) {
+  fs.writeFile('./index.html', htmltop + m1 + htmlbottom, function (err) {
     if (err) throw err;
     console.log('Menu Replaced!');
   });

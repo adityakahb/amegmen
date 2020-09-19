@@ -62,6 +62,10 @@
     top: 0;
     width: 100%;
     z-index: 8;
+    
+    &.__amegmen--nooverflow {
+      overflow: hidden;
+    }
 
     & > ul {
       display: block;
@@ -81,7 +85,7 @@
   .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
     display: block;
     text-decoration: none;
-    transition: all 250ms ease;
+    @include amegmen-animation();
     &:link {
       color: $anchorLink;
     }
@@ -103,11 +107,9 @@
     background-color: $amegmen_nav_bg;
     display: block;
     font-size: 17px;
-    line-height: $amegmen_common_height;
-    padding: 0 11px;
+    padding: 13px;
 
-    &:hover,
-    &.active {
+    &:hover, &.active, &:focus, &.focus {
       background-color: $amegmen_nav_l1;
     }
   }
@@ -118,8 +120,7 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover,
-    &.active {
+    &:hover, &.active, &:focus, &.focus {
       background-color: $amegmen_nav_l2;
     }
   }
@@ -129,8 +130,7 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover,
-    &.active {
+    &:hover, &.active, &:focus, &.focus {
       background-color: $amegmen_nav_l3;
     }
   }
@@ -147,11 +147,12 @@
   }
 
   .__amegmen--panel {
-    @include amegmen-animation();
+    @include amegmen-animation(); 
     height: 100%;
     left: 0;
     opacity: 0;
     position: absolute;
+    top: 0;
     transform: translate(-100.5%, 0);
     visibility: hidden;
     width: 100%;
@@ -160,6 +161,87 @@
       opacity: 1;
       transform: translate(0, 0);
       visibility: visible;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .__amegmen--panel-l0 {
+    background-color: $amegmen_nav_l1;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1050;
+
+    .__amegmen--landing {
+      width: calc(100% - #{$amegmen_common_width});
+    }
+
+    & > nav {
+      height: calc(100% - #{$amegmen_common_height});
+      left: 0;
+      overflow-y: scroll;
+      position: absolute;
+      top: $amegmen_common_height;
+      width: 100%;
+
+      &.__amegmen--nooverflow {
+        overflow: hidden;
+      }
+    }
+  }
+
+  .__amegmen--panel-l1 {
+    background-color: $amegmen_nav_l2;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1060;
+
+    .__amegmen--landing {
+      width: 100%;
+    }
+
+    & > nav {
+      height: calc(100% - #{$amegmen_common_height});
+      left: 0;
+      overflow-y: scroll;
+      position: absolute;
+      top: $amegmen_common_height;
+      width: 100%;
+    }
+  }
+  .__amegmen--landing {
+    display: block;
+    display: flex;
+    flex-direction: row;
+    a {
+      display: block;
+      font-weight: bold;
+      line-height: $amegmen_common_height;
+      overflow: hidden;
+      padding: 0 16px;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: calc(100% - #{$amegmen_common_width});
+
+      &:link {
+        color: $anchorLink;
+      }
+      &:visited {
+        color: $anchorVisited;
+      }
+      &:hover, &.hover {
+        color: $anchorHover;
+      }
+      &:active {
+        color: $anchorActive;
+      }
+      &:focus, &.focus {
+        color: $anchorFocus;
+      }
     }
   }
 }
