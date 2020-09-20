@@ -24,8 +24,7 @@
   "homepage": "https://github.com/adityakahb/amegmen#readme",
   "dependencies": {
     "node-sass": "^4.14.1",
-    "tslib": "^2.0.1",
-    "typescript": "^4.0.2",
+    "typescript": "^4.0.3",
     "uglify-js": "^3.10.4",
     "uglifycss": "0.0.29"
   }

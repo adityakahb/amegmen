@@ -16,6 +16,7 @@ namespace AMegMen {
   }
   interface IAMegMenSettings {
     activeClass?: string;
+    actOnHoverAt?: number;
     backButtonClass?: string;
     closeButtonClass?: string;
     colClass?: string;
@@ -24,7 +25,7 @@ namespace AMegMen {
     focusClass?: string;
     hoverClass?: string;
     idPrefix?: string;
-    isRightToLeft?: Boolean;
+    isRightToLeft?: boolean;
     l0AnchorClass?: string;
     l0PanelClass?: string;
     l1AnchorClass?: string;
@@ -40,12 +41,14 @@ namespace AMegMen {
     panelClass?: string;
     rightToLeftClass?: string;
     shiftColumns?: boolean;
+    shouldActOnHover?: boolean;
     supportedCols?: number;
     toggleButtonClass?: string;
   }
 
   const _Defaults = {
     activeClass: 'active',
+    actOnHoverAt: 1280,
     backButtonClass: '__amegmen--back-cta',
     closeButtonClass: '__amegmen--close-cta',
     colClass: '__amegmen--col',
@@ -70,6 +73,7 @@ namespace AMegMen {
     panelClass: '__amegmen--panel',
     rightToLeftClass: '__amegmen--r-to-l',
     shiftColumns: false,
+    shouldActOnHover: false,
     supportedCols: 4,
     toggleButtonClass: '__amegmen--toggle-cta',
   };
@@ -434,7 +438,7 @@ namespace AMegMen {
     };
   };
 
-  const amm_eventScheduler = (shouldAdd: Boolean, element: HTMLElement | HTMLDocument, eventtype: string, fn: EventListenerOrEventListenerObject) => {
+  const amm_eventScheduler = (shouldAdd: Boolean, element: HTMLElement | HTMLDocument | Window, eventtype: string, fn: EventListenerOrEventListenerObject) => {
     shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
   };
 
