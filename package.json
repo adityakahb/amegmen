@@ -4,6 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"none\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "generatedata": "node ./scripts/generatedata.js",
     "compile:sass": "node-sass --source-map true src/sass/ -o dist/styles/",
     "compile:ts": "tsc",

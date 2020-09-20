@@ -289,18 +289,6 @@ namespace AMegMen {
     };
   };
 
-  const amm_l0MouseenterFn = (l0anchor: HTMLElement, hoverClass: string) => {
-    return () => {
-      _AddClass(l0anchor, hoverClass);
-    };
-  };
-
-  const amm_l0MouseleaveFn = (l0anchor: HTMLElement, hoverClass: string) => {
-    return () => {
-      _RemoveClass(l0anchor, hoverClass);
-    };
-  };
-
   const amm_l0FocusFn = (l0anchor: HTMLElement, focusClass: string) => {
     return () => {
       _AddClass(l0anchor, focusClass);
@@ -310,18 +298,6 @@ namespace AMegMen {
   const amm_l0BlurFn = (l0anchor: HTMLElement, focusClass: string) => {
     return () => {
       _RemoveClass(l0anchor, focusClass);
-    };
-  };
-
-  const amm_l1MouseenterFn = (l1anchor: HTMLElement, hoverClass: string) => {
-    return () => {
-      _AddClass(l1anchor, hoverClass);
-    };
-  };
-
-  const amm_l1MouseleaveFn = (l1anchor: HTMLElement, hoverClass: string) => {
-    return () => {
-      _RemoveClass(l1anchor, hoverClass);
     };
   };
 
@@ -381,6 +357,24 @@ namespace AMegMen {
     };
   };
 
+  const amm_l0MouseenterFn = (l0anchor: HTMLElement, hoverClass: string, shouldActOnHover: boolean, actOnHoverAt: number) => {
+    return () => {
+      _AddClass(l0anchor, hoverClass);
+      if (shouldActOnHover) {
+        const windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        if (windowwidth >= actOnHoverAt) {
+          l0anchor.click();
+        }
+      }
+    };
+  };
+
+  const amm_l0MouseleaveFn = (l0anchor: HTMLElement, hoverClass: string) => {
+    return () => {
+      _RemoveClass(l0anchor, hoverClass);
+    };
+  };
+
   const amm_l1ClickFn = (
     l1anchor: HTMLElement,
     l1panel: HTMLElement,
@@ -402,6 +396,24 @@ namespace AMegMen {
         _AddClass(l1panel, activeClass);
         _AddClass(l0navelement, overflowHiddenClass);
       }
+    };
+  };
+
+  const amm_l1MouseenterFn = (l1anchor: HTMLElement, hoverClass: string, shouldActOnHover: boolean, actOnHoverAt: number) => {
+    return () => {
+      _AddClass(l1anchor, hoverClass);
+      if (shouldActOnHover) {
+        const windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        if (windowwidth >= actOnHoverAt) {
+          l1anchor.click();
+        }
+      }
+    };
+  };
+
+  const amm_l1MouseleaveFn = (l1anchor: HTMLElement, hoverClass: string) => {
+    return () => {
+      _RemoveClass(l1anchor, hoverClass);
     };
   };
 
@@ -456,6 +468,10 @@ namespace AMegMen {
     const activeClass = settings.activeClass ? settings.activeClass : '';
     const hoverClass = settings.hoverClass ? settings.hoverClass : '';
     const focusClass = settings.focusClass ? settings.focusClass : '';
+    const hoverprops:any = {
+      shouldActOnHover: settings.shouldActOnHover ? settings.shouldActOnHover : false,
+      actOnHoverAt: settings.actOnHoverAt ? settings.actOnHoverAt : 1280
+    };
 
     if (settings.landingCtaClass) {
       const landingElements = _ArrayCall(
@@ -498,13 +514,16 @@ namespace AMegMen {
       const l1nav = l0nav[i].l1nav || [];
 
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootelem, core.mainElem, overflowHiddenClass, activeClass));
-      amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'mouseenter', amm_l0MouseenterFn(l0anchor, hoverClass));
+      amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'mouseenter', amm_l0MouseenterFn(l0anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'mouseleave', amm_l0MouseleaveFn(l0anchor, hoverClass));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'focus', amm_l0FocusFn(l0anchor, focusClass));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'blur', amm_l0BlurFn(l0anchor, focusClass));
 
       if (l0panel) {
         amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'click', amm_subnav_out(overflowHiddenClass, activeClass));
+        if (hoverprops.shouldActOnHover) {
+          amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass));
+        }
       }
 
       for (let j = 0; j < l1nav.length; j++) {
@@ -513,7 +532,7 @@ namespace AMegMen {
         const l2nav = l1nav[j].l2nav || [];
 
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass));
-        amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'mouseenter', amm_l1MouseenterFn(l1anchor, hoverClass));
+        amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'mouseenter', amm_l1MouseenterFn(l1anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'mouseleave', amm_l1MouseleaveFn(l1anchor, hoverClass));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'focus', amm_l1FocusFn(l1anchor, focusClass));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'blur', amm_l1BlurFn(l1anchor, focusClass));
@@ -530,7 +549,9 @@ namespace AMegMen {
     }
 
     amm_eventScheduler(shouldAddEevents, document as HTMLDocument, 'click', amm_document_out(overflowHiddenClass, activeClass));
-
+    if (hoverprops.shouldActOnHover) {
+      amm_eventScheduler(shouldAddEevents, window as Window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass));
+    }
   };
 
   const amm_init = (core: any, rootelem: HTMLElement, settings: IAMegMenSettings) => {
