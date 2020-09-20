@@ -696,7 +696,7 @@ namespace AMegMen {
       _EnableClosest();
       _EnableAssign();
 
-      if (window && document) {
+      if (window && document && !window.AMegMen) {
         window.AMegMen = AMegMen;
       }
     }
