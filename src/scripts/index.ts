@@ -18,7 +18,9 @@ namespace AMegMen {
     activeClass?: string;
     backButtonClass?: string;
     closeButtonClass?: string;
-    columnClass?: string;
+    colClass?: string;
+    colShiftClass?: string;
+    colWidthClass?: string;
     focusClass?: string;
     hoverClass?: string;
     idPrefix?: string;
@@ -29,6 +31,7 @@ namespace AMegMen {
     l1PanelClass?: string;
     l2AnchorClass?: string;
     landingCtaClass?: string;
+    lastcolClass?: string;
     mainButtonClass?: string;
     mainElementClass?: string;
     menuClass?: string;
@@ -45,7 +48,9 @@ namespace AMegMen {
     activeClass: 'active',
     backButtonClass: '__amegmen--back-cta',
     closeButtonClass: '__amegmen--close-cta',
-    columnClass: '__amegmen--col',
+    colClass: '__amegmen--col',
+    colShiftClass: '__amegmen-shift',
+    colWidthClass: '__amegmen-width',
     focusClass: 'focus',
     hoverClass: 'hover',
     idPrefix: '__amegmen_id',
@@ -56,16 +61,17 @@ namespace AMegMen {
     l1PanelClass: '__amegmen--panel-l1',
     l2AnchorClass: '__amegmen--anchor-l2',
     landingCtaClass: '__amegmen--landing',
+    lastcolClass: '__amegmen--col-last',
     mainButtonClass: '__amegmen--main-cta',
     mainElementClass: '__amegmen--main',
     menuClass: '__amegmen',
     offcanvasclass: '__amegmen--canvas',
     overflowHiddenClass: '__amegmen--nooverflow',
     panelClass: '__amegmen--panel',
-    shiftColumns: false,
-    supportedCols: 3,
-    toggleButtonClass: '__amegmen--toggle-cta',
     rightToLeftClass: '__amegmen--r-to-l',
+    shiftColumns: false,
+    supportedCols: 4,
+    toggleButtonClass: '__amegmen--toggle-cta',
   };
 
   const _EnableAssign = () => {
@@ -526,7 +532,7 @@ namespace AMegMen {
   const amm_init = (core: any, rootelem: HTMLElement, settings: IAMegMenSettings) => {
     core.rootelem = rootelem;
     core.settings = settings;
-    core.mainElem = core.rootelem.querySelector(`:scope .${settings.mainElementClass}`);
+    core.mainElem = core.rootelem.querySelector(`.${settings.mainElementClass}`);
     core.togglenav = core.rootelem.querySelector(`.${settings.toggleButtonClass}`);
     core.closenav = core.rootelem.querySelector(`.${settings.closeButtonClass}`);
     core.offcanvas = core.rootelem.querySelector(`.${settings.offcanvasclass}`);
@@ -545,101 +551,65 @@ namespace AMegMen {
         let nav0obj: any = {};
         nav0obj.l0li = l0li[i];
         nav0obj.l0anchor = l0li[i].querySelector(':scope > a');
-        _AddClass(
-          nav0obj.l0anchor,
-          settings.l0AnchorClass ? settings.l0AnchorClass : ''
-        );
-        const l0panel = l0li[i].querySelector(
-          `:scope > .${settings.panelClass}`
-        );
+        _AddClass(nav0obj.l0anchor,settings.l0AnchorClass ? settings.l0AnchorClass : '');
+        const l0panel = l0li[i].querySelector(`:scope > .${settings.panelClass}`);
 
         if (l0panel) {
-          _AddClass(
-            l0panel,
-            settings.l0PanelClass ? settings.l0PanelClass : ''
-          );
+          _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
           nav0obj.l0panel = l0panel;
-          nav0obj.l0tomain = l0panel.querySelector(
-            `.${settings.mainButtonClass}`
-          );
+          nav0obj.l0tomain = l0panel.querySelector(`.${settings.mainButtonClass}`);
           const l1navelement = l0panel.querySelector(':scope > nav');
 
           if (l1navelement) {
             nav0obj.navelement = l1navelement;
-            const l1cols = _ArrayCall(
-              l1navelement.querySelectorAll(`:scope > .${settings.columnClass}`)
-            );
+            const l1cols = _ArrayCall(l1navelement.querySelectorAll(`:scope > .${settings.colClass}`));
             nav0obj.l1cols = l1cols.length;
             nav0obj.l1nav = [];
 
             if (l1cols.length > 0) {
               const shiftnum = (settings.supportedCols || 0) - l1cols.length;
-              const l1li = _ArrayCall(
-                l1navelement.querySelectorAll(
-                  `:scope > .${settings.columnClass} > ul > li`
-                )
-              );
+              const l1li = _ArrayCall(l1navelement.querySelectorAll(`:scope > .${settings.colClass} > ul > li`));
+              const colnum = parseInt((settings.supportedCols || 0) + '');
+
               for (let j = 0; j < l1cols.length; j++) {
-                _AddClass(
-                  l1cols[j],
-                  `__amegmen--col-${parseInt((settings.supportedCols || 0) + '') > 0
-                    ? settings.supportedCols
-                    : 2
-                  }`
-                );
+                _AddClass(l1cols[j], `${settings.colClass}-${colnum > 0 ? colnum : 2}`);
+                if (j === colnum - 1 && j > 1) {
+                  _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
+                }
               }
               for (let j = 0; j < l1li.length; j++) {
                 _AddUniqueId(l1li[j], settings, j);
                 let nav1obj: any = {};
                 nav1obj.l1li = l1li[j];
                 nav1obj.l1anchor = l1li[j].querySelector(':scope > a');
-                _AddClass(
-                  nav1obj.l1anchor,
-                  settings.l1AnchorClass ? settings.l1AnchorClass : ''
-                );
-                const l1panel = l1li[j].querySelector(
-                  `:scope > .${settings.panelClass}`
-                );
+                _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
+                const l1panel = l1li[j].querySelector(`:scope > .${settings.panelClass}`);
 
                 if (l1panel) {
-                  _AddClass(
-                    l1panel,
-                    settings.l1PanelClass ? settings.l1PanelClass : ''
-                  );
+                  _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
                   nav1obj.l1panel = l1panel;
-                  nav1obj.l1toback = l1panel.querySelector(
-                    `.${settings.backButtonClass}`
-                  );
+                  nav1obj.l1toback = l1panel.querySelector(`.${settings.backButtonClass}`);
                   const l2navelement = l1panel.querySelector(':scope > nav');
 
                   if (l2navelement) {
                     nav1obj.navelement = l2navelement;
-                    const l2cols = _ArrayCall(
-                      l2navelement.querySelectorAll(
-                        `:scope > .${settings.columnClass}`
-                      )
-                    );
+                    const l2cols = _ArrayCall(l2navelement.querySelectorAll(`:scope > .${settings.colClass}`));
 
                     if (l2cols.length) {
                       if (settings.shiftColumns) {
-                        _AddClass(l1navelement, `__amegmen-shift-${shiftnum}`);
+                        _AddClass(l1navelement, `${settings.colShiftClass ? settings.colShiftClass : ''}-${shiftnum}`);
                       }
-                      _AddClass(l1panel, `__amegmen-width-${shiftnum}`);
+                      _AddClass(l1panel, `${settings.colWidthClass ? settings.colWidthClass : ''}-${shiftnum}`);
                       const l2a = _ArrayCall(
-                        l2navelement.querySelectorAll(
-                          `:scope > .${settings.columnClass} > ul > li > a`
-                        )
+                        l2navelement.querySelectorAll(`:scope > .${settings.colClass} > ul > li > a`)
                       );
 
                       for (let k = 0; k < l2a.length; k++) {
-                        _AddClass(
-                          l2a[k],
-                          settings.l2AnchorClass ? settings.l2AnchorClass : ''
-                        );
+                        _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
                       }
                       for (let k = 0; k < l2cols.length; k++) {
                         // _AddClass(l2cols[k], `__amegmen--col-${l2cols.length}`);
-                        _AddClass(l2cols[k], `__amegmen--col-1`);
+                        _AddClass(l2cols[k], `${settings.colClass ? settings.colClass : ''}-1`);
                       }
 
                       nav1obj.l2nav = l2a;

@@ -244,4 +244,18 @@
       }
     }
   }
+  &.__amegmen--r-to-l {
+    .__amegmen--main, .__amegmen--panel-l0 > nav, .__amegmen--panel-l1 > nav {
+      direction: rtl;
+    }
+    .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+      text-align: right;
+    }
+    .__amegmen--landing {
+      text-align: right;
+    }
+    .__amegmen--panel {
+      text-align: right;
+    }
+  }
 }

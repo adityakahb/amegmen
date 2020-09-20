@@ -114,7 +114,7 @@ const genPageMenu = (len, count) => {
       let hasSubnav1 = 1;
       let subnav1str = '';
       if (hasSubnav1 === 1) {
-        let columns1 = randomNum(1, 2);
+        let columns1 = randomNum(1, 4);
         subnav1str = '<nav>';
         for (let j = 0; j < columns1; j++) {
           subnav1str += '<div class="__amegmen--col">';
@@ -156,7 +156,7 @@ const genPageMenu = (len, count) => {
           subnavlinks1str += '</ul>';
           subnav1str += subnavlinks1str + '</div>';
         }
-        subnav1str += '<div class="__amegmen--col">blank column</div>';
+        // subnav1str += '<div class="__amegmen--col">blank column</div>';
         subnav1str += '</nav>';
       }
 
