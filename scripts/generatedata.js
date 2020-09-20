@@ -177,7 +177,7 @@ const generateData = () => {
   // let m3 = genPageMenu(3, 3);
   // let m4 = genPageMenu(1, 4);
   
-  fs.writeFile('./index.html', htmltop + m1 + htmlbottom, function (err) {
+  fs.writeFile('./backup/index.html', htmltop + m1 + htmlbottom, function (err) {
     if (err) throw err;
     console.log('Menu Replaced!');
   });
