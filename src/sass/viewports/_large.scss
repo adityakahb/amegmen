@@ -33,10 +33,16 @@
     // @include amegmen-animation('opacity');
     transform: translate(0, 0);
     top: $amegmen_common_height;
+    &.active {
+      @include amegmen-animation();
+    }
   }
   .__amegmen--panel-l0 {
     height: auto;
     overflow: visible;
+    .__amegmen--landing {
+      width: auto;
+    }
     & > nav {
       flex-direction: row;
       height: auto;
@@ -56,19 +62,33 @@
   .__amegmen--panel-l1 {
     height: auto;
     left: 100%;
+    min-height: 100%;
+    overflow: visible;
     top: 0;
+
+    .__amegmen--col {
+      min-height: auto;
+      height: 100%;
+    }
 
     & > nav {
       flex-direction: row;
-      height: auto;
-      overflow-y: visible;
-      position: static;
+      max-height: $amegmen_menuheight;
+      overflow-y: auto;
+      position: relative;
       top: auto;
     }
   }
   .__amegmen--col {
-    position: relative;
     min-height: $amegmen_menuheight;
+    position: relative;
+
+    &.__amegmen--col-last {
+      .__amegmen--panel-l1 {
+        left: auto;
+        right: 100%;
+      }
+    }
   }
   .__amegmen--col-5 {
     width: 20%;
@@ -90,10 +110,25 @@
       display: inline-block;
       line-height: normal;
       overflow: visible;
+      padding: 13px;
       text-overflow: inherit;
       white-space: normal;
       width: auto;
-      padding: 13px;
+    }
+  }
+  &.__amegmen--r-to-l {
+    .__amegmen--panel-l1 {
+      left: auto;
+      right: 100%;
+    }
+
+    .__amegmen--col {
+      &.__amegmen--col-last {
+        .__amegmen--panel-l1 {
+          left: 100%;
+          right: auto;
+        }
+      }
     }
   }
 }
