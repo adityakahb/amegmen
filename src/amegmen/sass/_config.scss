@@ -2,16 +2,19 @@ $breakpoint: 768px;
 
 $amegmen_menuheight: 480px;
 
+$amegmen_nav_border: #444;
+$amegmen_link_border: #444;
+
 $amegmen_nav_bg: #eee;
 $amegmen_nav_l1: darken($amegmen_nav_bg, 7.5%);
 $amegmen_nav_l2: darken($amegmen_nav_l1, 7.5%);
 $amegmen_nav_l3: darken($amegmen_nav_l2, 7.5%);
 
 $anchorLink: #000;
-$anchorVisited: #222;
+$anchorVisited: #000;
 $anchorHover: #444;
-$anchorActive: #666;
-$anchorFocus: #888;
+$anchorActive: #000;
+$anchorFocus: #444;
 
 $amegmen_common_width: 60px;
 $amegmen_common_height: 60px;

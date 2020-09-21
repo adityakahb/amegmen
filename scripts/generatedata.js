@@ -79,10 +79,7 @@ const genName = (length) => {
 
 const genPageMenu = (len, count) => {
   let navlength = len;
-  let mainnavstr = '<nav class="__amegmen">';
-  if (count === 1) {
-    mainnavstr = '<nav class="__amegmen" id="__amegmen_123">';
-  }
+  let mainnavstr = '<nav class="__amegmen" id="__amegmen_' + count + '">';
   
   mainnavstr += `<button class="__amegmen--toggle-cta">
     Menu
@@ -96,8 +93,8 @@ const genPageMenu = (len, count) => {
     <section class="__amegmen--main">
   <ul>`;
   for (let i = 0; i < navlength; i++) {
-    let link0StrLink = genName(randomNum(1, 2));
-    let link0Str = '<li><a href="#' + link0StrLink + '">'
+    let link0StrLink = genName(randomNum(1, 3));
+    let link0Str = '<li><a href="#' + '' + '">'
     link0Str += link0StrLink + '</a>';
 
     // let hasSubnav = randomNum(1, 2);
@@ -108,7 +105,7 @@ const genPageMenu = (len, count) => {
       let landing0StrLink = genName(randomNum(3, 6));
       let landing0link = `<div class="__amegmen--landing">
       <button class="__amegmen--main-cta">Main</button>
-      <a href="#${landing0StrLink}">Landing page: ` + landing0StrLink + `</a></div>`;
+      <a href="#">Landing page: ` + landing0StrLink + `</a></div>`;
       subnav0str += landing0link;
       // let hasSubnav1 = randomNum(1, 2);
       let hasSubnav1 = 1;
@@ -124,21 +121,21 @@ const genPageMenu = (len, count) => {
 
           for (let k = 0; k < subnav1len; k++) {
             let link1StrLink = genName(randomNum(3, 6));
-            subnavlinks1str += '<li><a href="#' + link1StrLink + '">' + link1StrLink + '</a>';
+            subnavlinks1str += '<li><a href="#' + '' + '">' + link1StrLink + '</a>';
 
             // let hasSubnav2 = randomNum(1, 2);
             let hasSubnav2 = 1;
             if (hasSubnav2 === 1) {
               let subnav2str = '<section class="__amegmen--panel">';
               let landing2linkStr = genName(randomNum(3, 6));
-              let landing2link = '<div class="__amegmen--landing"><button class="__amegmen--back-cta">Back</button><a href="#' + landing2linkStr + '">Landing page: ' + landing2linkStr + '</a></div>';
+              let landing2link = '<div class="__amegmen--landing"><button class="__amegmen--back-cta">Back</button><a href="#' + '' + '">Landing page: ' + landing2linkStr + '</a></div>';
               subnav2str += landing2link;
 
               let columns2 = 1;
               subnav2str += '<nav>';
               for (let l = 0; l < columns2; l++) {
                 subnav2str += '<div class="__amegmen--col"><ul>';
-                let subnav2len = randomNum(5, 25);
+                let subnav2len = randomNum(5, 15);
 
                 for (let m = 0; m < subnav2len; m++) {
                   subnav2str += '<li><a href="#">' + genName(randomNum(3, 6)) + '</a></li>';
@@ -172,14 +169,26 @@ const genPageMenu = (len, count) => {
 };
 
 const generateData = () => {
-  let m1 = genPageMenu(8, 1);
-  // let m2 = genPageMenu(4, 2);
-  // let m3 = genPageMenu(3, 3);
-  // let m4 = genPageMenu(1, 4);
+  let m1 = genPageMenu(4, 1);
+  let m2 = genPageMenu(4, 2);
+  let m3 = genPageMenu(4, 3);
+  let m4 = genPageMenu(4, 4);
   
-  fs.writeFile('./backup/index.html', htmltop + m1 + htmlbottom, function (err) {
+  fs.writeFile('./templates/m1.html', m1, function (err) {
     if (err) throw err;
-    console.log('Menu Replaced!');
+    console.log('Menu 1 Replaced!');
+  });
+  fs.writeFile('./templates/m2.html', m2, function (err) {
+    if (err) throw err;
+    console.log('Menu 2 Replaced!');
+  });
+  fs.writeFile('./templates/m3.html', m3, function (err) {
+    if (err) throw err;
+    console.log('Menu 3 Replaced!');
+  });
+  fs.writeFile('./templates/m4.html', m4, function (err) {
+    if (err) throw err;
+    console.log('Menu 4 Replaced!');
   });
 };
 

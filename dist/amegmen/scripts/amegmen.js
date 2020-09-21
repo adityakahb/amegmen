@@ -155,52 +155,63 @@ var AMegMen;
             element.setAttribute('id', settings.idPrefix + '_' + new Date().getTime() + '_' + uuid);
         }
     };
-    var amm_document_out = function (overflowHiddenClass, activeClass) {
+    var amm_document_out = function (overflowHiddenClass, activeClass, eventtype) {
         return function () {
             if (event && _StringTrim(active_amegmen.closestl0li || '').length > 0) {
                 var closest = event.target.closest('#' + active_amegmen.closestl0li);
                 if (!closest) {
-                    amm_subnavclose(true, overflowHiddenClass, activeClass);
+                    amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
                 }
             }
         };
     };
-    var amm_subnav_out = function (overflowHiddenClass, activeClass) {
+    var amm_subnav_out = function (overflowHiddenClass, activeClass, eventtype) {
         return function () {
             if (event) {
                 var closest = event.target.closest('#' + active_amegmen.closestl1li);
                 if (!closest) {
-                    amm_subnavclose(false, overflowHiddenClass, activeClass);
+                    amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
                 }
             }
         };
     };
-    var amm_subnavclose = function (closeOnlyTopLevel, overflowHiddenClass, activeClass) {
+    var amm_subnavclose = function (closeOnlyTopLevel, overflowHiddenClass, activeClass, eventtype) {
         for (var i = 0; i < AllAMegMenCores.length; i++) {
-            var mainElem = AllAMegMenCores[i].mainElem;
-            var l0nav = AllAMegMenCores[i].l0nav || [];
-            if (closeOnlyTopLevel) {
-                _RemoveClass(mainElem, overflowHiddenClass);
+            var rootElem = AllAMegMenCores[i].rootElem;
+            var shouldExecute = false;
+            if (eventtype === 'mouseover' && (AllAMegMenCores[i].settings || {}).shouldActOnHover === true) {
+                shouldExecute = true;
             }
-            for (var j = 0; j < l0nav.length; j++) {
+            if (eventtype === 'click') {
+                shouldExecute = true;
+            }
+            if (shouldExecute && _HasClass(rootElem, activeClass)) {
+                var mainElem = AllAMegMenCores[i].mainElem;
+                var l0nav = AllAMegMenCores[i].l0nav || [];
                 if (closeOnlyTopLevel) {
-                    _RemoveClass(l0nav[j].l0anchor, activeClass);
-                    _RemoveClass(l0nav[j].l0panel, activeClass);
+                    _RemoveClass(rootElem, activeClass);
+                    _RemoveClass(mainElem, overflowHiddenClass);
                 }
-                _RemoveClass(l0nav[j].navelement, overflowHiddenClass);
-                for (var k = 0; k < (l0nav[j].l1nav || []).length; k++) {
-                    _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeClass);
-                    _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeClass);
+                for (var j = 0; j < l0nav.length; j++) {
+                    if (closeOnlyTopLevel) {
+                        _RemoveClass(l0nav[j].l0anchor, activeClass);
+                        _RemoveClass(l0nav[j].l0panel, activeClass);
+                    }
+                    _RemoveClass(l0nav[j].navelement, overflowHiddenClass);
+                    for (var k = 0; k < (l0nav[j].l1nav || []).length; k++) {
+                        _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeClass);
+                        _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeClass);
+                    }
                 }
             }
         }
     };
-    var amm_gotoLevel = function (closeOnlyTopLevel, overflowHiddenClass, activeClass) {
+    var amm_gotoLevel = function (closeOnlyTopLevel, overflowHiddenClass, activeClass, eventtype) {
         return function () {
             if (event) {
                 event.preventDefault();
             }
-            amm_subnavclose(closeOnlyTopLevel, overflowHiddenClass, activeClass);
+            amm_subnavclose(closeOnlyTopLevel, overflowHiddenClass, activeClass, eventtype);
         };
     };
     var amm_landingMouseenterFn = function (landingElement, hoverClass) {
@@ -263,7 +274,7 @@ var AMegMen;
             _RemoveClass(l2anchor, focusClass);
         };
     };
-    var amm_l0ClickFn = function (l0anchor, l0panel, parent, mainElem, overflowHiddenClass, activeClass) {
+    var amm_l0ClickFn = function (l0anchor, l0panel, parent, mainElem, overflowHiddenClass, activeClass, eventtype) {
         return function () {
             if (event && l0panel) {
                 event.preventDefault();
@@ -271,12 +282,13 @@ var AMegMen;
             if (_HasClass(l0anchor, activeClass)) {
                 active_amegmen.elem = null;
                 active_amegmen.closestl0li = '';
-                amm_subnavclose(true, overflowHiddenClass, activeClass);
+                amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
             }
             else {
-                amm_subnavclose(true, overflowHiddenClass, activeClass);
+                amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
                 active_amegmen.elem = parent;
                 active_amegmen.closestl0li = l0anchor.closest('li').getAttribute('id');
+                _AddClass(parent, activeClass);
                 _AddClass(l0anchor, activeClass);
                 _AddClass(l0panel, activeClass);
                 _AddClass(mainElem, overflowHiddenClass);
@@ -299,18 +311,18 @@ var AMegMen;
             _RemoveClass(l0anchor, hoverClass);
         };
     };
-    var amm_l1ClickFn = function (l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass) {
+    var amm_l1ClickFn = function (l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass, eventtype) {
         return function () {
             if (event && l1panel) {
                 event.preventDefault();
             }
             if (_HasClass(l1anchor, activeClass)) {
                 active_amegmen.closestl1li = '';
-                amm_subnavclose(false, overflowHiddenClass, activeClass);
+                amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
             }
             else {
                 active_amegmen.closestl1li = l1anchor.closest('li').getAttribute('id');
-                amm_subnavclose(false, overflowHiddenClass, activeClass);
+                amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
                 _AddClass(l1anchor, activeClass);
                 _AddClass(l1panel, activeClass);
                 _AddClass(l0navelement, overflowHiddenClass);
@@ -375,7 +387,7 @@ var AMegMen;
             actOnHoverAt: settings.actOnHoverAt ? settings.actOnHoverAt : 1280
         };
         if (settings.landingCtaClass) {
-            var landingElements = _ArrayCall(core.rootelem.querySelectorAll('.' + settings.landingCtaClass + ' > a'));
+            var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaClass + ' > a'));
             for (var i = 0; i < landingElements.length; i++) {
                 amm_eventScheduler(shouldAddEevents, landingElements[i], 'mouseenter', amm_landingMouseenterFn(landingElements[i], hoverClass));
                 amm_eventScheduler(shouldAddEevents, landingElements[i], 'mouseleave', amm_landingMouseleaveFn(landingElements[i], hoverClass));
@@ -391,12 +403,12 @@ var AMegMen;
         }
         if (tomain.length > 0) {
             for (var i = 0; i < tomain.length; i++) {
-                amm_eventScheduler(shouldAddEevents, tomain[i], 'click', amm_gotoLevel(true, overflowHiddenClass, activeClass));
+                amm_eventScheduler(shouldAddEevents, tomain[i], 'click', amm_gotoLevel(true, overflowHiddenClass, activeClass, 'click'));
             }
         }
         if (toprevious.length > 0) {
             for (var i = 0; i < toprevious.length; i++) {
-                amm_eventScheduler(shouldAddEevents, toprevious[i], 'click', amm_gotoLevel(false, overflowHiddenClass, activeClass));
+                amm_eventScheduler(shouldAddEevents, toprevious[i], 'click', amm_gotoLevel(false, overflowHiddenClass, activeClass, 'click'));
             }
         }
         var l0nav = core.l0nav || [];
@@ -405,22 +417,22 @@ var AMegMen;
             var l0panel = l0nav[i].l0panel;
             var l0navelement = l0nav[i].navelement;
             var l1nav = l0nav[i].l1nav || [];
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootelem, core.mainElem, overflowHiddenClass, activeClass));
+            amm_eventScheduler(shouldAddEevents, l0anchor, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenClass, activeClass, 'click'));
             amm_eventScheduler(shouldAddEevents, l0anchor, 'mouseenter', amm_l0MouseenterFn(l0anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
             amm_eventScheduler(shouldAddEevents, l0anchor, 'mouseleave', amm_l0MouseleaveFn(l0anchor, hoverClass));
             amm_eventScheduler(shouldAddEevents, l0anchor, 'focus', amm_l0FocusFn(l0anchor, focusClass));
             amm_eventScheduler(shouldAddEevents, l0anchor, 'blur', amm_l0BlurFn(l0anchor, focusClass));
             if (l0panel) {
-                amm_eventScheduler(shouldAddEevents, l0panel, 'click', amm_subnav_out(overflowHiddenClass, activeClass));
+                amm_eventScheduler(shouldAddEevents, l0panel, 'click', amm_subnav_out(overflowHiddenClass, activeClass, 'click'));
                 if (hoverprops.shouldActOnHover) {
-                    amm_eventScheduler(shouldAddEevents, l0panel, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass));
+                    amm_eventScheduler(shouldAddEevents, l0panel, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass, 'mouseover'));
                 }
             }
             for (var j = 0; j < l1nav.length; j++) {
                 var l1anchor = l1nav[j].l1anchor;
                 var l1panel = l1nav[j].l1panel;
                 var l2nav = l1nav[j].l2nav || [];
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass));
+                amm_eventScheduler(shouldAddEevents, l1anchor, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass, 'click'));
                 amm_eventScheduler(shouldAddEevents, l1anchor, 'mouseenter', amm_l1MouseenterFn(l1anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
                 amm_eventScheduler(shouldAddEevents, l1anchor, 'mouseleave', amm_l1MouseleaveFn(l1anchor, hoverClass));
                 amm_eventScheduler(shouldAddEevents, l1anchor, 'focus', amm_l1FocusFn(l1anchor, focusClass));
@@ -434,22 +446,22 @@ var AMegMen;
                 }
             }
         }
-        amm_eventScheduler(shouldAddEevents, document, 'click', amm_document_out(overflowHiddenClass, activeClass));
+        amm_eventScheduler(shouldAddEevents, document, 'click', amm_document_out(overflowHiddenClass, activeClass, 'click'));
         if (hoverprops.shouldActOnHover) {
-            amm_eventScheduler(shouldAddEevents, window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass));
+            amm_eventScheduler(shouldAddEevents, window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass, 'mouseover'));
         }
     };
-    var amm_init = function (core, rootelem, settings) {
-        core.rootelem = rootelem;
+    var amm_init = function (core, rootElem, settings) {
+        core.rootElem = rootElem;
         core.settings = settings;
-        core.mainElem = core.rootelem.querySelector("." + settings.mainElementClass);
-        core.togglenav = core.rootelem.querySelector("." + settings.toggleButtonClass);
-        core.closenav = core.rootelem.querySelector("." + settings.closeButtonClass);
-        core.offcanvas = core.rootelem.querySelector("." + settings.offcanvasclass);
-        core.tomain = core.rootelem.querySelectorAll("." + settings.mainButtonClass);
-        core.toprevious = core.rootelem.querySelectorAll("." + settings.backButtonClass);
+        core.mainElem = core.rootElem.querySelector("." + settings.mainElementClass);
+        core.togglenav = core.rootElem.querySelector("." + settings.toggleButtonClass);
+        core.closenav = core.rootElem.querySelector("." + settings.closeButtonClass);
+        core.offcanvas = core.rootElem.querySelector("." + settings.offcanvasclass);
+        core.tomain = core.rootElem.querySelectorAll("." + settings.mainButtonClass);
+        core.toprevious = core.rootElem.querySelectorAll("." + settings.backButtonClass);
         if (core.settings.isRightToLeft) {
-            _AddClass(core.rootelem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
+            _AddClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
         }
         if (core.mainElem) {
             core.l0nav = [];
@@ -524,9 +536,9 @@ var AMegMen;
         return core;
     };
     var Core = (function () {
-        function Core(rootelem, options) {
+        function Core(rootElem, options) {
             this.core = {};
-            this.core = amm_init(this.core, rootelem, Object.assign({}, _Defaults, options));
+            this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options));
             AllAMegMenCores.push(this.core);
         }
         return Core;

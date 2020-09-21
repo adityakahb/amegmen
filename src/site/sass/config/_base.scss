@@ -2,11 +2,18 @@ html {
   font-size: 16px;
 }
 body {
-  background-color: $gray-900;
+  background-color: $gray-200;
   backface-visibility: hidden;
   // letter-spacing: rem(0.4px);
+  color: $gray-900;
 }
 .max-wrap {
-  max-width: rem(1920px);
+  max-width: rem(1200px);
   margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-1, .display-2, .display-3, .display-4 {
+  font-family: 'Megrim', cursive;
 }

@@ -211,57 +211,68 @@ namespace AMegMen {
     }
   };
 
-  const amm_document_out = (overflowHiddenClass: string, activeClass: string) => {
+  const amm_document_out = (overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     return () => {
       if (event && _StringTrim(active_amegmen.closestl0li || '').length > 0) {
         const closest = (event.target as HTMLElement).closest('#' + active_amegmen.closestl0li);
         if (!closest) {
-          amm_subnavclose(true, overflowHiddenClass, activeClass);
+          amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
         }
       }
     };
   };
 
-  const amm_subnav_out = (overflowHiddenClass: string, activeClass: string) => {
+  const amm_subnav_out = (overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     return () => {
       if (event) {
         const closest = (event.target as HTMLElement).closest(
           '#' + active_amegmen.closestl1li
         );
         if (!closest) {
-          amm_subnavclose(false, overflowHiddenClass, activeClass);
+          amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
         }
       }
     };
   };
 
-  const amm_subnavclose = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string) => {
+  const amm_subnavclose = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     for (let i = 0; i < AllAMegMenCores.length; i++) {
-      const mainElem = AllAMegMenCores[i].mainElem;
-      const l0nav = AllAMegMenCores[i].l0nav || [];
-      if (closeOnlyTopLevel) {
-        _RemoveClass(mainElem, overflowHiddenClass);
+      const rootElem = AllAMegMenCores[i].rootElem;
+      let shouldExecute = false;
+      if (eventtype === 'mouseover' && (AllAMegMenCores[i].settings || {}).shouldActOnHover === true) {
+        shouldExecute = true;
       }
-      for (let j = 0; j < l0nav.length; j++) {
+      if (eventtype === 'click') {
+        shouldExecute = true;
+      }
+      if (shouldExecute && _HasClass(rootElem, activeClass)) {
+        const mainElem = AllAMegMenCores[i].mainElem;
+        const l0nav = AllAMegMenCores[i].l0nav || [];
         if (closeOnlyTopLevel) {
-          _RemoveClass(l0nav[j].l0anchor, activeClass);
-          _RemoveClass(l0nav[j].l0panel, activeClass);
+          _RemoveClass(rootElem, activeClass);
+          _RemoveClass(mainElem, overflowHiddenClass);
         }
-        _RemoveClass(l0nav[j].navelement, overflowHiddenClass);
-        for (let k = 0; k < (l0nav[j].l1nav || []).length; k++) {
-          _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeClass);
-          _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeClass);
+        for (let j = 0; j < l0nav.length; j++) {
+          if (closeOnlyTopLevel) {
+            _RemoveClass(l0nav[j].l0anchor, activeClass);
+            _RemoveClass(l0nav[j].l0panel, activeClass);
+          }
+          _RemoveClass(l0nav[j].navelement, overflowHiddenClass);
+          for (let k = 0; k < (l0nav[j].l1nav || []).length; k++) {
+            _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeClass);
+            _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeClass);
+          }
         }
       }
     }
   };
 
-  const amm_gotoLevel = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string) => {
+  const amm_gotoLevel = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     return () => {
       if (event) {
         event.preventDefault();
       }
-      amm_subnavclose(closeOnlyTopLevel, overflowHiddenClass, activeClass);
+      amm_subnavclose(closeOnlyTopLevel, overflowHiddenClass, activeClass, eventtype);
     };
   };
 
@@ -337,7 +348,7 @@ namespace AMegMen {
     };
   };
 
-  const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, overflowHiddenClass: string, activeClass: string) => {
+  const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     return () => {
       if (event && l0panel) {
         event.preventDefault();
@@ -345,11 +356,12 @@ namespace AMegMen {
       if (_HasClass(l0anchor, activeClass)) {
         (active_amegmen as any).elem = null;
         (active_amegmen as any).closestl0li = '';
-        amm_subnavclose(true, overflowHiddenClass, activeClass);
+        amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
       } else {
-        amm_subnavclose(true, overflowHiddenClass, activeClass);
+        amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
         (active_amegmen as any).elem = parent;
         (active_amegmen as any).closestl0li = (l0anchor.closest('li') as HTMLElement).getAttribute('id');
+        _AddClass(parent, activeClass);
         _AddClass(l0anchor, activeClass);
         _AddClass(l0panel, activeClass);
         _AddClass(mainElem, overflowHiddenClass);
@@ -375,23 +387,17 @@ namespace AMegMen {
     };
   };
 
-  const amm_l1ClickFn = (
-    l1anchor: HTMLElement,
-    l1panel: HTMLElement,
-    l0navelement: HTMLElement,
-    overflowHiddenClass: string,
-    activeClass: string
-  ) => {
+  const amm_l1ClickFn = (l1anchor: HTMLElement, l1panel: HTMLElement, l0navelement: HTMLElement, overflowHiddenClass: string, activeClass: string, eventtype: string) => {
     return () => {
       if (event && l1panel) {
         event.preventDefault();
       }
       if (_HasClass(l1anchor, activeClass)) {
         (active_amegmen as any).closestl1li = '';
-        amm_subnavclose(false, overflowHiddenClass, activeClass);
+        amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
       } else {
         (active_amegmen as any).closestl1li = (l1anchor.closest('li') as HTMLElement).getAttribute('id');
-        amm_subnavclose(false, overflowHiddenClass, activeClass);
+        amm_subnavclose(false, overflowHiddenClass, activeClass, eventtype);
         _AddClass(l1anchor, activeClass);
         _AddClass(l1panel, activeClass);
         _AddClass(l0navelement, overflowHiddenClass);
@@ -454,11 +460,7 @@ namespace AMegMen {
     shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
   };
 
-  const amm_toggleevents = (
-    core: any,
-    settings: IAMegMenSettings,
-    shouldAddEevents: boolean
-  ) => {
+  const amm_toggleevents = (core: any, settings: IAMegMenSettings, shouldAddEevents: boolean) => {
     const togglenav = core.togglenav;
     const closenav = core.closenav;
     const offcanvas = core.offcanvas;
@@ -475,7 +477,7 @@ namespace AMegMen {
 
     if (settings.landingCtaClass) {
       const landingElements = _ArrayCall(
-        core.rootelem.querySelectorAll('.' + settings.landingCtaClass + ' > a')
+        core.rootElem.querySelectorAll('.' + settings.landingCtaClass + ' > a')
       );
 
       for (let i = 0; i < landingElements.length; i++) {
@@ -496,13 +498,13 @@ namespace AMegMen {
 
     if (tomain.length > 0) {
       for (let i = 0; i < tomain.length; i++) {
-        amm_eventScheduler(shouldAddEevents, tomain[i] as HTMLElement, 'click', amm_gotoLevel(true, overflowHiddenClass, activeClass));
+        amm_eventScheduler(shouldAddEevents, tomain[i] as HTMLElement, 'click', amm_gotoLevel(true, overflowHiddenClass, activeClass, 'click'));
       }
     }
 
     if (toprevious.length > 0) {
       for (let i = 0; i < toprevious.length; i++) {
-        amm_eventScheduler(shouldAddEevents, toprevious[i] as HTMLElement, 'click', amm_gotoLevel(false, overflowHiddenClass, activeClass));
+        amm_eventScheduler(shouldAddEevents, toprevious[i] as HTMLElement, 'click', amm_gotoLevel(false, overflowHiddenClass, activeClass, 'click'));
       }
     }
 
@@ -513,16 +515,16 @@ namespace AMegMen {
       const l0navelement = l0nav[i].navelement;
       const l1nav = l0nav[i].l1nav || [];
 
-      amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootelem, core.mainElem, overflowHiddenClass, activeClass));
+      amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenClass, activeClass, 'click'));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'mouseenter', amm_l0MouseenterFn(l0anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'mouseleave', amm_l0MouseleaveFn(l0anchor, hoverClass));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'focus', amm_l0FocusFn(l0anchor, focusClass));
       amm_eventScheduler(shouldAddEevents, l0anchor as HTMLElement, 'blur', amm_l0BlurFn(l0anchor, focusClass));
 
       if (l0panel) {
-        amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'click', amm_subnav_out(overflowHiddenClass, activeClass));
+        amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'click', amm_subnav_out(overflowHiddenClass, activeClass, 'click'));
         if (hoverprops.shouldActOnHover) {
-          amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass));
+          amm_eventScheduler(shouldAddEevents, l0panel as HTMLElement, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass, 'mouseover'));
         }
       }
 
@@ -531,7 +533,7 @@ namespace AMegMen {
         const l1panel = l1nav[j].l1panel;
         const l2nav = l1nav[j].l2nav || [];
 
-        amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass));
+        amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass, 'click'));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'mouseenter', amm_l1MouseenterFn(l1anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'mouseleave', amm_l1MouseleaveFn(l1anchor, hoverClass));
         amm_eventScheduler(shouldAddEevents, l1anchor as HTMLElement, 'focus', amm_l1FocusFn(l1anchor, focusClass));
@@ -548,24 +550,24 @@ namespace AMegMen {
       }
     }
 
-    amm_eventScheduler(shouldAddEevents, document as HTMLDocument, 'click', amm_document_out(overflowHiddenClass, activeClass));
+    amm_eventScheduler(shouldAddEevents, document as HTMLDocument, 'click', amm_document_out(overflowHiddenClass, activeClass, 'click'));
     if (hoverprops.shouldActOnHover) {
-      amm_eventScheduler(shouldAddEevents, window as Window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass));
+      amm_eventScheduler(shouldAddEevents, window as Window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass, 'mouseover'));
     }
   };
 
-  const amm_init = (core: any, rootelem: HTMLElement, settings: IAMegMenSettings) => {
-    core.rootelem = rootelem;
+  const amm_init = (core: any, rootElem: HTMLElement, settings: IAMegMenSettings) => {
+    core.rootElem = rootElem;
     core.settings = settings;
-    core.mainElem = core.rootelem.querySelector(`.${settings.mainElementClass}`);
-    core.togglenav = core.rootelem.querySelector(`.${settings.toggleButtonClass}`);
-    core.closenav = core.rootelem.querySelector(`.${settings.closeButtonClass}`);
-    core.offcanvas = core.rootelem.querySelector(`.${settings.offcanvasclass}`);
-    core.tomain = core.rootelem.querySelectorAll(`.${settings.mainButtonClass}`);
-    core.toprevious = core.rootelem.querySelectorAll(`.${settings.backButtonClass}`);
+    core.mainElem = core.rootElem.querySelector(`.${settings.mainElementClass}`);
+    core.togglenav = core.rootElem.querySelector(`.${settings.toggleButtonClass}`);
+    core.closenav = core.rootElem.querySelector(`.${settings.closeButtonClass}`);
+    core.offcanvas = core.rootElem.querySelector(`.${settings.offcanvasclass}`);
+    core.tomain = core.rootElem.querySelectorAll(`.${settings.mainButtonClass}`);
+    core.toprevious = core.rootElem.querySelectorAll(`.${settings.backButtonClass}`);
 
     if (core.settings.isRightToLeft) {
-      _AddClass(core.rootelem as HTMLElement, settings.rightToLeftClass ? settings.rightToLeftClass : '');
+      _AddClass(core.rootElem as HTMLElement, settings.rightToLeftClass ? settings.rightToLeftClass : '');
     }
 
     if (core.mainElem) {
@@ -668,10 +670,10 @@ namespace AMegMen {
   class Core {
     private core: any = {};
 
-    constructor(rootelem: HTMLElement, options?: IAMegMenSettings) {
+    constructor(rootElem: HTMLElement, options?: IAMegMenSettings) {
       this.core = amm_init(
         this.core,
-        rootelem,
+        rootElem,
         (Object as any).assign({}, _Defaults, options)
       );
       AllAMegMenCores.push(this.core);

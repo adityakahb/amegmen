@@ -31,6 +31,7 @@
   .__amegmen--canvas {
     @include amegmen-animation();
     background-color: $amegmen_nav_bg;
+    border: 1px solid $amegmen_nav_border;
     height: 100%;
     left: 0;
     overflow: hidden;
@@ -83,9 +84,11 @@
   }
 
   .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
-    display: block;
-    text-decoration: none;
     @include amegmen-animation();
+    border: 1px solid transparent;
+    display: block;
+    text-align: left;
+    text-decoration: none;
     &:link {
       color: $anchorLink;
     }
@@ -148,10 +151,12 @@
 
   .__amegmen--panel {
     @include amegmen-animation(); 
+    border: 1px solid $amegmen_nav_border;
     height: 100%;
     left: 0;
     opacity: 0;
     position: absolute;
+    text-align: left;
     top: 0;
     transform: translate(-100.5%, 0);
     visibility: hidden;
@@ -176,6 +181,7 @@
     z-index: 1050;
 
     .__amegmen--landing {
+      text-align: left;
       width: calc(100% - #{$amegmen_common_width});
     }
 
@@ -217,6 +223,7 @@
     display: flex;
     flex-direction: row;
     a {
+      border: 1px solid transparent;
       display: block;
       font-weight: bold;
       line-height: $amegmen_common_height;
