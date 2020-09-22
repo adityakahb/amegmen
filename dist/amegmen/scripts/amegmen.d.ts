@@ -20,7 +20,7 @@ declare namespace AMegMen {
         lastcolClass?: string;
         mainButtonClass?: string;
         mainElementClass?: string;
-        menuClass?: string;
+        rootClass?: string;
         offcanvasclass?: string;
         overflowHiddenClass?: string;
         panelClass?: string;
@@ -36,6 +36,7 @@ declare namespace AMegMen {
         constructor();
         static getInstance(): Root;
         init: (query: string, options?: IAMegMenSettings | undefined) => void;
+        destroy: (query: string) => void;
     }
     export {};
 }

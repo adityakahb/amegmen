@@ -8,7 +8,7 @@
  *
  */
 namespace AMegMen {
-  let AllAMegMenCores: any[] = [];
+  let AllAMegMenInstances: any = {};
   let active_amegmen: any = {};
 
   interface IRoot {
@@ -35,7 +35,7 @@ namespace AMegMen {
     lastcolClass?: string;
     mainButtonClass?: string;
     mainElementClass?: string;
-    menuClass?: string;
+    rootClass?: string;
     offcanvasclass?: string;
     overflowHiddenClass?: string;
     panelClass?: string;
@@ -67,7 +67,7 @@ namespace AMegMen {
     lastcolClass: '__amegmen--col-last',
     mainButtonClass: '__amegmen--main-cta',
     mainElementClass: '__amegmen--main',
-    menuClass: '__amegmen',
+    rootClass: '__amegmen',
     offcanvasclass: '__amegmen--canvas',
     overflowHiddenClass: '__amegmen--nooverflow',
     panelClass: '__amegmen--panel',
@@ -202,12 +202,17 @@ namespace AMegMen {
     }
   };
 
-  const _AddUniqueId = (element: HTMLElement, settings: IAMegMenSettings, uuid: number) => {
-    if (!element.getAttribute('id')) {
-      element.setAttribute(
-        'id',
-        settings.idPrefix + '_' + new Date().getTime() + '_' + uuid
-      );
+  const _ToggleUniqueId = (element: HTMLElement, settings: IAMegMenSettings, uuid: number, shouldAddId: boolean) => {
+    if (settings.idPrefix) {
+      if (shouldAddId && !element.getAttribute('id')) {
+        element.setAttribute('id', settings.idPrefix + '_' + new Date().getTime() + '_' + uuid);
+      } else if (!shouldAddId && element.getAttribute('id')) {
+        const thisid = element.getAttribute('id');
+        const regex = new RegExp(settings.idPrefix, 'gi')
+        if (regex.test(thisid || '')) {
+          element.removeAttribute('id');
+        }
+      }
     }
   };
 
@@ -236,18 +241,19 @@ namespace AMegMen {
   };
 
   const amm_subnavclose = (closeOnlyTopLevel: boolean, overflowHiddenClass: string, activeClass: string, eventtype: string) => {
-    for (let i = 0; i < AllAMegMenCores.length; i++) {
-      const rootElem = AllAMegMenCores[i].rootElem;
+    for (let i in AllAMegMenInstances) {
+      const thiscore = AllAMegMenInstances[i];
+      const rootElem = thiscore.rootElem;
       let shouldExecute = false;
-      if (eventtype === 'mouseover' && (AllAMegMenCores[i].settings || {}).shouldActOnHover === true) {
+      if (eventtype === 'mouseover' && (AllAMegMenInstances[i].settings || {}).shouldActOnHover === true) {
         shouldExecute = true;
       }
       if (eventtype === 'click') {
         shouldExecute = true;
       }
       if (shouldExecute && _HasClass(rootElem, activeClass)) {
-        const mainElem = AllAMegMenCores[i].mainElem;
-        const l0nav = AllAMegMenCores[i].l0nav || [];
+        const mainElem = AllAMegMenInstances[i].mainElem;
+        const l0nav = AllAMegMenInstances[i].l0nav || [];
         if (closeOnlyTopLevel) {
           _RemoveClass(rootElem, activeClass);
           _RemoveClass(mainElem, overflowHiddenClass);
@@ -461,6 +467,7 @@ namespace AMegMen {
   };
 
   const amm_toggleevents = (core: any, settings: IAMegMenSettings, shouldAddEevents: boolean) => {
+    
     const togglenav = core.togglenav;
     const closenav = core.closenav;
     const offcanvas = core.offcanvas;
@@ -476,9 +483,7 @@ namespace AMegMen {
     };
 
     if (settings.landingCtaClass) {
-      const landingElements = _ArrayCall(
-        core.rootElem.querySelectorAll('.' + settings.landingCtaClass + ' > a')
-      );
+      const landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaClass + ' > a'));
 
       for (let i = 0; i < landingElements.length; i++) {
         amm_eventScheduler(shouldAddEevents, landingElements[i] as HTMLElement, 'mouseenter', amm_landingMouseenterFn(landingElements[i], hoverClass));
@@ -556,7 +561,12 @@ namespace AMegMen {
     }
   };
 
-  const amm_init = (core: any, rootElem: HTMLElement, settings: IAMegMenSettings) => {
+  const amm_init = (core: any, rootElem: HTMLElement, settings: IAMegMenSettings, shouldInit: boolean) => {
+
+    shouldInit
+      ? _AddClass(rootElem, settings.rootClass ? settings.rootClass : '')
+      : _RemoveClass(rootElem, settings.rootClass ? settings.rootClass : '');
+
     core.rootElem = rootElem;
     core.settings = settings;
     core.mainElem = core.rootElem.querySelector(`.${settings.mainElementClass}`);
@@ -567,22 +577,28 @@ namespace AMegMen {
     core.toprevious = core.rootElem.querySelectorAll(`.${settings.backButtonClass}`);
 
     if (core.settings.isRightToLeft) {
-      _AddClass(core.rootElem as HTMLElement, settings.rightToLeftClass ? settings.rightToLeftClass : '');
+      shouldInit
+        ? _AddClass(core.rootElem as HTMLElement, settings.rightToLeftClass ? settings.rightToLeftClass : '')
+        : _RemoveClass(core.rootElem as HTMLElement, settings.rightToLeftClass ? settings.rightToLeftClass : '');
     }
 
     if (core.mainElem) {
       core.l0nav = [];
       const l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
       for (let i = 0; i < l0li.length; i++) {
-        _AddUniqueId(l0li[i], settings, i);
+        _ToggleUniqueId(l0li[i], settings, i, shouldInit);
         let nav0obj: any = {};
         nav0obj.l0li = l0li[i];
         nav0obj.l0anchor = l0li[i].querySelector(':scope > a');
-        _AddClass(nav0obj.l0anchor,settings.l0AnchorClass ? settings.l0AnchorClass : '');
+        shouldInit
+          ? _AddClass(nav0obj.l0anchor,settings.l0AnchorClass ? settings.l0AnchorClass : '')
+          : _RemoveClass(nav0obj.l0anchor,settings.l0AnchorClass ? settings.l0AnchorClass : '');
         const l0panel = l0li[i].querySelector(`:scope > .${settings.panelClass}`);
 
         if (l0panel) {
-          _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
+          shouldInit
+            ? _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '')
+            : _RemoveClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
           nav0obj.l0panel = l0panel;
           nav0obj.l0tomain = l0panel.querySelector(`.${settings.mainButtonClass}`);
           const l1navelement = l0panel.querySelector(':scope > nav');
@@ -599,21 +615,29 @@ namespace AMegMen {
               const colnum = parseInt((settings.supportedCols || 0) + '');
 
               for (let j = 0; j < l1cols.length; j++) {
-                _AddClass(l1cols[j], `${settings.colClass}-${colnum > 0 ? colnum : 2}`);
+                shouldInit
+                  ? _AddClass(l1cols[j], `${settings.colClass}-${colnum > 0 ? colnum : 2}`)
+                  : _RemoveClass(l1cols[j], `${settings.colClass}-${colnum > 0 ? colnum : 2}`);
                 if (j === colnum - 1 && j > 1) {
-                  _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
+                  shouldInit
+                    ? _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '')
+                    : _RemoveClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
                 }
               }
               for (let j = 0; j < l1li.length; j++) {
-                _AddUniqueId(l1li[j], settings, j);
+                _ToggleUniqueId(l1li[j], settings, j, shouldInit);
                 let nav1obj: any = {};
                 nav1obj.l1li = l1li[j];
                 nav1obj.l1anchor = l1li[j].querySelector(':scope > a');
-                _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
+                shouldInit
+                  ? _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '')
+                  : _RemoveClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
                 const l1panel = l1li[j].querySelector(`:scope > .${settings.panelClass}`);
 
                 if (l1panel) {
-                  _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
+                  shouldInit
+                    ? _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '')
+                    : _RemoveClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
                   nav1obj.l1panel = l1panel;
                   nav1obj.l1toback = l1panel.querySelector(`.${settings.backButtonClass}`);
                   const l2navelement = l1panel.querySelector(':scope > nav');
@@ -624,19 +648,27 @@ namespace AMegMen {
 
                     if (l2cols.length) {
                       if (settings.shiftColumns) {
-                        _AddClass(l1navelement, `${settings.colShiftClass ? settings.colShiftClass : ''}-${shiftnum}`);
+                        shouldInit
+                          ? _AddClass(l1navelement, `${settings.colShiftClass ? settings.colShiftClass : ''}-${shiftnum}`)
+                          : _RemoveClass(l1navelement, `${settings.colShiftClass ? settings.colShiftClass : ''}-${shiftnum}`);
                       }
-                      _AddClass(l1panel, `${settings.colWidthClass ? settings.colWidthClass : ''}-${shiftnum}`);
+                      shouldInit
+                        ? _AddClass(l1panel, `${settings.colWidthClass ? settings.colWidthClass : ''}-${shiftnum}`)
+                        : _RemoveClass(l1panel, `${settings.colWidthClass ? settings.colWidthClass : ''}-${shiftnum}`);
                       const l2a = _ArrayCall(
                         l2navelement.querySelectorAll(`:scope > .${settings.colClass} > ul > li > a`)
                       );
 
                       for (let k = 0; k < l2a.length; k++) {
-                        _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
+                        shouldInit
+                          ? _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '')
+                          : _RemoveClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
                       }
                       for (let k = 0; k < l2cols.length; k++) {
                         // _AddClass(l2cols[k], `__amegmen--col-${l2cols.length}`);
-                        _AddClass(l2cols[k], `${settings.colClass ? settings.colClass : ''}-1`);
+                        shouldInit
+                          ? _AddClass(l2cols[k], `${settings.colClass ? settings.colClass : ''}-1`)
+                          : _RemoveClass(l2cols[k], `${settings.colClass ? settings.colClass : ''}-1`);
                       }
 
                       nav1obj.l2nav = l2a;
@@ -653,7 +685,7 @@ namespace AMegMen {
         core.l0nav.push(nav0obj);
       }
     }
-    amm_toggleevents(core, settings, true);
+    amm_toggleevents(core, settings, shouldInit);
     return core;
   };
 
@@ -670,14 +702,16 @@ namespace AMegMen {
   class Core {
     private core: any = {};
 
-    constructor(rootElem: HTMLElement, options?: IAMegMenSettings) {
-      this.core = amm_init(
-        this.core,
-        rootElem,
-        (Object as any).assign({}, _Defaults, options)
-      );
-      AllAMegMenCores.push(this.core);
+    constructor(thisid: string, rootElem: HTMLElement, options?: IAMegMenSettings) {
+      const shouldInitialize = true;
+      this.core = amm_init(this.core, rootElem, (Object as any).assign({}, _Defaults, options), shouldInitialize);
+      AllAMegMenInstances[thisid] = this.core;
     }
+    public destroy = (thisid: string) => {
+      const shouldInitialize = false;
+      this.core = amm_init(this.core, this.core.rootElem, this.core.settings, shouldInitialize);
+      delete AllAMegMenInstances[thisid];
+    };
   }
 
   /***
@@ -726,16 +760,29 @@ namespace AMegMen {
 
           if (!iselempresent) {
             if (id) {
-              this.instances[id] = new Core((roots[i] as HTMLElement), options);
+              this.instances[id] = new Core(id, (roots[i] as HTMLElement), options);
             } else {
               const thisid = id ? id : (Object as any).assign({}, _Defaults, options).idPrefix + '_' + new Date().getTime() + '_root_' + (i+1);
               (roots[i] as HTMLElement).setAttribute('id', thisid);
-              this.instances[thisid] = new Core((roots[i] as HTMLElement), options);
+              this.instances[thisid] = new Core(thisid, (roots[i] as HTMLElement), options);
             }
           }
         }
       } else {
-        throw new Error('Element(s) with the provided query do(es) not exist');
+        console.error('Element(s) with the provided query do(es) not exist');
+      }
+    };
+
+    public destroy = (query: string) => {
+      const roots = _ArrayCall(document.querySelectorAll(query));
+      if (roots.length > 0) {
+        for (let i = 0; i < roots.length; i++) {
+          const id = (roots[i] as HTMLElement).getAttribute('id');
+          if (id && this.instances[id]) {
+            this.instances[id].destroy(id);
+            delete this.instances[id];
+          }
+        }
       }
     };
   }

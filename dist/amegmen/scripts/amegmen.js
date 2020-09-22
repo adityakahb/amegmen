@@ -1,7 +1,7 @@
 "use strict";
 var AMegMen;
 (function (AMegMen) {
-    var AllAMegMenCores = [];
+    var AllAMegMenInstances = {};
     var active_amegmen = {};
     var _Defaults = {
         activeClass: 'active',
@@ -24,7 +24,7 @@ var AMegMen;
         lastcolClass: '__amegmen--col-last',
         mainButtonClass: '__amegmen--main-cta',
         mainElementClass: '__amegmen--main',
-        menuClass: '__amegmen',
+        rootClass: '__amegmen',
         offcanvasclass: '__amegmen--canvas',
         overflowHiddenClass: '__amegmen--nooverflow',
         panelClass: '__amegmen--panel',
@@ -150,9 +150,18 @@ var AMegMen;
             element.className = _StringTrim(curclass.join(' '));
         }
     };
-    var _AddUniqueId = function (element, settings, uuid) {
-        if (!element.getAttribute('id')) {
-            element.setAttribute('id', settings.idPrefix + '_' + new Date().getTime() + '_' + uuid);
+    var _ToggleUniqueId = function (element, settings, uuid, shouldAddId) {
+        if (settings.idPrefix) {
+            if (shouldAddId && !element.getAttribute('id')) {
+                element.setAttribute('id', settings.idPrefix + '_' + new Date().getTime() + '_' + uuid);
+            }
+            else if (!shouldAddId && element.getAttribute('id')) {
+                var thisid = element.getAttribute('id');
+                var regex = new RegExp(settings.idPrefix, 'gi');
+                if (regex.test(thisid || '')) {
+                    element.removeAttribute('id');
+                }
+            }
         }
     };
     var amm_document_out = function (overflowHiddenClass, activeClass, eventtype) {
@@ -176,18 +185,19 @@ var AMegMen;
         };
     };
     var amm_subnavclose = function (closeOnlyTopLevel, overflowHiddenClass, activeClass, eventtype) {
-        for (var i = 0; i < AllAMegMenCores.length; i++) {
-            var rootElem = AllAMegMenCores[i].rootElem;
+        for (var i in AllAMegMenInstances) {
+            var thiscore = AllAMegMenInstances[i];
+            var rootElem = thiscore.rootElem;
             var shouldExecute = false;
-            if (eventtype === 'mouseover' && (AllAMegMenCores[i].settings || {}).shouldActOnHover === true) {
+            if (eventtype === 'mouseover' && (AllAMegMenInstances[i].settings || {}).shouldActOnHover === true) {
                 shouldExecute = true;
             }
             if (eventtype === 'click') {
                 shouldExecute = true;
             }
             if (shouldExecute && _HasClass(rootElem, activeClass)) {
-                var mainElem = AllAMegMenCores[i].mainElem;
-                var l0nav = AllAMegMenCores[i].l0nav || [];
+                var mainElem = AllAMegMenInstances[i].mainElem;
+                var l0nav = AllAMegMenInstances[i].l0nav || [];
                 if (closeOnlyTopLevel) {
                     _RemoveClass(rootElem, activeClass);
                     _RemoveClass(mainElem, overflowHiddenClass);
@@ -278,11 +288,13 @@ var AMegMen;
         return function () {
             if (event && l0panel) {
                 event.preventDefault();
+                console.log('====1');
             }
             if (_HasClass(l0anchor, activeClass)) {
                 active_amegmen.elem = null;
                 active_amegmen.closestl0li = '';
                 amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
+                console.log('====2');
             }
             else {
                 amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
@@ -292,6 +304,7 @@ var AMegMen;
                 _AddClass(l0anchor, activeClass);
                 _AddClass(l0panel, activeClass);
                 _AddClass(mainElem, overflowHiddenClass);
+                console.log('====3');
             }
         };
     };
@@ -451,7 +464,10 @@ var AMegMen;
             amm_eventScheduler(shouldAddEevents, window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass, 'mouseover'));
         }
     };
-    var amm_init = function (core, rootElem, settings) {
+    var amm_init = function (core, rootElem, settings, shouldInit) {
+        shouldInit
+            ? _AddClass(rootElem, settings.rootClass ? settings.rootClass : '')
+            : _RemoveClass(rootElem, settings.rootClass ? settings.rootClass : '');
         core.rootElem = rootElem;
         core.settings = settings;
         core.mainElem = core.rootElem.querySelector("." + settings.mainElementClass);
@@ -461,20 +477,26 @@ var AMegMen;
         core.tomain = core.rootElem.querySelectorAll("." + settings.mainButtonClass);
         core.toprevious = core.rootElem.querySelectorAll("." + settings.backButtonClass);
         if (core.settings.isRightToLeft) {
-            _AddClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
+            shouldInit
+                ? _AddClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '')
+                : _RemoveClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
         }
         if (core.mainElem) {
             core.l0nav = [];
             var l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
             for (var i = 0; i < l0li.length; i++) {
-                _AddUniqueId(l0li[i], settings, i);
+                _ToggleUniqueId(l0li[i], settings, i, shouldInit);
                 var nav0obj = {};
                 nav0obj.l0li = l0li[i];
                 nav0obj.l0anchor = l0li[i].querySelector(':scope > a');
-                _AddClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '');
+                shouldInit
+                    ? _AddClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '')
+                    : _RemoveClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '');
                 var l0panel = l0li[i].querySelector(":scope > ." + settings.panelClass);
                 if (l0panel) {
-                    _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
+                    shouldInit
+                        ? _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '')
+                        : _RemoveClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
                     nav0obj.l0panel = l0panel;
                     nav0obj.l0tomain = l0panel.querySelector("." + settings.mainButtonClass);
                     var l1navelement = l0panel.querySelector(':scope > nav');
@@ -488,20 +510,28 @@ var AMegMen;
                             var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colClass + " > ul > li"));
                             var colnum = parseInt((settings.supportedCols || 0) + '');
                             for (var j = 0; j < l1cols.length; j++) {
-                                _AddClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2));
+                                shouldInit
+                                    ? _AddClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2))
+                                    : _RemoveClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2));
                                 if (j === colnum - 1 && j > 1) {
-                                    _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
+                                    shouldInit
+                                        ? _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '')
+                                        : _RemoveClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
                                 }
                             }
                             for (var j = 0; j < l1li.length; j++) {
-                                _AddUniqueId(l1li[j], settings, j);
+                                _ToggleUniqueId(l1li[j], settings, j, shouldInit);
                                 var nav1obj = {};
                                 nav1obj.l1li = l1li[j];
                                 nav1obj.l1anchor = l1li[j].querySelector(':scope > a');
-                                _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
+                                shouldInit
+                                    ? _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '')
+                                    : _RemoveClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
                                 var l1panel = l1li[j].querySelector(":scope > ." + settings.panelClass);
                                 if (l1panel) {
-                                    _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
+                                    shouldInit
+                                        ? _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '')
+                                        : _RemoveClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
                                     nav1obj.l1panel = l1panel;
                                     nav1obj.l1toback = l1panel.querySelector("." + settings.backButtonClass);
                                     var l2navelement = l1panel.querySelector(':scope > nav');
@@ -510,15 +540,23 @@ var AMegMen;
                                         var l2cols = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colClass));
                                         if (l2cols.length) {
                                             if (settings.shiftColumns) {
-                                                _AddClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum);
+                                                shouldInit
+                                                    ? _AddClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum)
+                                                    : _RemoveClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum);
                                             }
-                                            _AddClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum);
+                                            shouldInit
+                                                ? _AddClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum)
+                                                : _RemoveClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum);
                                             var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colClass + " > ul > li > a"));
                                             for (var k = 0; k < l2a.length; k++) {
-                                                _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
+                                                shouldInit
+                                                    ? _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '')
+                                                    : _RemoveClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
                                             }
                                             for (var k = 0; k < l2cols.length; k++) {
-                                                _AddClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1");
+                                                shouldInit
+                                                    ? _AddClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1")
+                                                    : _RemoveClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1");
                                             }
                                             nav1obj.l2nav = l2a;
                                         }
@@ -532,14 +570,21 @@ var AMegMen;
                 core.l0nav.push(nav0obj);
             }
         }
-        amm_toggleevents(core, settings, true);
+        amm_toggleevents(core, settings, shouldInit);
         return core;
     };
     var Core = (function () {
-        function Core(rootElem, options) {
+        function Core(thisid, rootElem, options) {
+            var _this = this;
             this.core = {};
-            this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options));
-            AllAMegMenCores.push(this.core);
+            this.destroy = function (thisid) {
+                var shouldInitialize = false;
+                _this.core = amm_init(_this.core, _this.core.rootElem, _this.core.settings, shouldInitialize);
+                delete AllAMegMenInstances[thisid];
+            };
+            var shouldInitialize = true;
+            this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options), shouldInitialize);
+            AllAMegMenInstances[thisid] = this.core;
         }
         return Core;
     }());
@@ -563,18 +608,30 @@ var AMegMen;
                         }
                         if (!iselempresent) {
                             if (id) {
-                                _this.instances[id] = new Core(roots[i], options);
+                                _this.instances[id] = new Core(id, roots[i], options);
                             }
                             else {
                                 var thisid = id ? id : Object.assign({}, _Defaults, options).idPrefix + '_' + new Date().getTime() + '_root_' + (i + 1);
                                 roots[i].setAttribute('id', thisid);
-                                _this.instances[thisid] = new Core(roots[i], options);
+                                _this.instances[thisid] = new Core(thisid, roots[i], options);
                             }
                         }
                     }
                 }
                 else {
-                    throw new Error('Element(s) with the provided query do(es) not exist');
+                    console.error('Element(s) with the provided query do(es) not exist');
+                }
+            };
+            this.destroy = function (query) {
+                var roots = _ArrayCall(document.querySelectorAll(query));
+                if (roots.length > 0) {
+                    for (var i = 0; i < roots.length; i++) {
+                        var id = roots[i].getAttribute('id');
+                        if (id && _this.instances[id]) {
+                            _this.instances[id].destroy(id);
+                            delete _this.instances[id];
+                        }
+                    }
                 }
             };
             _EnableQSQSAScope();
