@@ -3,6 +3,8 @@
 
 .__amegmen .__amegmen--toggle-cta, .__amegmen .__amegmen--close-cta, .__amegmen .__amegmen--main-cta, .__amegmen .__amegmen--back-cta {
   border-radius: 100%;
+  border: 1px solid #444;
+  color: #000;
   display: inline-block;
   height: 60px;
   margin: 0;
@@ -11,20 +13,16 @@
   width: 60px; }
 
 .__amegmen .__amegmen--toggle-cta {
-  background-color: #eee;
-  border: 1px solid #eee; }
+  background-color: #eee; }
 
 .__amegmen .__amegmen--close-cta {
-  background-color: #eee;
-  border: 1px solid #eee; }
+  background-color: #eee; }
 
 .__amegmen .__amegmen--main-cta {
-  background-color: #dbdbdb;
-  border: 1px solid #dbdbdb; }
+  background-color: #dbdbdb; }
 
 .__amegmen .__amegmen--back-cta {
-  background-color: #c8c8c8;
-  border: 1px solid #c8c8c8; }
+  background-color: #c8c8c8; }
 
 .__amegmen .__amegmen--canvas {
   transition: all 250ms ease;

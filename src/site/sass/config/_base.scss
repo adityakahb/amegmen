@@ -6,6 +6,11 @@ body {
   backface-visibility: hidden;
   // letter-spacing: rem(0.4px);
   color: $gray-900;
+  .material-icons {
+    font-size: inherit !important;
+    vertical-align: top !important;
+    line-height: inherit !important;
+  }
 }
 .max-wrap {
   max-width: rem(1200px);

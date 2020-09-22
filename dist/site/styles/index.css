@@ -8328,6 +8328,10 @@ body {
   background-color: #e9ecef;
   backface-visibility: hidden;
   color: #212529; }
+  body .material-icons {
+    font-size: inherit !important;
+    vertical-align: top !important;
+    line-height: inherit !important; }
 
 .max-wrap {
   max-width: 75rem;

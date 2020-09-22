@@ -4,11 +4,11 @@
   "description": "",
   "private": true,
   "scripts": {
-    "generatedata": "node ./scripts/generatedata.js",
-    "compile:sass": "node-sass --source-map true src/amegmen/sass/ -o dist/amegmen/styles",
+    "generatedata": "node ./scripts/generatedata.js && node ./scripts/generatedata-2.js",
+    "compile:sass": "node-sass --source-map true src/amegmen/sass/ -o dist/amegmen/styles && node-sass --source-map true src/amegmen-2/sass/ -o dist/amegmen-2/styles",
     "compile:ts": "tsc",
     "uglify:js": "uglifyjs dist/amegmen/scripts/amegmen.js -o dist/amegmen/scripts/amegmen.min.js -c -m",
-    "uglify:css": "uglifycss dist/amegmen/styles/amegmen.css --output dist/amegmen/styles/amegmen.min.css",
+    "uglify:css": "uglifycss dist/amegmen/styles/amegmen.css --output dist/amegmen/styles/amegmen.min.css && uglifycss dist/amegmen-2/styles/amegmen.css --output dist/amegmen-2/styles/amegmen.min.css",
     "build:dev": "npm run compile:ts && npm run compile:sass",
     "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css",
     "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css"

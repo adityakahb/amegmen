@@ -3,6 +3,10 @@ var AMegMen;
 (function (AMegMen) {
     var AllAMegMenInstances = {};
     var active_amegmen = {};
+    var _EventList = ['amm_landingMouseenterFn', 'amm_landingMouseleaveFn', 'amm_landingFocusFn', 'amm_landingBlurFn', 'amm_toggleMainClickFn', 'amm_closeMainClickFn',
+        'amm_gotoLevelClickFn', 'amm_l0ClickFn', 'amm_l0MouseenterFn', 'amm_l0MouseleaveFn', 'amm_l0FocusFn', 'amm_l0BlurFn', 'amm_panelMouseoverFn', 'amm_panelClickFn',
+        'amm_l1ClickFn', 'amm_l1MouseenterFn', 'amm_l1MouseleaveFn', 'amm_l1FocusFn', 'amm_l1BlurFn', 'amm_l2MouseenterFn', 'amm_l2MouseleaveFn', 'amm_l2FocusFn',
+        'amm_l2BlurFn', 'amm_docMouseoverFn', 'amm_docClickFn'];
     var _Defaults = {
         activeClass: 'active',
         actOnHoverAt: 1280,
@@ -288,13 +292,11 @@ var AMegMen;
         return function () {
             if (event && l0panel) {
                 event.preventDefault();
-                console.log('====1');
             }
             if (_HasClass(l0anchor, activeClass)) {
                 active_amegmen.elem = null;
                 active_amegmen.closestl0li = '';
                 amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
-                console.log('====2');
             }
             else {
                 amm_subnavclose(true, overflowHiddenClass, activeClass, eventtype);
@@ -304,7 +306,6 @@ var AMegMen;
                 _AddClass(l0anchor, activeClass);
                 _AddClass(l0panel, activeClass);
                 _AddClass(mainElem, overflowHiddenClass);
-                console.log('====3');
             }
         };
     };
@@ -385,7 +386,7 @@ var AMegMen;
     var amm_eventScheduler = function (shouldAdd, element, eventtype, fn) {
         shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
     };
-    var amm_toggleevents = function (core, settings, shouldAddEevents) {
+    var amm_toggleevents = function (core, settings) {
         var togglenav = core.togglenav;
         var closenav = core.closenav;
         var offcanvas = core.offcanvas;
@@ -402,26 +403,50 @@ var AMegMen;
         if (settings.landingCtaClass) {
             var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaClass + ' > a'));
             for (var i = 0; i < landingElements.length; i++) {
-                amm_eventScheduler(shouldAddEevents, landingElements[i], 'mouseenter', amm_landingMouseenterFn(landingElements[i], hoverClass));
-                amm_eventScheduler(shouldAddEevents, landingElements[i], 'mouseleave', amm_landingMouseleaveFn(landingElements[i], hoverClass));
-                amm_eventScheduler(shouldAddEevents, landingElements[i], 'focus', amm_landingFocusFn(landingElements[i], focusClass));
-                amm_eventScheduler(shouldAddEevents, landingElements[i], 'blur', amm_landingBlurFn(landingElements[i], focusClass));
+                if (!landingElements[i].amm_landingMouseenterFn) {
+                    landingElements[i].amm_landingMouseenterFn = amm_landingMouseenterFn(landingElements[i], hoverClass);
+                }
+                if (!landingElements[i].amm_landingMouseleaveFn) {
+                    landingElements[i].amm_landingMouseleaveFn = amm_landingMouseleaveFn(landingElements[i], hoverClass);
+                }
+                if (!landingElements[i].amm_landingFocusFn) {
+                    landingElements[i].amm_landingFocusFn = amm_landingFocusFn(landingElements[i], focusClass);
+                }
+                if (!landingElements[i].amm_landingBlurFn) {
+                    landingElements[i].amm_landingBlurFn = amm_landingBlurFn(landingElements[i], focusClass);
+                }
+                amm_eventScheduler(true, landingElements[i], 'mouseenter', landingElements[i].amm_landingMouseenterFn);
+                amm_eventScheduler(true, landingElements[i], 'mouseleave', landingElements[i].amm_landingMouseleaveFn);
+                amm_eventScheduler(true, landingElements[i], 'focus', landingElements[i].amm_landingFocusFn);
+                amm_eventScheduler(true, landingElements[i], 'blur', landingElements[i].amm_landingBlurFn);
             }
         }
         if (togglenav && offcanvas) {
-            amm_eventScheduler(shouldAddEevents, togglenav, 'click', amm_toggleMain(togglenav, offcanvas, activeClass));
+            if (!togglenav.amm_toggleMainClickFn) {
+                togglenav.amm_toggleMainClickFn = amm_toggleMain(togglenav, offcanvas, activeClass);
+            }
+            amm_eventScheduler(true, togglenav, 'click', togglenav.amm_toggleMainClickFn);
         }
         if (closenav && offcanvas) {
-            amm_eventScheduler(shouldAddEevents, closenav, 'click', amm_closeMain(togglenav, offcanvas, activeClass));
+            if (!closenav.amm_closeMainClickFn) {
+                closenav.amm_closeMainClickFn = amm_closeMain(togglenav, offcanvas, activeClass);
+            }
+            amm_eventScheduler(true, closenav, 'click', closenav.amm_closeMainClickFn);
         }
         if (tomain.length > 0) {
             for (var i = 0; i < tomain.length; i++) {
-                amm_eventScheduler(shouldAddEevents, tomain[i], 'click', amm_gotoLevel(true, overflowHiddenClass, activeClass, 'click'));
+                if (!tomain[i].amm_gotoLevelClickFn) {
+                    tomain[i].amm_gotoLevelClickFn = amm_gotoLevel(true, overflowHiddenClass, activeClass, 'click');
+                }
+                amm_eventScheduler(true, tomain[i], 'click', tomain[i].amm_gotoLevelClickFn);
             }
         }
         if (toprevious.length > 0) {
             for (var i = 0; i < toprevious.length; i++) {
-                amm_eventScheduler(shouldAddEevents, toprevious[i], 'click', amm_gotoLevel(false, overflowHiddenClass, activeClass, 'click'));
+                if (!toprevious[i].amm_gotoLevelClickFn) {
+                    toprevious[i].amm_gotoLevelClickFn = amm_gotoLevel(false, overflowHiddenClass, activeClass, 'click');
+                }
+                amm_eventScheduler(true, toprevious[i], 'click', toprevious[i].amm_gotoLevelClickFn);
             }
         }
         var l0nav = core.l0nav || [];
@@ -430,44 +455,96 @@ var AMegMen;
             var l0panel = l0nav[i].l0panel;
             var l0navelement = l0nav[i].navelement;
             var l1nav = l0nav[i].l1nav || [];
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'click', amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenClass, activeClass, 'click'));
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'mouseenter', amm_l0MouseenterFn(l0anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'mouseleave', amm_l0MouseleaveFn(l0anchor, hoverClass));
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'focus', amm_l0FocusFn(l0anchor, focusClass));
-            amm_eventScheduler(shouldAddEevents, l0anchor, 'blur', amm_l0BlurFn(l0anchor, focusClass));
+            if (!l0anchor.amm_l0ClickFn) {
+                l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenClass, activeClass, 'click');
+            }
+            if (!l0anchor.amm_l0MouseenterFn) {
+                l0anchor.amm_l0MouseenterFn = amm_l0MouseenterFn(l0anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt);
+            }
+            if (!l0anchor.amm_l0MouseleaveFn) {
+                l0anchor.amm_l0MouseleaveFn = amm_l0MouseleaveFn(l0anchor, hoverClass);
+            }
+            if (!l0anchor.amm_l0FocusFn) {
+                l0anchor.amm_l0FocusFn = amm_l0FocusFn(l0anchor, focusClass);
+            }
+            if (!l0anchor.amm_l0BlurFn) {
+                l0anchor.amm_l0BlurFn = amm_l0BlurFn(l0anchor, focusClass);
+            }
+            amm_eventScheduler(true, l0anchor, 'click', l0anchor.amm_l0ClickFn);
+            amm_eventScheduler(true, l0anchor, 'mouseenter', l0anchor.amm_l0MouseenterFn);
+            amm_eventScheduler(true, l0anchor, 'mouseleave', l0anchor.amm_l0MouseleaveFn);
+            amm_eventScheduler(true, l0anchor, 'focus', l0anchor.amm_l0FocusFn);
+            amm_eventScheduler(true, l0anchor, 'blur', l0anchor.amm_l0BlurFn);
             if (l0panel) {
-                amm_eventScheduler(shouldAddEevents, l0panel, 'click', amm_subnav_out(overflowHiddenClass, activeClass, 'click'));
+                if (!l0panel.amm_panelClickFn) {
+                    l0panel.amm_panelClickFn = amm_subnav_out(overflowHiddenClass, activeClass, 'click');
+                }
+                amm_eventScheduler(true, l0panel, 'click', l0panel.amm_panelClickFn);
                 if (hoverprops.shouldActOnHover) {
-                    amm_eventScheduler(shouldAddEevents, l0panel, 'mouseover', amm_subnav_out(overflowHiddenClass, activeClass, 'mouseover'));
+                    if (!l0panel.amm_panelMouseoverFn) {
+                        l0panel.amm_panelMouseoverFn = amm_subnav_out(overflowHiddenClass, activeClass, 'mouseover');
+                    }
+                    amm_eventScheduler(true, l0panel, 'mouseover', l0panel.amm_panelMouseoverFn);
                 }
             }
             for (var j = 0; j < l1nav.length; j++) {
                 var l1anchor = l1nav[j].l1anchor;
                 var l1panel = l1nav[j].l1panel;
                 var l2nav = l1nav[j].l2nav || [];
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'click', amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass, 'click'));
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'mouseenter', amm_l1MouseenterFn(l1anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt));
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'mouseleave', amm_l1MouseleaveFn(l1anchor, hoverClass));
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'focus', amm_l1FocusFn(l1anchor, focusClass));
-                amm_eventScheduler(shouldAddEevents, l1anchor, 'blur', amm_l1BlurFn(l1anchor, focusClass));
+                if (!l1anchor.amm_l1ClickFn) {
+                    l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenClass, activeClass, 'click');
+                }
+                if (!l1anchor.amm_l1MouseenterFn) {
+                    l1anchor.amm_l1MouseenterFn = amm_l1MouseenterFn(l1anchor, hoverClass, hoverprops.shouldActOnHover, hoverprops.actOnHoverAt);
+                }
+                if (!l1anchor.amm_l1MouseleaveFn) {
+                    l1anchor.amm_l1MouseleaveFn = amm_l1MouseleaveFn(l1anchor, hoverClass);
+                }
+                if (!l1anchor.amm_l1FocusFn) {
+                    l1anchor.amm_l1FocusFn = amm_l1FocusFn(l1anchor, focusClass);
+                }
+                if (!l1anchor.amm_l1BlurFn) {
+                    l1anchor.amm_l1BlurFn = amm_l1BlurFn(l1anchor, focusClass);
+                }
+                amm_eventScheduler(true, l1anchor, 'click', l1anchor.amm_l1ClickFn);
+                amm_eventScheduler(true, l1anchor, 'mouseenter', l1anchor.amm_l1MouseenterFn);
+                amm_eventScheduler(true, l1anchor, 'mouseleave', l1anchor.amm_l1MouseleaveFn);
+                amm_eventScheduler(true, l1anchor, 'focus', l1anchor.amm_l1FocusFn);
+                amm_eventScheduler(true, l1anchor, 'blur', l1anchor.amm_l1BlurFn);
                 for (var k = 0; k < l2nav.length; k++) {
                     var l2anchor = l2nav[k];
-                    amm_eventScheduler(shouldAddEevents, l2anchor, 'mouseenter', amm_l2MouseenterFn(l2anchor, hoverClass));
-                    amm_eventScheduler(shouldAddEevents, l2anchor, 'mouseleave', amm_l2MouseleaveFn(l2anchor, hoverClass));
-                    amm_eventScheduler(shouldAddEevents, l2anchor, 'focus', amm_l2FocusFn(l2anchor, focusClass));
-                    amm_eventScheduler(shouldAddEevents, l2anchor, 'blur', amm_l2BlurFn(l2anchor, focusClass));
+                    if (!l2anchor.amm_l2MouseenterFn) {
+                        l2anchor.amm_l2MouseenterFn = amm_l2MouseenterFn(l2anchor, hoverClass);
+                    }
+                    if (!l2anchor.amm_l2MouseleaveFn) {
+                        l2anchor.amm_l2MouseleaveFn = amm_l2MouseleaveFn(l2anchor, hoverClass);
+                    }
+                    if (!l2anchor.amm_l2FocusFn) {
+                        l2anchor.amm_l2FocusFn = amm_l2FocusFn(l2anchor, focusClass);
+                    }
+                    if (!l2anchor.amm_l2BlurFn) {
+                        l2anchor.amm_l2BlurFn = amm_l2BlurFn(l2anchor, focusClass);
+                    }
+                    amm_eventScheduler(true, l2anchor, 'mouseenter', l2anchor.amm_l2MouseenterFn);
+                    amm_eventScheduler(true, l2anchor, 'mouseleave', l2anchor.amm_l2MouseleaveFn);
+                    amm_eventScheduler(true, l2anchor, 'focus', l2anchor.amm_l2FocusFn);
+                    amm_eventScheduler(true, l2anchor, 'blur', l2anchor.amm_l2BlurFn);
                 }
             }
         }
-        amm_eventScheduler(shouldAddEevents, document, 'click', amm_document_out(overflowHiddenClass, activeClass, 'click'));
+        if (!document.amm_docClickFn) {
+            document.amm_docClickFn = amm_document_out(overflowHiddenClass, activeClass, 'click');
+        }
+        amm_eventScheduler(true, document, 'click', document.amm_docClickFn);
         if (hoverprops.shouldActOnHover) {
-            amm_eventScheduler(shouldAddEevents, window, 'mouseover', amm_document_out(overflowHiddenClass, activeClass, 'mouseover'));
+            if (!window.amm_docMouseoverFn) {
+                window.amm_docMouseoverFn = amm_document_out(overflowHiddenClass, activeClass, 'mouseover');
+            }
+            amm_eventScheduler(true, window, 'mouseover', window.amm_docMouseoverFn);
         }
     };
-    var amm_init = function (core, rootElem, settings, shouldInit) {
-        shouldInit
-            ? _AddClass(rootElem, settings.rootClass ? settings.rootClass : '')
-            : _RemoveClass(rootElem, settings.rootClass ? settings.rootClass : '');
+    var amm_init = function (core, rootElem, settings) {
+        _AddClass(rootElem, settings.rootClass ? settings.rootClass : '');
         core.rootElem = rootElem;
         core.settings = settings;
         core.mainElem = core.rootElem.querySelector("." + settings.mainElementClass);
@@ -477,26 +554,20 @@ var AMegMen;
         core.tomain = core.rootElem.querySelectorAll("." + settings.mainButtonClass);
         core.toprevious = core.rootElem.querySelectorAll("." + settings.backButtonClass);
         if (core.settings.isRightToLeft) {
-            shouldInit
-                ? _AddClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '')
-                : _RemoveClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
+            _AddClass(core.rootElem, settings.rightToLeftClass ? settings.rightToLeftClass : '');
         }
         if (core.mainElem) {
             core.l0nav = [];
             var l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
             for (var i = 0; i < l0li.length; i++) {
-                _ToggleUniqueId(l0li[i], settings, i, shouldInit);
+                _ToggleUniqueId(l0li[i], settings, i, true);
                 var nav0obj = {};
                 nav0obj.l0li = l0li[i];
                 nav0obj.l0anchor = l0li[i].querySelector(':scope > a');
-                shouldInit
-                    ? _AddClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '')
-                    : _RemoveClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '');
+                _AddClass(nav0obj.l0anchor, settings.l0AnchorClass ? settings.l0AnchorClass : '');
                 var l0panel = l0li[i].querySelector(":scope > ." + settings.panelClass);
                 if (l0panel) {
-                    shouldInit
-                        ? _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '')
-                        : _RemoveClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
+                    _AddClass(l0panel, settings.l0PanelClass ? settings.l0PanelClass : '');
                     nav0obj.l0panel = l0panel;
                     nav0obj.l0tomain = l0panel.querySelector("." + settings.mainButtonClass);
                     var l1navelement = l0panel.querySelector(':scope > nav');
@@ -510,28 +581,20 @@ var AMegMen;
                             var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colClass + " > ul > li"));
                             var colnum = parseInt((settings.supportedCols || 0) + '');
                             for (var j = 0; j < l1cols.length; j++) {
-                                shouldInit
-                                    ? _AddClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2))
-                                    : _RemoveClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2));
+                                _AddClass(l1cols[j], settings.colClass + "-" + (colnum > 0 ? colnum : 2));
                                 if (j === colnum - 1 && j > 1) {
-                                    shouldInit
-                                        ? _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '')
-                                        : _RemoveClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
+                                    _AddClass(l1cols[j], settings.lastcolClass ? settings.lastcolClass : '');
                                 }
                             }
                             for (var j = 0; j < l1li.length; j++) {
-                                _ToggleUniqueId(l1li[j], settings, j, shouldInit);
+                                _ToggleUniqueId(l1li[j], settings, j, true);
                                 var nav1obj = {};
                                 nav1obj.l1li = l1li[j];
                                 nav1obj.l1anchor = l1li[j].querySelector(':scope > a');
-                                shouldInit
-                                    ? _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '')
-                                    : _RemoveClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
+                                _AddClass(nav1obj.l1anchor, settings.l1AnchorClass ? settings.l1AnchorClass : '');
                                 var l1panel = l1li[j].querySelector(":scope > ." + settings.panelClass);
                                 if (l1panel) {
-                                    shouldInit
-                                        ? _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '')
-                                        : _RemoveClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
+                                    _AddClass(l1panel, settings.l1PanelClass ? settings.l1PanelClass : '');
                                     nav1obj.l1panel = l1panel;
                                     nav1obj.l1toback = l1panel.querySelector("." + settings.backButtonClass);
                                     var l2navelement = l1panel.querySelector(':scope > nav');
@@ -540,23 +603,15 @@ var AMegMen;
                                         var l2cols = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colClass));
                                         if (l2cols.length) {
                                             if (settings.shiftColumns) {
-                                                shouldInit
-                                                    ? _AddClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum)
-                                                    : _RemoveClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum);
+                                                _AddClass(l1navelement, (settings.colShiftClass ? settings.colShiftClass : '') + "-" + shiftnum);
                                             }
-                                            shouldInit
-                                                ? _AddClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum)
-                                                : _RemoveClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum);
+                                            _AddClass(l1panel, (settings.colWidthClass ? settings.colWidthClass : '') + "-" + shiftnum);
                                             var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colClass + " > ul > li > a"));
                                             for (var k = 0; k < l2a.length; k++) {
-                                                shouldInit
-                                                    ? _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '')
-                                                    : _RemoveClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
+                                                _AddClass(l2a[k], settings.l2AnchorClass ? settings.l2AnchorClass : '');
                                             }
                                             for (var k = 0; k < l2cols.length; k++) {
-                                                shouldInit
-                                                    ? _AddClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1")
-                                                    : _RemoveClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1");
+                                                _AddClass(l2cols[k], (settings.colClass ? settings.colClass : '') + "-1");
                                             }
                                             nav1obj.l2nav = l2a;
                                         }
@@ -570,20 +625,79 @@ var AMegMen;
                 core.l0nav.push(nav0obj);
             }
         }
-        amm_toggleevents(core, settings, shouldInit);
+        amm_toggleevents(core, settings);
         return core;
+    };
+    var amm_destroy = function (thisid, core) {
+        var rootElem = core.rootElem;
+        var settings = core.settings;
+        var allElems = _ArrayCall(rootElem.querySelectorAll('*'));
+        var cls = settings.rootClass + ' '
+            + settings.l0AnchorClass + ' '
+            + settings.l0PanelClass + ' '
+            + settings.l1AnchorClass + ' '
+            + settings.l1PanelClass + ' '
+            + settings.l2AnchorClass + ' '
+            + settings.lastcolClass + ' '
+            + settings.activeClass + ' '
+            + settings.focusClass + ' '
+            + settings.hoverClass + ' '
+            + settings.rightToLeftClass + ' '
+            + settings.overflowHiddenClass;
+        _RemoveClass(rootElem, cls);
+        for (var i = 0; i < allElems.length; i++) {
+            _RemoveClass(allElems[i], cls);
+            _ToggleUniqueId(allElems[i], settings, i, false);
+            for (var j = 0; j < _EventList.length; j++) {
+                if (allElems[i][_EventList[j]]) {
+                    if (/focus/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'focus', allElems[i][_EventList[j]]);
+                    }
+                    if (/blur/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'blur', allElems[i][_EventList[j]]);
+                    }
+                    if (/click/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'click', allElems[i][_EventList[j]]);
+                    }
+                    if (/mouseenter/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'mouseenter', allElems[i][_EventList[j]]);
+                    }
+                    if (/mouseleave/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'mouseleave', allElems[i][_EventList[j]]);
+                    }
+                    if (/mouseover/gi.test(_EventList[j])) {
+                        amm_eventScheduler(false, allElems[i], 'mouseover', allElems[i][_EventList[j]]);
+                    }
+                    allElems[i][_EventList[j]] = null;
+                }
+            }
+        }
+        var keycount = 0;
+        for (var i in AllAMegMenInstances) {
+            if (AllAMegMenInstances.hasOwnProperty(i)) {
+                keycount++;
+            }
+        }
+        if (keycount === 1) {
+            if (window.amm_docMouseoverFn) {
+                amm_eventScheduler(false, window, 'mouseover', window.amm_docMouseoverFn);
+                window.amm_docMouseoverFn = null;
+            }
+            if (document.amm_docClickFn) {
+                amm_eventScheduler(false, document, 'mouseover', document.amm_docClickFn);
+                document.amm_docClickFn = null;
+            }
+        }
+        delete AllAMegMenInstances[thisid];
     };
     var Core = (function () {
         function Core(thisid, rootElem, options) {
             var _this = this;
             this.core = {};
             this.destroy = function (thisid) {
-                var shouldInitialize = false;
-                _this.core = amm_init(_this.core, _this.core.rootElem, _this.core.settings, shouldInitialize);
-                delete AllAMegMenInstances[thisid];
+                amm_destroy(thisid, _this.core);
             };
-            var shouldInitialize = true;
-            this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options), shouldInitialize);
+            this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options));
             AllAMegMenInstances[thisid] = this.core;
         }
         return Core;
