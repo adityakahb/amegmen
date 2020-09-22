@@ -135,7 +135,7 @@ const genPageMenu = (len, count) => {
               let landing2linkStr = genName(randomNum(3, 6));
               let landing2link = '<div class="__amegmen--landing"><button class="__amegmen--back-cta"><span class="sr-only">Back</span><span class="material-icons">arrow_back</span></button><a href="#'
                 + '' + '">Landing page: '
-                + landing2linkStr + '<span class="material-icons">chevron_right</span></a></div>';
+                + landing2linkStr + '<span class="icon"><i class="material-icons">chevron_right</i></span></a></div>';
               subnav2str += landing2link;
 
               let columns2 = 1;
