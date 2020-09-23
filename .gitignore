@@ -1,7 +1,6 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
 /tmp
 /out-tsc
 # Only exists if Bazel was run
@@ -45,6 +44,3 @@ testem.log
 .DS_Store
 Thumbs.db
 package-lock.json
-
-/Accessible-Mega-Menu-master
-/sanatio
