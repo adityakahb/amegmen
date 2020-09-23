@@ -24,7 +24,7 @@ declare namespace AMegMen {
         offcanvasCls?: string;
         overflowHiddenCls?: string;
         panelCls?: string;
-        rTL_Cls?: string;
+        rtl_Cls?: string;
         shiftColumns?: boolean;
         actOnHover?: boolean;
         supportedCols?: number;

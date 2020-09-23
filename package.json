@@ -1,6 +1,6 @@
 {
   "name": "amegmen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.",
   "private": false,
   "scripts": {
@@ -17,6 +17,20 @@
     "type": "git",
     "url": "git+https://github.com/adityakahb/amegmen.git"
   },
+  "keywords": [
+    "amegmen",
+    "accessible",
+    "mega",
+    "menu",
+    "navigation",
+    "responsive",
+    "vanilla",
+    "native",
+    "javascript",
+    "multi",
+    "multilevel",
+    "css3"
+  ],
   "author": "https://github.com/adityakahb",
   "license": "ISC",
   "bugs": {
