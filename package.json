@@ -2,7 +2,7 @@
   "name": "amegmen",
   "version": "1.0.0",
   "description": "",
-  "private": true,
+  "private": false,
   "scripts": {
     "generatedata": "node ./scripts/generatedata.js && node ./scripts/generatedata-2.js",
     "compile:sass": "node-sass --source-map true src/amegmen/sass/ -o dist/amegmen/styles && node-sass --source-map true src/amegmen-2/sass/ -o dist/amegmen-2/styles",
