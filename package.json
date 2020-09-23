@@ -17,7 +17,10 @@
     "type": "git",
     "url": "git+https://github.com/adityakahb/amegmen.git"
   },
-  "author": "",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "author": "https://github.com/adityakahb",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/adityakahb/amegmen/issues"
