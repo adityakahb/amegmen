@@ -32,7 +32,7 @@ var AMegMen;
         offcanvasCls: '__amegmen--canvas',
         overflowHiddenCls: '__amegmen--nooverflow',
         panelCls: '__amegmen--panel',
-        rTL_Cls: '__amegmen--r-to-l',
+        rtl_Cls: '__amegmen--r-to-l',
         shiftColumns: false,
         actOnHover: false,
         supportedCols: 4,
@@ -135,8 +135,9 @@ var AMegMen;
             var clsarr = cls.split(' ');
             var clsarrLength = clsarr.length;
             for (var i = 0; i < clsarrLength; i++) {
-                if (!_HasClass(element, clsarr[i])) {
-                    element.className += ' ' + clsarr[i];
+                var thiscls = clsarr[i];
+                if (!_HasClass(element, thiscls)) {
+                    element.className += ' ' + thiscls;
                 }
             }
             element.className = _StringTrim(element.className);
@@ -148,7 +149,8 @@ var AMegMen;
             var curclass = element.className.split(' ');
             var curclassLength = curclass.length;
             for (var i = 0; i < curclassLength; i++) {
-                if (clsarr.indexOf(curclass[i]) > -1) {
+                var thiscls = curclass[i];
+                if (clsarr.indexOf(thiscls) > -1) {
                     curclass.splice(i, 1);
                     i--;
                 }
@@ -215,11 +217,12 @@ var AMegMen;
                         _RemoveClass(l0nav[j].l0panel, activeCls);
                     }
                     _RemoveClass(l0nav[j].navelement, overflowHiddenCls);
-                    var l1nav = l0nav[j].l1nav;
+                    var l1nav = l0nav[j].l1nav || [];
                     var l1navLength = l1nav.length;
                     for (var k = 0; k < l1navLength; k++) {
-                        _RemoveClass(l1nav[k].l1anchor, activeCls);
-                        _RemoveClass(l1nav[k].l1panel, activeCls);
+                        var thisl1 = l1nav[k];
+                        _RemoveClass(thisl1.l1anchor, activeCls);
+                        _RemoveClass(thisl1.l1panel, activeCls);
                     }
                 }
             }
@@ -409,22 +412,23 @@ var AMegMen;
             var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
             var landingElementsLength = landingElements.length;
             for (var i = 0; i < landingElementsLength; i++) {
-                if (!landingElements[i].amm_landingMouseenterFn) {
-                    landingElements[i].amm_landingMouseenterFn = amm_landingMouseenterFn(landingElements[i], hoverCls);
+                var thislandingelem = landingElements[i];
+                if (!thislandingelem.amm_landingMouseenterFn) {
+                    thislandingelem.amm_landingMouseenterFn = amm_landingMouseenterFn(thislandingelem, hoverCls);
                 }
-                if (!landingElements[i].amm_landingMouseleaveFn) {
-                    landingElements[i].amm_landingMouseleaveFn = amm_landingMouseleaveFn(landingElements[i], hoverCls);
+                if (!thislandingelem.amm_landingMouseleaveFn) {
+                    thislandingelem.amm_landingMouseleaveFn = amm_landingMouseleaveFn(thislandingelem, hoverCls);
                 }
-                if (!landingElements[i].amm_landingFocusFn) {
-                    landingElements[i].amm_landingFocusFn = amm_landingFocusFn(landingElements[i], focusCls);
+                if (!thislandingelem.amm_landingFocusFn) {
+                    thislandingelem.amm_landingFocusFn = amm_landingFocusFn(thislandingelem, focusCls);
                 }
-                if (!landingElements[i].amm_landingBlurFn) {
-                    landingElements[i].amm_landingBlurFn = amm_landingBlurFn(landingElements[i], focusCls);
+                if (!thislandingelem.amm_landingBlurFn) {
+                    thislandingelem.amm_landingBlurFn = amm_landingBlurFn(thislandingelem, focusCls);
                 }
-                amm_eventScheduler(true, landingElements[i], 'mouseenter', landingElements[i].amm_landingMouseenterFn);
-                amm_eventScheduler(true, landingElements[i], 'mouseleave', landingElements[i].amm_landingMouseleaveFn);
-                amm_eventScheduler(true, landingElements[i], 'focus', landingElements[i].amm_landingFocusFn);
-                amm_eventScheduler(true, landingElements[i], 'blur', landingElements[i].amm_landingBlurFn);
+                amm_eventScheduler(true, thislandingelem, 'mouseenter', thislandingelem.amm_landingMouseenterFn);
+                amm_eventScheduler(true, thislandingelem, 'mouseleave', thislandingelem.amm_landingMouseleaveFn);
+                amm_eventScheduler(true, thislandingelem, 'focus', thislandingelem.amm_landingFocusFn);
+                amm_eventScheduler(true, thislandingelem, 'blur', thislandingelem.amm_landingBlurFn);
             }
         }
         if (togglenav && offcanvas) {
@@ -441,27 +445,30 @@ var AMegMen;
         }
         if (tomain.length > 0) {
             for (var i = 0; i < tomain.length; i++) {
-                if (!tomain[i].amm_gotoLevelClickFn) {
-                    tomain[i].amm_gotoLevelClickFn = amm_gotoLevel(true, overflowHiddenCls, activeCls, 'click');
+                var thismain = tomain[i];
+                if (!thismain.amm_gotoLevelClickFn) {
+                    thismain.amm_gotoLevelClickFn = amm_gotoLevel(true, overflowHiddenCls, activeCls, 'click');
                 }
-                amm_eventScheduler(true, tomain[i], 'click', tomain[i].amm_gotoLevelClickFn);
+                amm_eventScheduler(true, thismain, 'click', thismain.amm_gotoLevelClickFn);
             }
         }
         if (toprevious.length > 0) {
             for (var i = 0; i < toprevious.length; i++) {
-                if (!toprevious[i].amm_gotoLevelClickFn) {
-                    toprevious[i].amm_gotoLevelClickFn = amm_gotoLevel(false, overflowHiddenCls, activeCls, 'click');
+                var thisprevious = toprevious[i];
+                if (!thisprevious.amm_gotoLevelClickFn) {
+                    thisprevious.amm_gotoLevelClickFn = amm_gotoLevel(false, overflowHiddenCls, activeCls, 'click');
                 }
-                amm_eventScheduler(true, toprevious[i], 'click', toprevious[i].amm_gotoLevelClickFn);
+                amm_eventScheduler(true, thisprevious, 'click', thisprevious.amm_gotoLevelClickFn);
             }
         }
         var l0nav = core.l0nav || [];
         var l0navLength = l0nav.length;
         for (var i = 0; i < l0navLength; i++) {
-            var l0anchor = l0nav[i].l0anchor;
-            var l0panel = l0nav[i].l0panel;
-            var l0navelement = l0nav[i].navelement;
-            var l1nav = l0nav[i].l1nav || [];
+            var thisl0nav = l0nav[i];
+            var l0anchor = thisl0nav.l0anchor;
+            var l0panel = thisl0nav.l0panel;
+            var l0navelement = thisl0nav.navelement;
+            var l1nav = thisl0nav.l1nav || [];
             var l1navLength = l1nav.length;
             if (!l0anchor.amm_l0ClickFn) {
                 l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenCls, activeCls, 'click');
@@ -563,19 +570,20 @@ var AMegMen;
         core.tomain = core.rootElem.querySelectorAll("." + settings.mainBtnCls);
         core.toprevious = core.rootElem.querySelectorAll("." + settings.backBtnCls);
         if (core.settings.isRTL) {
-            _AddClass(core.rootElem, settings.rTL_Cls ? settings.rTL_Cls : '');
+            _AddClass(core.rootElem, settings.rtl_Cls ? settings.rtl_Cls : '');
         }
         if (core.mainElem) {
             core.l0nav = [];
             var l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
             var l0liLength = l0li.length;
             for (var i = 0; i < l0liLength; i++) {
-                _ToggleUniqueId(l0li[i], settings, i, true);
+                var thisl0li = l0li[i];
+                _ToggleUniqueId(thisl0li, settings, i, true);
                 var nav0obj = {};
-                nav0obj.l0li = l0li[i];
-                nav0obj.l0anchor = l0li[i].querySelector(':scope > a');
+                nav0obj.l0li = thisl0li;
+                nav0obj.l0anchor = thisl0li.querySelector(':scope > a');
                 _AddClass(nav0obj.l0anchor, settings.l0AnchorCls ? settings.l0AnchorCls : '');
-                var l0panel = l0li[i].querySelector(":scope > ." + settings.panelCls);
+                var l0panel = thisl0li.querySelector(":scope > ." + settings.panelCls);
                 if (l0panel) {
                     _AddClass(l0panel, settings.l0PanelCls ? settings.l0PanelCls : '');
                     nav0obj.l0panel = l0panel;
@@ -583,28 +591,30 @@ var AMegMen;
                     var l1navelement = l0panel.querySelector(':scope > nav');
                     if (l1navelement) {
                         nav0obj.navelement = l1navelement;
-                        var l1cols = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls));
+                        var l1cols = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls)) || [];
+                        var l1colsLength = l1cols.length;
                         nav0obj.l1cols = l1cols.length;
                         nav0obj.l1nav = [];
-                        if (l1cols.length > 0) {
+                        if (l1colsLength > 0) {
                             var shiftnum = (settings.supportedCols || 0) - l1cols.length;
-                            var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li"));
+                            var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li")) || [];
                             var colnum = parseInt((settings.supportedCols || 0) + '');
-                            var l1colsLength = l1cols.length;
                             var l1liLength = l1li.length;
                             for (var j = 0; j < l1colsLength; j++) {
-                                _AddClass(l1cols[j], settings.colCls + "-" + (colnum > 0 ? colnum : 2));
+                                var thisl1col = l1cols[j];
+                                _AddClass(thisl1col, settings.colCls + "-" + (colnum > 0 ? colnum : 2));
                                 if (j === colnum - 1 && j > 1) {
-                                    _AddClass(l1cols[j], settings.lastcolCls ? settings.lastcolCls : '');
+                                    _AddClass(thisl1col, settings.lastcolCls ? settings.lastcolCls : '');
                                 }
                             }
                             for (var j = 0; j < l1liLength; j++) {
-                                _ToggleUniqueId(l1li[j], settings, j, true);
+                                var thisl1li = l1li[j];
+                                _ToggleUniqueId(thisl1li, settings, j, true);
                                 var nav1obj = {};
-                                nav1obj.l1li = l1li[j];
-                                nav1obj.l1anchor = l1li[j].querySelector(':scope > a');
+                                nav1obj.l1li = thisl1li;
+                                nav1obj.l1anchor = thisl1li.querySelector(':scope > a');
                                 _AddClass(nav1obj.l1anchor, settings.l1AnchorCls ? settings.l1AnchorCls : '');
-                                var l1panel = l1li[j].querySelector(":scope > ." + settings.panelCls);
+                                var l1panel = thisl1li.querySelector(":scope > ." + settings.panelCls);
                                 if (l1panel) {
                                     _AddClass(l1panel, settings.l1PanelCls ? settings.l1PanelCls : '');
                                     nav1obj.l1panel = l1panel;
@@ -612,20 +622,22 @@ var AMegMen;
                                     var l2navelement = l1panel.querySelector(':scope > nav');
                                     if (l2navelement) {
                                         nav1obj.navelement = l2navelement;
-                                        var l2cols = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls));
-                                        if (l2cols.length) {
+                                        var l2cols = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls)) || [];
+                                        var l2colsLength = l2cols.length;
+                                        if (l2colsLength) {
                                             if (settings.shiftColumns) {
                                                 _AddClass(l1navelement, (settings.colShiftCls ? settings.colShiftCls : '') + "-" + shiftnum);
                                             }
                                             _AddClass(l1panel, (settings.colWidthCls ? settings.colWidthCls : '') + "-" + shiftnum);
-                                            var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li > a"));
+                                            var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li > a")) || [];
                                             var l2aLength = l2a.length;
-                                            var l2colsLength = l2cols.length;
                                             for (var k = 0; k < l2aLength; k++) {
-                                                _AddClass(l2a[k], settings.l2AnchorCls ? settings.l2AnchorCls : '');
+                                                var thisl2anchor = l2a[k];
+                                                _AddClass(thisl2anchor, settings.l2AnchorCls ? settings.l2AnchorCls : '');
                                             }
                                             for (var k = 0; k < l2colsLength; k++) {
-                                                _AddClass(l2cols[k], (settings.colCls ? settings.colCls : '') + "-1");
+                                                var thisl2col = l2cols[k];
+                                                _AddClass(thisl2col, (settings.colCls ? settings.colCls : '') + "-1");
                                             }
                                             nav1obj.l2nav = l2a;
                                         }
@@ -656,35 +668,37 @@ var AMegMen;
             + settings.activeCls + ' '
             + settings.focusCls + ' '
             + settings.hoverCls + ' '
-            + settings.rTL_Cls + ' '
+            + settings.rtl_Cls + ' '
             + settings.overflowHiddenCls;
         _RemoveClass(rootElem, cls);
         var allElemsLength = allElems.length;
         var _EventListLength = _EventList.length;
         for (var i = 0; i < allElemsLength; i++) {
-            _RemoveClass(allElems[i], cls);
-            _ToggleUniqueId(allElems[i], settings, i, false);
+            var thiselem = allElems[i];
+            _RemoveClass(thiselem, cls);
+            _ToggleUniqueId(thiselem, settings, i, false);
             for (var j = 0; j < _EventListLength; j++) {
-                if (allElems[i][_EventList[j]]) {
-                    if (/focus/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'focus', allElems[i][_EventList[j]]);
+                var thisevent = _EventList[j];
+                if (thiselem[thisevent]) {
+                    if (/focus/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'focus', thiselem[thisevent]);
                     }
-                    if (/blur/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'blur', allElems[i][_EventList[j]]);
+                    if (/blur/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'blur', thiselem[thisevent]);
                     }
-                    if (/click/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'click', allElems[i][_EventList[j]]);
+                    if (/click/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'click', thiselem[thisevent]);
                     }
-                    if (/mouseenter/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'mouseenter', allElems[i][_EventList[j]]);
+                    if (/mouseenter/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'mouseenter', thiselem[thisevent]);
                     }
-                    if (/mouseleave/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'mouseleave', allElems[i][_EventList[j]]);
+                    if (/mouseleave/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'mouseleave', thiselem[thisevent]);
                     }
-                    if (/mouseover/gi.test(_EventList[j])) {
-                        amm_eventScheduler(false, allElems[i], 'mouseover', allElems[i][_EventList[j]]);
+                    if (/mouseover/gi.test(thisevent)) {
+                        amm_eventScheduler(false, thiselem, 'mouseover', thiselem[thisevent]);
                     }
-                    allElems[i][_EventList[j]] = null;
+                    thiselem[thisevent] = null;
                 }
             }
         }
