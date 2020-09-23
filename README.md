@@ -1,6 +1,10 @@
 # AMegMen
 
-AMegMen is a Megamenu plugin written entirely in JavaScript.
+AMegMen is a Megamenu plugin.
+
+## Demo
+
+[https://adityakahb.github.io/amegmen](https://adityakahb.github.io/amegmen/)
 
 ## Features
 
