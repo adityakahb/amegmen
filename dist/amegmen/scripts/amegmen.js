@@ -133,7 +133,8 @@ var AMegMen;
     var _AddClass = function (element, cls) {
         if (element) {
             var clsarr = cls.split(' ');
-            for (var i = 0; i < clsarr.length; i++) {
+            var clsarrLength = clsarr.length;
+            for (var i = 0; i < clsarrLength; i++) {
                 if (!_HasClass(element, clsarr[i])) {
                     element.className += ' ' + clsarr[i];
                 }
@@ -145,7 +146,8 @@ var AMegMen;
         if (element) {
             var clsarr = cls.split(' ');
             var curclass = element.className.split(' ');
-            for (var i = 0; i < curclass.length; i++) {
+            var curclassLength = curclass.length;
+            for (var i = 0; i < curclassLength; i++) {
                 if (clsarr.indexOf(curclass[i]) > -1) {
                     curclass.splice(i, 1);
                     i--;
@@ -202,19 +204,22 @@ var AMegMen;
             if (shouldExecute && _HasClass(rootElem, activeCls)) {
                 var mainElem = AllAMegMenInstances[i].mainElem;
                 var l0nav = AllAMegMenInstances[i].l0nav || [];
+                var l0navLength = l0nav.length;
                 if (closeOnlyTopLevel) {
                     _RemoveClass(rootElem, activeCls);
                     _RemoveClass(mainElem, overflowHiddenCls);
                 }
-                for (var j = 0; j < l0nav.length; j++) {
+                for (var j = 0; j < l0navLength; j++) {
                     if (closeOnlyTopLevel) {
                         _RemoveClass(l0nav[j].l0anchor, activeCls);
                         _RemoveClass(l0nav[j].l0panel, activeCls);
                     }
                     _RemoveClass(l0nav[j].navelement, overflowHiddenCls);
-                    for (var k = 0; k < (l0nav[j].l1nav || []).length; k++) {
-                        _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeCls);
-                        _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeCls);
+                    var l1nav = l0nav[j].l1nav;
+                    var l1navLength = l1nav.length;
+                    for (var k = 0; k < l1navLength; k++) {
+                        _RemoveClass(l1nav[k].l1anchor, activeCls);
+                        _RemoveClass(l1nav[k].l1panel, activeCls);
                     }
                 }
             }
@@ -402,7 +407,8 @@ var AMegMen;
         };
         if (settings.landingCtaCls) {
             var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
-            for (var i = 0; i < landingElements.length; i++) {
+            var landingElementsLength = landingElements.length;
+            for (var i = 0; i < landingElementsLength; i++) {
                 if (!landingElements[i].amm_landingMouseenterFn) {
                     landingElements[i].amm_landingMouseenterFn = amm_landingMouseenterFn(landingElements[i], hoverCls);
                 }
@@ -450,11 +456,13 @@ var AMegMen;
             }
         }
         var l0nav = core.l0nav || [];
-        for (var i = 0; i < l0nav.length; i++) {
+        var l0navLength = l0nav.length;
+        for (var i = 0; i < l0navLength; i++) {
             var l0anchor = l0nav[i].l0anchor;
             var l0panel = l0nav[i].l0panel;
             var l0navelement = l0nav[i].navelement;
             var l1nav = l0nav[i].l1nav || [];
+            var l1navLength = l1nav.length;
             if (!l0anchor.amm_l0ClickFn) {
                 l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenCls, activeCls, 'click');
             }
@@ -487,10 +495,11 @@ var AMegMen;
                     amm_eventScheduler(true, l0panel, 'mouseover', l0panel.amm_panelMouseoverFn);
                 }
             }
-            for (var j = 0; j < l1nav.length; j++) {
+            for (var j = 0; j < l1navLength; j++) {
                 var l1anchor = l1nav[j].l1anchor;
                 var l1panel = l1nav[j].l1panel;
                 var l2nav = l1nav[j].l2nav || [];
+                var l2navLength = l2nav.length;
                 if (!l1anchor.amm_l1ClickFn) {
                     l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenCls, activeCls, 'click');
                 }
@@ -511,7 +520,7 @@ var AMegMen;
                 amm_eventScheduler(true, l1anchor, 'mouseleave', l1anchor.amm_l1MouseleaveFn);
                 amm_eventScheduler(true, l1anchor, 'focus', l1anchor.amm_l1FocusFn);
                 amm_eventScheduler(true, l1anchor, 'blur', l1anchor.amm_l1BlurFn);
-                for (var k = 0; k < l2nav.length; k++) {
+                for (var k = 0; k < l2navLength; k++) {
                     var l2anchor = l2nav[k];
                     if (!l2anchor.amm_l2MouseenterFn) {
                         l2anchor.amm_l2MouseenterFn = amm_l2MouseenterFn(l2anchor, hoverCls);
@@ -559,7 +568,8 @@ var AMegMen;
         if (core.mainElem) {
             core.l0nav = [];
             var l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
-            for (var i = 0; i < l0li.length; i++) {
+            var l0liLength = l0li.length;
+            for (var i = 0; i < l0liLength; i++) {
                 _ToggleUniqueId(l0li[i], settings, i, true);
                 var nav0obj = {};
                 nav0obj.l0li = l0li[i];
@@ -580,13 +590,15 @@ var AMegMen;
                             var shiftnum = (settings.supportedCols || 0) - l1cols.length;
                             var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li"));
                             var colnum = parseInt((settings.supportedCols || 0) + '');
-                            for (var j = 0; j < l1cols.length; j++) {
+                            var l1colsLength = l1cols.length;
+                            var l1liLength = l1li.length;
+                            for (var j = 0; j < l1colsLength; j++) {
                                 _AddClass(l1cols[j], settings.colCls + "-" + (colnum > 0 ? colnum : 2));
                                 if (j === colnum - 1 && j > 1) {
                                     _AddClass(l1cols[j], settings.lastcolCls ? settings.lastcolCls : '');
                                 }
                             }
-                            for (var j = 0; j < l1li.length; j++) {
+                            for (var j = 0; j < l1liLength; j++) {
                                 _ToggleUniqueId(l1li[j], settings, j, true);
                                 var nav1obj = {};
                                 nav1obj.l1li = l1li[j];
@@ -607,10 +619,12 @@ var AMegMen;
                                             }
                                             _AddClass(l1panel, (settings.colWidthCls ? settings.colWidthCls : '') + "-" + shiftnum);
                                             var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li > a"));
-                                            for (var k = 0; k < l2a.length; k++) {
+                                            var l2aLength = l2a.length;
+                                            var l2colsLength = l2cols.length;
+                                            for (var k = 0; k < l2aLength; k++) {
                                                 _AddClass(l2a[k], settings.l2AnchorCls ? settings.l2AnchorCls : '');
                                             }
-                                            for (var k = 0; k < l2cols.length; k++) {
+                                            for (var k = 0; k < l2colsLength; k++) {
                                                 _AddClass(l2cols[k], (settings.colCls ? settings.colCls : '') + "-1");
                                             }
                                             nav1obj.l2nav = l2a;
@@ -645,10 +659,12 @@ var AMegMen;
             + settings.rTL_Cls + ' '
             + settings.overflowHiddenCls;
         _RemoveClass(rootElem, cls);
-        for (var i = 0; i < allElems.length; i++) {
+        var allElemsLength = allElems.length;
+        var _EventListLength = _EventList.length;
+        for (var i = 0; i < allElemsLength; i++) {
             _RemoveClass(allElems[i], cls);
             _ToggleUniqueId(allElems[i], settings, i, false);
-            for (var j = 0; j < _EventList.length; j++) {
+            for (var j = 0; j < _EventListLength; j++) {
                 if (allElems[i][_EventList[j]]) {
                     if (/focus/gi.test(_EventList[j])) {
                         amm_eventScheduler(false, allElems[i], 'focus', allElems[i][_EventList[j]]);
@@ -708,12 +724,14 @@ var AMegMen;
             this.instances = {};
             this.init = function (query, options) {
                 var roots = _ArrayCall(document.querySelectorAll(query));
-                if (roots.length > 0) {
-                    for (var i = 0; i < roots.length; i++) {
+                var rootsLen = roots.length;
+                var instancelen = _this.instances.length;
+                if (rootsLen > 0) {
+                    for (var i = 0; i < rootsLen; i++) {
                         var id = roots[i].getAttribute('id');
                         var iselempresent = false;
                         if (id) {
-                            for (var j = 0; j < _this.instances.length; j++) {
+                            for (var j = 0; j < instancelen; j++) {
                                 if (_this.instances[id]) {
                                     iselempresent = true;
                                     break;
@@ -738,14 +756,18 @@ var AMegMen;
             };
             this.destroy = function (query) {
                 var roots = _ArrayCall(document.querySelectorAll(query));
-                if (roots.length > 0) {
-                    for (var i = 0; i < roots.length; i++) {
+                var rootsLen = roots.length;
+                if (rootsLen > 0) {
+                    for (var i = 0; i < rootsLen; i++) {
                         var id = roots[i].getAttribute('id');
                         if (id && _this.instances[id]) {
                             _this.instances[id].destroy(id);
                             delete _this.instances[id];
                         }
                     }
+                }
+                else {
+                    console.error('Element(s) with the provided query do(es) not exist');
                 }
             };
             _EnableQSQSAScope();

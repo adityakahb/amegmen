@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AMegMen - Accessible Mega Menu</title>
   <link
@@ -12,6 +12,10 @@
   <link href="dist/site/styles/index.min.css" rel="stylesheet" />
   <link href="dist/amegmen/styles/amegmen.min.css" rel="stylesheet" />
   <link href="dist/amegmen-2/styles/amegmen.min.css" rel="stylesheet" />
+
+  <meta name="description" content="AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.">
+  <meta name="keywords" content="amegmen, accessible, mega, menu, navigation, responsive, vanilla, native, javascript, multi, level, css3">
+  
 </head>
 
 <body>
@@ -29,14 +33,16 @@
             <h2 class="sr-only">Features</h2>
             <ul class="list-unstyled m-0">
               <li class="my-2">Written in Vanilla Javascript</li>
-              <li class="my-2">Framework free</li>
-              <li class="my-2">Can be navigated through Tab</li>
+              <li class="my-2">Framework-free</li>
+              <li class="my-2">Can be navigated through Tab Key</li>
               <li class="my-2">Supports 3 levels</li>
               <li class="my-2">Supports Click and Hover behaviors</li>
               <li class="my-2">Supports Right to Left UI</li>
               <li class="my-2">Fully responsive</li>
-              <li class="my-2">With bare minimum css</li>
-              <li class="my-2">Multiple instances with multiple configurations</li>
+              <li class="my-2">With bare minimum css (with no icons, reset, normalize, custom fonts or images)</li>
+              <li class="my-2">Can have multiple instances with multiple configurations</li>
+              <li class="my-2">Compiled through Typescript</li>
+              <li class="my-2">Styled through SASS (Mobile first and with one breakpoint)</li>
             </ul>
           </div>
         </div>
@@ -49,32 +55,38 @@
       <hr />
       <h3>Default</h3>
 
-      <nav id="__amegmen_1"><button class="__amegmen--toggle-cta">
+      <nav id="__amegmen_1"> <!-- Root Element -->
+        <button class="__amegmen--toggle-cta"> <!-- Button (on mobile) to toggle Megamenu on mobile device -->
           Menu
         </button>
-        <div class="__amegmen--canvas">
-          <header>
-            <button class="__amegmen--close-cta">
+        <div class="__amegmen--canvas"> <!-- Off-Canvas which slides on mobile device -->
+          <header> <!-- Nav Header containing a Button to close the Megamenu -->
+            <button class="__amegmen--close-cta"> <!-- Button (on mobile) to close the Megamenu -->
               Close
             </button>
           </header>
-          <section class="__amegmen--main">
-            <ul>
-              <li><a href="#">Risus</a>
-                <section class="__amegmen--panel">
-                  <div class="__amegmen--landing">
-                    <button class="__amegmen--main-cta">Main</button>
-                    <a href="#Tempor sit maecenas">Landing page: Tempor sit maecenas</a></div>
-                  <nav>
-                    <div class="__amegmen--col">
-                      <ul>
-                        <li><a href="#">Amet nunc dis Sem</a>
-                          <section class="__amegmen--panel">
-                            <div class="__amegmen--landing"><button class="__amegmen--back-cta">Back</button><a
-                                href="#">Landing page: Tempor consectetur gravida Malesuada penatibus Purus</a></div>
-                            <nav>
-                              <div class="__amegmen--col">
-                                <ul>
+          <section class="__amegmen--main"> <!-- Main section containing Megamenu navigation -->
+            <ul> <!-- Level 0 UL/LI -->
+              <li>
+                <a href="#">Risus</a> <!-- Level 0 anchor -->
+                <section class="__amegmen--panel"> <!-- Level 0 Megamenu panel -->
+                  <div class="__amegmen--landing"> <!-- Container for Level 0 anchor's landing page url -->
+                    <button class="__amegmen--main-cta">Main</button> <!-- Button (on mobile) to go main menu (level 0)  -->
+                    <a href="#Tempor sit maecenas">Landing page: Tempor sit maecenas</a> <!-- Level 0 anchor's landing page url -->
+                  </div>
+                  <nav> <!-- Level 1 navigation -->
+                    <div class="__amegmen--col"> <!-- Level 1 navigation column -->
+                      <ul> <!-- Level 1 UL/LI -->
+                        <li>
+                          <a href="#">Amet nunc dis Sem</a> <!-- Level 1 anchor -->
+                          <section class="__amegmen--panel"> <!-- Level 1 Megamenu panel -->
+                            <div class="__amegmen--landing"> <!-- Container for Level 1 anchor's landing page url -->
+                              <button class="__amegmen--back-cta">Back</button> <!-- Button (on mobile) to go previous menu (level 1)  -->
+                              <a href="#">Landing page: Tempor consectetur gravida Malesuada penatibus Purus</a> <!-- Level 1 anchor's landing page url -->
+                            </div>
+                            <nav> <!-- Level 2 navigation -->
+                              <div class="__amegmen--col"> <!-- Level 2 navigation column -->
+                                <ul><!-- Level 2 UL/LI -->
                                   <li><a href="#">Vivamus maecenas ex</a></li>
                                   <li><a href="#">Amet vulputate malesuada</a></li>
                                   <li><a href="#">Nulla maximus malesuada Magnis metus Etiam</a></li>

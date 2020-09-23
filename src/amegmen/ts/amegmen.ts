@@ -39,7 +39,7 @@ namespace AMegMen {
     offcanvasCls?: string;
     overflowHiddenCls?: string;
     panelCls?: string;
-    rTL_Cls?: string;
+    rtl_Cls?: string;
     shiftColumns?: boolean;
     actOnHover?: boolean;
     supportedCols?: number;
@@ -76,7 +76,7 @@ namespace AMegMen {
     offcanvasCls: '__amegmen--canvas',
     overflowHiddenCls: '__amegmen--nooverflow',
     panelCls: '__amegmen--panel',
-    rTL_Cls: '__amegmen--r-to-l',
+    rtl_Cls: '__amegmen--r-to-l',
     shiftColumns: false,
     actOnHover: false,
     supportedCols: 4,
@@ -184,7 +184,8 @@ namespace AMegMen {
   const _AddClass = (element: HTMLElement, cls: string) => {
     if (element) {
       let clsarr = cls.split(' ');
-      for (let i = 0; i < clsarr.length; i++) {
+      let clsarrLength = clsarr.length;
+      for (let i = 0; i < clsarrLength; i++) {
         if (!_HasClass(element, clsarr[i])) {
           element.className += ' ' + clsarr[i];
         }
@@ -197,7 +198,8 @@ namespace AMegMen {
     if (element) {
       let clsarr = cls.split(' ');
       let curclass = element.className.split(' ');
-      for (let i = 0; i < curclass.length; i++) {
+      let curclassLength = curclass.length;
+      for (let i = 0; i < curclassLength; i++) {
         if (clsarr.indexOf(curclass[i]) > -1) {
           curclass.splice(i, 1);
           i--;
@@ -259,19 +261,22 @@ namespace AMegMen {
       if (shouldExecute && _HasClass(rootElem, activeCls)) {
         const mainElem = AllAMegMenInstances[i].mainElem;
         const l0nav = AllAMegMenInstances[i].l0nav || [];
+        const l0navLength = l0nav.length;
         if (closeOnlyTopLevel) {
           _RemoveClass(rootElem, activeCls);
           _RemoveClass(mainElem, overflowHiddenCls);
         }
-        for (let j = 0; j < l0nav.length; j++) {
+        for (let j = 0; j < l0navLength; j++) {
           if (closeOnlyTopLevel) {
             _RemoveClass(l0nav[j].l0anchor, activeCls);
             _RemoveClass(l0nav[j].l0panel, activeCls);
           }
           _RemoveClass(l0nav[j].navelement, overflowHiddenCls);
-          for (let k = 0; k < (l0nav[j].l1nav || []).length; k++) {
-            _RemoveClass((l0nav[j].l1nav || [])[k].l1anchor, activeCls);
-            _RemoveClass((l0nav[j].l1nav || [])[k].l1panel, activeCls);
+          const l1nav = l0nav[j].l1nav;
+          const l1navLength = l1nav.length;
+          for (let k = 0; k < l1navLength; k++) {
+            _RemoveClass(l1nav[k].l1anchor, activeCls);
+            _RemoveClass(l1nav[k].l1panel, activeCls);
           }
         }
       }
@@ -481,8 +486,8 @@ namespace AMegMen {
 
     if (settings.landingCtaCls) {
       const landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
-
-      for (let i = 0; i < landingElements.length; i++) {
+      const landingElementsLength = landingElements.length;
+      for (let i = 0; i < landingElementsLength; i++) {
         if (!landingElements[i].amm_landingMouseenterFn) {
           landingElements[i].amm_landingMouseenterFn = amm_landingMouseenterFn(landingElements[i], hoverCls);
         }
@@ -535,11 +540,13 @@ namespace AMegMen {
     }
 
     const l0nav = core.l0nav || [];
-    for (let i = 0; i < l0nav.length; i++) {
+    const l0navLength = l0nav.length;
+    for (let i = 0; i < l0navLength; i++) {
       const l0anchor = l0nav[i].l0anchor;
       const l0panel = l0nav[i].l0panel;
       const l0navelement = l0nav[i].navelement;
       const l1nav = l0nav[i].l1nav || [];
+      const l1navLength = l1nav.length;
 
       if (!l0anchor.amm_l0ClickFn) {
         l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenCls, activeCls, 'click');
@@ -576,10 +583,11 @@ namespace AMegMen {
         }
       }
 
-      for (let j = 0; j < l1nav.length; j++) {
+      for (let j = 0; j < l1navLength; j++) {
         const l1anchor = l1nav[j].l1anchor;
         const l1panel = l1nav[j].l1panel;
         const l2nav = l1nav[j].l2nav || [];
+        const l2navLength = l2nav.length;
 
         if (!l1anchor.amm_l1ClickFn) {
           l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenCls, activeCls, 'click');
@@ -603,7 +611,7 @@ namespace AMegMen {
         amm_eventScheduler(true, l1anchor as HTMLElement, 'focus', l1anchor.amm_l1FocusFn);
         amm_eventScheduler(true, l1anchor as HTMLElement, 'blur', l1anchor.amm_l1BlurFn);
 
-        for (let k = 0; k < l2nav.length; k++) {
+        for (let k = 0; k < l2navLength; k++) {
           const l2anchor = l2nav[k];
 
           if (!l2anchor.amm_l2MouseenterFn) {
@@ -651,13 +659,14 @@ namespace AMegMen {
     core.toprevious = core.rootElem.querySelectorAll(`.${settings.backBtnCls}`);
 
     if (core.settings.isRTL) {
-      _AddClass(core.rootElem as HTMLElement, settings.rTL_Cls ? settings.rTL_Cls : '');
+      _AddClass(core.rootElem as HTMLElement, settings.rtl_Cls ? settings.rtl_Cls : '');
     }
 
     if (core.mainElem) {
       core.l0nav = [];
       const l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
-      for (let i = 0; i < l0li.length; i++) {
+      const l0liLength = l0li.length;
+      for (let i = 0; i < l0liLength; i++) {
         _ToggleUniqueId(l0li[i], settings, i, true);
         let nav0obj: any = {};
         nav0obj.l0li = l0li[i];
@@ -681,14 +690,15 @@ namespace AMegMen {
               const shiftnum = (settings.supportedCols || 0) - l1cols.length;
               const l1li = _ArrayCall(l1navelement.querySelectorAll(`:scope > .${settings.colCls} > ul > li`));
               const colnum = parseInt((settings.supportedCols || 0) + '');
-
-              for (let j = 0; j < l1cols.length; j++) {
+              const l1colsLength = l1cols.length;
+              const l1liLength = l1li.length;
+              for (let j = 0; j < l1colsLength; j++) {
                 _AddClass(l1cols[j], `${settings.colCls}-${colnum > 0 ? colnum : 2}`);
                 if (j === colnum - 1 && j > 1) {
                   _AddClass(l1cols[j], settings.lastcolCls ? settings.lastcolCls : '');
                 }
               }
-              for (let j = 0; j < l1li.length; j++) {
+              for (let j = 0; j < l1liLength; j++) {
                 _ToggleUniqueId(l1li[j], settings, j, true);
                 let nav1obj: any = {};
                 nav1obj.l1li = l1li[j];
@@ -711,14 +721,14 @@ namespace AMegMen {
                         _AddClass(l1navelement, `${settings.colShiftCls ? settings.colShiftCls : ''}-${shiftnum}`);
                       }
                       _AddClass(l1panel, `${settings.colWidthCls ? settings.colWidthCls : ''}-${shiftnum}`);
-                      const l2a = _ArrayCall(
-                        l2navelement.querySelectorAll(`:scope > .${settings.colCls} > ul > li > a`)
-                      );
+                      const l2a = _ArrayCall(l2navelement.querySelectorAll(`:scope > .${settings.colCls} > ul > li > a`));
+                      const l2aLength = l2a.length;
+                      const l2colsLength = l2cols.length;
 
-                      for (let k = 0; k < l2a.length; k++) {
+                      for (let k = 0; k < l2aLength; k++) {
                         _AddClass(l2a[k], settings.l2AnchorCls ? settings.l2AnchorCls : '');
                       }
-                      for (let k = 0; k < l2cols.length; k++) {
+                      for (let k = 0; k < l2colsLength; k++) {
                         // _AddClass(l2cols[k], `__amegmen--col-${l2cols.length}`);
                         _AddClass(l2cols[k], `${settings.colCls ? settings.colCls : ''}-1`);
                       }
@@ -755,16 +765,19 @@ namespace AMegMen {
       + settings.activeCls + ' '
       + settings.focusCls + ' '
       + settings.hoverCls + ' '
-      + settings.rTL_Cls + ' '
+      + settings.rtl_Cls + ' '
       + settings.overflowHiddenCls;
 
     _RemoveClass(rootElem, cls);
 
-    for (let i = 0; i < allElems.length; i++) {
+    const allElemsLength = allElems.length;
+    const _EventListLength = _EventList.length;
+
+    for (let i = 0; i < allElemsLength; i++) {
       _RemoveClass(allElems[i], cls);
       _ToggleUniqueId(allElems[i], settings, i, false);
 
-      for (let j = 0; j < _EventList.length; j++) {
+      for (let j = 0; j < _EventListLength; j++) {
         if (allElems[i][_EventList[j]]) {
           if (/focus/gi.test(_EventList[j])) {
             amm_eventScheduler(false, allElems[i] as HTMLElement, 'focus', allElems[i][_EventList[j]]);
@@ -862,12 +875,14 @@ namespace AMegMen {
 
     public init = (query: string, options?: IAMegMenSettings) => {
       const roots = _ArrayCall(document.querySelectorAll(query));
-      if (roots.length > 0) {
-        for (let i = 0; i < roots.length; i++) {
+      const rootsLen = roots.length;
+      const instancelen = this.instances.length;
+      if (rootsLen > 0) {
+        for (let i = 0; i < rootsLen; i++) {
           const id = (roots[i] as HTMLElement).getAttribute('id');
           let iselempresent = false;
           if (id) {
-            for (let j = 0; j < this.instances.length; j++) {
+            for (let j = 0; j < instancelen; j++) {
               if (this.instances[id]) {
                 iselempresent = true;
                 break;
@@ -892,14 +907,17 @@ namespace AMegMen {
 
     public destroy = (query: string) => {
       const roots = _ArrayCall(document.querySelectorAll(query));
-      if (roots.length > 0) {
-        for (let i = 0; i < roots.length; i++) {
+      const rootsLen = roots.length;
+      if (rootsLen > 0) {
+        for (let i = 0; i < rootsLen; i++) {
           const id = (roots[i] as HTMLElement).getAttribute('id');
           if (id && this.instances[id]) {
             this.instances[id].destroy(id);
             delete this.instances[id];
           }
         }
+      } else {
+        console.error('Element(s) with the provided query do(es) not exist');
       }
     };
   }
