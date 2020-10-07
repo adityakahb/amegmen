@@ -174,19 +174,19 @@ const generateData = () => {
   let m3 = genPageMenu(4, 3);
   let m4 = genPageMenu(4, 4);
   
-  fs.writeFile('./templates/m1.html', m1, function (err) {
+  fs.writeFile('./examples/m1.html', m1, function (err) {
     if (err) throw err;
     console.log('Menu 1 Replaced!');
   });
-  fs.writeFile('./templates/m2.html', m2, function (err) {
+  fs.writeFile('./examples/m2.html', m2, function (err) {
     if (err) throw err;
     console.log('Menu 2 Replaced!');
   });
-  fs.writeFile('./templates/m3.html', m3, function (err) {
+  fs.writeFile('./examples/m3.html', m3, function (err) {
     if (err) throw err;
     console.log('Menu 3 Replaced!');
   });
-  fs.writeFile('./templates/m4.html', m4, function (err) {
+  fs.writeFile('./examples/m4.html', m4, function (err) {
     if (err) throw err;
     console.log('Menu 4 Replaced!');
   });

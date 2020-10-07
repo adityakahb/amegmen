@@ -25,7 +25,7 @@
   background-color: #c8c8c8; }
 
 .__amegmen .__amegmen--canvas {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   background-color: #eee;
   border: 1px solid #444;
   height: 100%;
@@ -69,7 +69,7 @@
       padding: 0; }
 
 .__amegmen .__amegmen--anchor-l0, .__amegmen .__amegmen--anchor-l1, .__amegmen .__amegmen--anchor-l2 {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   border: 1px solid transparent;
   display: block;
   text-align: left;
@@ -115,7 +115,7 @@
   padding: 0; }
 
 .__amegmen .__amegmen--panel {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   border: 1px solid #444;
   height: 100%;
   left: 0;
@@ -241,7 +241,7 @@
       transform: translate(0, 0);
       top: 60px; }
       .__amegmen .__amegmen--panel.active {
-        transition: all 250ms ease; }
+        transition: all 500ms ease; }
     .__amegmen .__amegmen--panel-l0 {
       height: auto;
       overflow: visible; }

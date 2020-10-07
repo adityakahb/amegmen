@@ -11,7 +11,8 @@
     "uglify:css": "uglifycss dist/amegmen/styles/amegmen.css --output dist/amegmen/styles/amegmen.min.css && uglifycss dist/amegmen-2/styles/amegmen.css --output dist/amegmen-2/styles/amegmen.min.css",
     "build:dev": "npm run compile:ts && npm run compile:sass",
     "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css",
-    "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css"
+    "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css",
+    "test": "karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -36,12 +37,20 @@
   "bugs": {
     "url": "https://github.com/adityakahb/amegmen/issues"
   },
-  "homepage": "https://github.com/adityakahb/amegmen#readme",
+  "homepage": "https://adityakahb.github.io/amegmen",
   "dependencies": {
     "bootstrap": "^4.5.2",
+    "istanbul": "^0.4.5",
+    "jasmine-core": "^3.6.0",
+    "karma": "^5.2.3",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-jasmine": "^4.0.1",
+    "karma-jasmine-html-reporter": "^1.5.4",
+    "karma-spec-reporter": "0.0.32",
     "node-sass": "^4.14.1",
     "typescript": "^4.0.3",
-    "uglify-js": "^3.10.4",
+    "uglify-js": "^3.11.1",
     "uglifycss": "0.0.29"
   }
 }

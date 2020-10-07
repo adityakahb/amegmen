@@ -178,6 +178,7 @@ amegmen_instance.init("#__amegmen_root", amegmen_options);
 | Option                | Default                 | Type                 | Description                                                                                                             |
 | --------------------- | ----------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **activeCls**         | `active`                | CSS class            | Associated with the root element and its children which get a subnav panel opened or activated                          |
+| **actOnHover**        | `false`                 | Boolean              | Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`                                           |
 | **actOnHoverAt**      | `1280`                  | Breakpoint in Pixels | If `actOnHover` is enabled, Hover behaviour will be activated on or after this breakpoint.                              |
 | **backBtnCls**        | `__amegmen--back-cta`   | CSS class            | Associated with the Level 2 Buttons on mobile, which navigates to the Level 1 Menu.                                     |
 | **closeBtnCls**       | `__amegmen--close-cta`  | CSS class            | Associated with the Button on mobile, which closes the Megamenu.                                                        |
@@ -193,15 +194,14 @@ amegmen_instance.init("#__amegmen_root", amegmen_options);
 | **l2AnchorCls**       | `__amegmen--anchor-l2`  | CSS class            | Associated with the links at Level 2                                                                                    |
 | **landingCtaCls**     | `__amegmen--landing`    | CSS class            | Associated with the containers at Level 1 and 2 which contain links to parent links at Level 0 and Level 1 respectively |
 | **lastcolCls**        | `__amegmen--col-last`   | CSS class            | Associated with the last column at Level 1                                                                              |
-| **mainBtnCls**        | `__amegmen--main-cta`   | CSS class            | Associated with the Level 1 Buttons on mobile, which navigates to the Level 0 Menu.                                     |
 | **lastcolCls**        | `__amegmen--col-last`   | CSS class            | Associated with the last column at Level 1                                                                              |
+| **mainBtnCls**        | `__amegmen--main-cta`   | CSS class            | Associated with the Level 1 Buttons on mobile, which navigates to the Level 0 Menu.                                     |
 | **mainElementCls**    | `__amegmen--main`       | CSS class            | Associated with the Level 0 main section which contains Level 0 anchors                                                 |
-| **rootCls**           | `__amegmen`             | CSS class            | Associated with the Root Element                                                                                        |
 | **offcanvasCls**      | `__amegmen--canvas`     | CSS class            | Associated with the Level 0 Element which acts as a sliding canvas on mobile                                            |
 | **overflowHiddenCls** | `__amegmen--nooverflow` | CSS class            | Associated with scrollable elements which the scrolling needs to be disabled                                            |
 | **panelCls**          | `__amegmen--panel`      | CSS class            | Associated with the Subnav Panels at Level 1 and Level 2                                                                |
+| **rootCls**           | `__amegmen`             | CSS class            | Associated with the Root Element                                                                                        |
 | **rtl_Cls**           | `__amegmen--r-to-l`     | CSS class            | If `isRTL` is enabled, this class is attached to the root element.                                                      |
-| **actOnHover**        | `false`                 | Boolean              | Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`                                           |
 | **supportedCols**     | `4`                     | Number               | Maximum number of columns associated with Level 1 Subnav Panel                                                          |
 | **toggleBtnCls**      | `__amegmen--toggle-cta` | CSS class            | Associated with the Button on mobile, which toggles the Megamenu specified by `offcanvasCls`                            |
 

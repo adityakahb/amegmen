@@ -19,7 +19,7 @@ $anchorFocus: #ccc;
 $amegmen_common_width: 60px;
 $amegmen_common_height: 60px;
 
-$amegmen_animation_time: 250ms;
+$amegmen_animation_time: 500ms;
 $amegmen_animation_easing: ease;
 
 @mixin amegmen-animation($property: all) {
