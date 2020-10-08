@@ -1,3 +1,4 @@
+const blankdiv = `<div id="outdiv" style="border: 1px solid #ddd; height: 44px; border-radius: 8px;"></div>`;
 const nav1 = `<nav id="__amegmen_1">
   <button class="__amegmen--toggle-cta">
     Menu
@@ -1515,7 +1516,7 @@ const nav1 = `<nav id="__amegmen_1">
   </div>
 </nav>`;
 
-const nav2 = `<nav id="__amegmen_2">
+const nav2 = `<nav class="__amegmen_2">
   <button class="__amegmen--toggle-cta">
     Menu
   </button>
@@ -3283,14 +3284,41 @@ const nav2 = `<nav id="__amegmen_2">
 
 describe("AMegMen", function () {
   let amegmenInstance;
+  let backBtn;
+  let closeBtn;
+  let l0anchor;
+  let l0landing;
+  let l0panel;
+  let l1anchor;
+  let l1panel;
+  let l2anchor;
+  let mainBtn;
+  let offcanvas;
+  let outdiv;
+  let toggleBtn;
 
   beforeAll(function () {
-    let fixture = nav1 + nav2;
+    let fixture = blankdiv + nav1 + nav2;
 
     document.body.insertAdjacentHTML(
       'afterbegin',
       fixture);
     amegmenInstance = AMegMen.Root.getInstance();
+  });
+
+  beforeEach(function () {
+    outdiv = document.querySelector('#outdiv');
+    l0anchor = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--anchor-l0');
+    l0panel = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0');
+    l0landing = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > .__amegmen--landing > a');
+    l1anchor = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > nav > .__amegmen--col > ul > li > .__amegmen--anchor-l1');
+    l1panel = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > nav > .__amegmen--col > ul > li > .__amegmen--panel-l1');
+    l2anchor = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > nav > .__amegmen--col > ul > li > .__amegmen--panel-l1 > nav > .__amegmen--col > ul > li > .__amegmen--anchor-l2');
+    toggleBtn = document.querySelector('#__amegmen_1 .__amegmen--toggle-cta');
+    closeBtn = document.querySelector('#__amegmen_1 .__amegmen--close-cta');
+    mainBtn = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > .__amegmen--landing > .__amegmen--main-cta');
+    backBtn = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > nav > .__amegmen--col > ul > li > .__amegmen--panel-l1 > .__amegmen--landing > .__amegmen--back-cta');
+    offcanvas = document.querySelector('#__amegmen_1 .__amegmen--canvas');
   });
 
   it('Should validate the AMegMen Instance', function () {
@@ -3303,13 +3331,27 @@ describe("AMegMen", function () {
   });
 
   it('Should initialize 1st Navigation', function () {
-    amegmenInstance.init('#__amegmen_1');
-    console.log('============amegmenInstance', amegmenInstance);
+    amegmenInstance.init('#__amegmen_1', {actOnHover: true});
+    expect(Object.keys(amegmenInstance.instances || {}).length).toBe(1);
+  });
+
+  it('Should destroy 1st Navigation', function () {
+    amegmenInstance.destroy('#__amegmen_1');
+    expect(Object.keys(amegmenInstance.instances || {}).length).toBe(0);
+  });
+
+  it('Should try re-init 1st Navigation', function () {
+    amegmenInstance.init('#__amegmen_1', {actOnHover: true});
     expect(Object.keys(amegmenInstance.instances || {}).length).toBe(1);
   });
 
   it('Should initialize 2nd Navigation', function () {
-    amegmenInstance.init('#__amegmen_2', {isRTL: true, actOnHover: true});
+    amegmenInstance.init('.__amegmen_2', {isRTL: true, actOnHover: true, shiftColumns: true});
+    expect(Object.keys(amegmenInstance.instances || {}).length).toBe(2);
+  });
+
+  it('Should try re-init 2nd Navigation', function () {
+    amegmenInstance.init('.__amegmen_2', {isRTL: true, actOnHover: true, shiftColumns: true});
     expect(Object.keys(amegmenInstance.instances || {}).length).toBe(2);
   });
 
@@ -3319,9 +3361,144 @@ describe("AMegMen", function () {
   });
 
   it('Should destroy 2nd Navigation', function () {
-    amegmenInstance.destroy('#__amegmen_2');
+    amegmenInstance.destroy('.__amegmen_2');
     expect(Object.keys(amegmenInstance.instances || {}).length).toBe(1);
   });
+
+  it('Should try focus on 0th Level Navigation', function () {
+    l0anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    expect(l0anchor).toHaveClass('focus');
+  });
+
+  it('Should try blur on 0th Level Navigation', function () {
+    l0anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    expect(l0anchor).not.toHaveClass('focus');
+  });
+
+  it('Should try mouseenter on 0th Level Navigation', function () {
+    l0anchor.dispatchEvent(new MouseEvent('mouseenter', { 'bubbles': true }));
+    expect(l0anchor).toHaveClass('hover');
+  });
+
+  it('Should try mouseleave on 0th Level Navigation', function () {
+    l0anchor.dispatchEvent(new MouseEvent('mouseleave', { 'bubbles': true }));
+    expect(l0anchor).not.toHaveClass('hover');
+  });
+  
+  it('Should try click on 0th Level Navigation', function () {
+    l0anchor.click();
+    expect(l0panel).toHaveClass('active');
+    outdiv.click();
+    expect(l0panel).not.toHaveClass('active');
+  });
+
+  it('Should try focus on 0th Level Navigation Landing', function () {
+    l0anchor.click();
+    l0landing.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    expect(l0landing).toHaveClass('focus');
+  });
+
+  it('Should try blur on 0th Level Navigation Landing', function () {
+    l0landing.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    expect(l0landing).not.toHaveClass('focus');
+  });
+
+  it('Should try mouseenter on 0th Level Navigation Landing', function () {
+    l0landing.dispatchEvent(new MouseEvent('mouseenter', { 'bubbles': true }));
+    expect(l0landing).toHaveClass('hover');
+  });
+
+  it('Should try mouseleave on 0th Level Navigation Landing', function () {
+    l0landing.dispatchEvent(new MouseEvent('mouseleave', { 'bubbles': true }));
+    expect(l0landing).not.toHaveClass('hover');
+  });
+
+  it('Should try focus on 1st Level Navigation', function () {
+    l1anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    expect(l1anchor).toHaveClass('focus');
+  });
+
+  it('Should try blur on 1st Level Navigation', function () {
+    l1anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    expect(l1anchor).not.toHaveClass('focus');
+  });
+
+  it('Should try mouseenter on 1st Level Navigation', function () {
+    l1anchor.dispatchEvent(new KeyboardEvent('mouseenter', { 'bubbles': true }));
+    expect(l1anchor).toHaveClass('hover');
+  });
+
+  it('Should try mouseleave on 1st Level Navigation', function () {
+    l1anchor.dispatchEvent(new KeyboardEvent('mouseleave', { 'bubbles': true }));
+    expect(l1anchor).not.toHaveClass('hover');
+  });
+
+  it('Should try click on 1st Level Navigation', function () {
+    l1anchor.click();
+    expect(l1panel).toHaveClass('active');
+    outdiv.click();
+    expect(l1panel).not.toHaveClass('active');
+  });
+
+  it('Should try focus on 2nd Level Navigation', function () {
+    l0anchor.click();
+    l1anchor.click();
+    l2anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    expect(l2anchor).toHaveClass('focus');
+  });
+
+  it('Should try blur on 2nd Level Navigation', function () {
+    l2anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    expect(l2anchor).not.toHaveClass('focus');
+  });
+
+  it('Should try mouseenter on 2nd Level Navigation', function () {
+    l2anchor.dispatchEvent(new KeyboardEvent('mouseenter', { 'bubbles': true }));
+    expect(l2anchor).toHaveClass('hover');
+  });
+
+  it('Should try mouseleave on 2nd Level Navigation', function () {
+    l2anchor.dispatchEvent(new KeyboardEvent('mouseleave', { 'bubbles': true }));
+    outdiv.click();
+    expect(l2anchor).not.toHaveClass('hover');
+  });
+
+  it('Should open offcanvas on mobile', function () {
+    viewport.set(375, 850);
+    toggleBtn.click();
+    expect(offcanvas).toHaveClass('active');
+  });
+
+  it('Should open Level 1 on mobile', function () {
+    viewport.set(375, 850);
+    l0anchor.click();
+    expect(l0panel).toHaveClass('active');
+  });
+
+  it('Should open Level 2 on mobile', function () {
+    viewport.set(375, 850);
+    l1anchor.click();
+    expect(l1panel).toHaveClass('active');
+  });
+
+  it('Should close Level 2 on mobile', function () {
+    viewport.set(375, 850);
+    backBtn.click();
+    expect(l1panel).not.toHaveClass('active');
+  });
+
+  it('Should close Level 1 on mobile', function () {
+    viewport.set(375, 850);
+    mainBtn.click();
+    expect(l0panel).not.toHaveClass('active');
+  });
+
+  it('Should close offcanvas on mobile', function () {
+    viewport.set(375, 850);
+    closeBtn.click();
+    expect(offcanvas).not.toHaveClass('active');
+  });
+
 });
 // 164383
 // Surabhi2017

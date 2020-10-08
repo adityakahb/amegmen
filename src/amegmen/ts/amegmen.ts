@@ -1,4 +1,10 @@
 /**
+ *  █████  ███    ███ ███████  ██████  ███    ███ ███████ ███    ██ 
+ * ██   ██ ████  ████ ██      ██       ████  ████ ██      ████   ██ 
+ * ███████ ██ ████ ██ █████   ██   ███ ██ ████ ██ █████   ██ ██  ██ 
+ * ██   ██ ██  ██  ██ ██      ██    ██ ██  ██  ██ ██      ██  ██ ██ 
+ * ██   ██ ██      ██ ███████  ██████  ██      ██ ███████ ██   ████ 
+ *
  * AMegMen Namespace contains the Root class, Core class and related constants.
  *
  */
@@ -382,7 +388,7 @@ namespace AMegMen {
   };
 
   /**
-   * Mouseenter event for Landing link on the panel 
+   * Mouseenter event for Landing link on the panels 
    * 
    * @param landingElement - An HTML Element
    * @param hoverCls - CSS Class for hovered element
@@ -395,7 +401,7 @@ namespace AMegMen {
   };
 
   /**
-   * Mouseleave event for Landing link on the panel 
+   * Mouseleave event for Landing link on the panels
    * 
    * @param landingElement - An HTML Element
    * @param hoverCls - CSS Class for hovered element
@@ -408,7 +414,7 @@ namespace AMegMen {
   };
 
   /**
-   * Focus event for Landing link on the panel 
+   * Focus event for Landing link on the panels 
    * 
    * @param landingElement - An HTML Element
    * @param focusCls - CSS Class for focussed element
@@ -421,7 +427,7 @@ namespace AMegMen {
   };
 
   /**
-   * Blur event for Landing link on the panel 
+   * Blur event for Landing link on the panels 
    * 
    * @param landingElement - An HTML Element
    * @param focusCls - CSS Class for focussed element
@@ -429,14 +435,14 @@ namespace AMegMen {
    */
   const amm_landingBlurFn = (landingElement: HTMLElement, focusCls: string) => {
     return () => {
-      _AddClass(landingElement, focusCls);
+      _RemoveClass(landingElement, focusCls);
     };
   };
 
   /**
    * Focus event for Level 0 link 
    * 
-   * @param landingElement - An HTML Element
+   * @param l0anchor - An HTML Anchor element at Level 0 Navigation
    * @param focusCls - CSS Class for focussed element
    *
    */
@@ -446,48 +452,109 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Blur event for Level 0 link 
+   * 
+   * @param l0anchor - An HTML Anchor element at Level 0 Navigation
+   * @param focusCls - CSS Class for focussed element
+   *
+   */
   const amm_l0BlurFn = (l0anchor: HTMLElement, focusCls: string) => {
     return () => {
       _RemoveClass(l0anchor, focusCls);
     };
   };
 
+  /**
+   * Focus event for Level 1 link 
+   * 
+   * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+   * @param focusCls - CSS Class for focussed element
+   *
+   */
   const amm_l1FocusFn = (l1anchor: HTMLElement, focusCls: string) => {
     return () => {
       _AddClass(l1anchor, focusCls);
     };
   };
 
+  /**
+   * Blur event for Level 1 link 
+   * 
+   * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+   * @param focusCls - CSS Class for focussed element
+   *
+   */
   const amm_l1BlurFn = (l1anchor: HTMLElement, focusCls: string) => {
     return () => {
       _RemoveClass(l1anchor, focusCls);
     };
   };
 
+  /**
+   * Mouseenter event for Level 2 link 
+   * 
+   * @param l2anchor - An HTML Anchor element at Level 2 Navigation
+   * @param hoverCls - CSS Class for hovered element
+   *
+   */
   const amm_l2MouseenterFn = (l2anchor: HTMLElement, hoverCls: string) => {
     return () => {
       _AddClass(l2anchor, hoverCls);
     };
   };
 
+  /**
+   * Mouseleave event for Level 2 link 
+   * 
+   * @param l2anchor - An HTML Anchor element at Level 2 Navigation
+   * @param hoverCls - CSS Class for hovered element
+   *
+   */
   const amm_l2MouseleaveFn = (l2anchor: HTMLElement, hoverCls: string) => {
     return () => {
       _RemoveClass(l2anchor, hoverCls);
     };
   };
 
+  /**
+   * Focus event for Level 2 link 
+   * 
+   * @param l2anchor - An HTML Anchor element at Level 2 Navigation
+   * @param focusCls - CSS Class for focussed element
+   *
+   */
   const amm_l2FocusFn = (l2anchor: HTMLElement, focusCls: string) => {
     return () => {
       _AddClass(l2anchor, focusCls);
     };
   };
 
+  /**
+   * Blur event for Level 2 link 
+   * 
+   * @param l2anchor - An HTML Anchor element at Level 2 Navigation
+   * @param focusCls - CSS Class for focussed element
+   *
+   */
   const amm_l2BlurFn = (l2anchor: HTMLElement, focusCls: string) => {
     return () => {
       _RemoveClass(l2anchor, focusCls);
     };
   };
 
+  /**
+   * Click event for Level 0 link 
+   * 
+   * @param l0anchor - An HTML Anchor element at Level 0 Navigation
+   * @param l0panel - Adjecent Panel to the l0anchor
+   * @param parent - Parent LI element
+   * @param mainElem - Main Wrapper which contains the navigation elements
+   * @param overflowHiddenCls - Class which disables scrollbars on mobile
+   * @param activeCls - Class for active elements
+   * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
+   *
+   */
   const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
     return () => {
       if (event && l0panel) {
@@ -509,6 +576,15 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Mouseenter event for Level 0 link 
+   * 
+   * @param l0anchor - An HTML Anchor element at Level 0 Navigation
+   * @param hoverCls - Class for hovered elements
+   * @param actOnHover - If `true`, megamenu activates on hover
+   * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
+   *
+   */
   const amm_l0MouseenterFn = (l0anchor: HTMLElement, hoverCls: string, actOnHover: boolean, actOnHoverAt: number) => {
     return () => {
       _AddClass(l0anchor, hoverCls);
@@ -994,10 +1070,6 @@ namespace AMegMen {
       _EnableQSQSAScope();
       _EnableClosest();
       _EnableAssign();
-      
-      if (window && document && !(window as any).AMegMen) {
-        (window as any).AMegMen = AMegMen;
-      }
     }
 
     /**
@@ -1021,7 +1093,12 @@ namespace AMegMen {
     public init = (query: string, options?: IAMegMenSettings) => {
       const roots = _ArrayCall(document.querySelectorAll(query));
       const rootsLen = roots.length;
-      const instancelen = this.instances.length;
+      let instancelen = 0;
+      for (let i in this.instances) {
+        if (this.instances.hasOwnProperty(i)) {
+          instancelen++;
+        }
+      }
       if (rootsLen > 0) {
         for (let i = 0; i < rootsLen; i++) {
           const id = (roots[i] as HTMLElement).getAttribute('id');
