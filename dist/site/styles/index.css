@@ -8395,4 +8395,10 @@ h4, .h4 {
       h4, .h4 {
         font-size: 18px; } }
 
+.__amegmen .__amegmen--anchor-l0 .icon, .__amegmen .__amegmen--anchor-l1 .icon, .__amegmen .__amegmen--anchor-l2 .icon, .__amegmen .__amegmen--landing a .icon {
+  display: none; }
+
+.__amegmen .__amegmen--anchor-l1 .icon, .__amegmen .__amegmen--anchor-l2 .icon {
+  display: none; }
+
 /*# sourceMappingURL=index.css.map */

@@ -54,12 +54,14 @@ declare namespace AMegMen {
         private instances;
         protected static instance: Root | null;
         /**
-         * Constructor to initiate polyfills and adding the AMegMen to window object.
+         * Constructor to initiate polyfills
          *
          */
         constructor();
         /**
          * Function to return single instance
+         *
+         * @returns Single AMegMen Instance
          *
          */
         static getInstance(): Root;

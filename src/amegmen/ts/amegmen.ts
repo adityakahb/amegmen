@@ -339,15 +339,15 @@ namespace AMegMen {
       const thiscore = AllAMegMenInstances[i];
       const rootElem = thiscore.rootElem;
       let shouldExecute = false;
-      if (eventtype === 'mouseover' && (AllAMegMenInstances[i].settings || {}).actOnHover === true) {
+      if (eventtype === 'mouseover' && (thiscore.settings || {}).actOnHover === true) {
         shouldExecute = true;
       }
       if (eventtype === 'click') {
         shouldExecute = true;
       }
       if (shouldExecute && _HasClass(rootElem, activeCls)) {
-        const mainElem = AllAMegMenInstances[i].mainElem;
-        const l0nav = AllAMegMenInstances[i].l0nav || [];
+        const mainElem = thiscore.mainElem;
+        const l0nav = thiscore.l0nav || [];
         if (shouldCloseL0Panel) {
           _RemoveClass(rootElem, activeCls);
           _RemoveClass(mainElem, overflowHiddenCls);
@@ -597,12 +597,30 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Mouseleave event for Level 0 link 
+   * 
+   * @param l0anchor - An HTML Anchor element at Level 0 Navigation
+   * @param hoverCls - Class for hovered elements
+   *
+   */
   const amm_l0MouseleaveFn = (l0anchor: HTMLElement, hoverCls: string) => {
     return () => {
       _RemoveClass(l0anchor, hoverCls);
     };
   };
 
+  /**
+   * Click event for Level 1 link 
+   * 
+   * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+   * @param l1panel - Adjecent Panel to the l1anchor
+   * @param l0navelement - Parent `nav` element of l1anchor
+   * @param overflowHiddenCls - Class which disables scrollbars on mobile
+   * @param activeCls - Class for active elements
+   * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
+   *
+   */
   const amm_l1ClickFn = (l1anchor: HTMLElement, l1panel: HTMLElement, l0navelement: HTMLElement, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
     return () => {
       if (event && l1panel) {
@@ -621,6 +639,15 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Mouseenter event for Level 1 link 
+   * 
+   * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+   * @param hoverCls - Class for hovered elements
+   * @param actOnHover - If `true`, megamenu activates on hover
+   * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
+   *
+   */
   const amm_l1MouseenterFn = (l1anchor: HTMLElement, hoverCls: string, actOnHover: boolean, actOnHoverAt: number) => {
     return () => {
       _AddClass(l1anchor, hoverCls);
@@ -633,12 +660,27 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Mouseleave event for Level 1 link 
+   * 
+   * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+   * @param hoverCls - Class for hovered elements
+   *
+   */
   const amm_l1MouseleaveFn = (l1anchor: HTMLElement, hoverCls: string) => {
     return () => {
       _RemoveClass(l1anchor, hoverCls);
     };
   };
 
+  /**
+   * Click event for closing megamenu on mobile 
+   * 
+   * @param togglenav - Button element to close Offcanvas on mobile
+   * @param offcanvas - Offcanvas element containing megamenu
+   * @param activeCls - Class which activates the megamenu links and panels
+   *
+   */
   const amm_closeMain = (togglenav: HTMLElement, offcanvas: HTMLElement, activeCls: string) => {
     return () => {
       if (event) {
@@ -649,6 +691,14 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Click event for opening/closing megamenu on mobile 
+   * 
+   * @param togglenav - Button element to close Offcanvas on mobile
+   * @param offcanvas - Offcanvas element containing megamenu
+   * @param activeCls - Class which activates the megamenu links and panels
+   *
+   */
   const amm_toggleMain = (togglenav: HTMLElement, offcanvas: HTMLElement, activeCls: string) => {
     return () => {
       if (event) {
@@ -664,12 +714,27 @@ namespace AMegMen {
     };
   };
 
+  /**
+   * Function to add/remove events related to megamenu elements 
+   * 
+   * @param shouldAdd - If `true`, adds the event to the element, otherwise removes it
+   * @param element - The element to which event is added/removed
+   * @param eventtype - Eventtype as a string, like 'click', 'mouseenter', 'mouseleave' etc.
+   * @param fn - The Eventlistener function which is attached to the respective event
+   *
+   */
   const amm_eventScheduler = (shouldAdd: Boolean, element: HTMLElement | HTMLDocument | Window, eventtype: string, fn: EventListenerOrEventListenerObject) => {
     shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
   };
 
+  /**
+   * Function to toggle events to AMegMen instance elements 
+   * 
+   * @param core - AMegMen instance core object
+   * @param settings - AMegMen instance settings object
+   *
+   */
   const amm_toggleevents = (core: any, settings: IAMegMenSettings) => {
-
     const togglenav = core.togglenav;
     const closenav = core.closenav;
     const offcanvas = core.offcanvas;
@@ -849,6 +914,16 @@ namespace AMegMen {
     }
   };
 
+  /**
+   * Function to initialize AMegMen instance 
+   * 
+   * @param core - AMegMen instance core object
+   * @param rootElem - Parent `nav` element
+   * @param settings - AMegMen instance settings object
+   * 
+   * @returns The AMegMen instance core object after updating elements and events
+   *
+   */
   const amm_init = (core: any, rootElem: HTMLElement, settings: IAMegMenSettings) => {
     _AddClass(rootElem, settings.rootCls ? settings.rootCls : '');
     core.rootElem = rootElem;
@@ -954,6 +1029,13 @@ namespace AMegMen {
     return core;
   };
 
+  /**
+   * Function to destroy AMegMen instance 
+   * 
+   * @param thisid - Element id of the AMegMen instance
+   * @param core - AMegMen instance core object
+   *
+   */
   const amm_destroy = (thisid: string, core: any) => {
     const rootElem = core.rootElem;
     const settings = core.settings;
@@ -1063,7 +1145,7 @@ namespace AMegMen {
     protected static instance: Root | null = null;
     
     /**
-     * Constructor to initiate polyfills and adding the AMegMen to window object.
+     * Constructor to initiate polyfills
      *
      */
     constructor() {
@@ -1074,6 +1156,8 @@ namespace AMegMen {
 
     /**
      * Function to return single instance
+     * 
+     * @returns Single AMegMen Instance
      *
      */
     public static getInstance(): Root {

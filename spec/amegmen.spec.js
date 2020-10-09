@@ -3463,14 +3463,21 @@ describe("AMegMen", function () {
     expect(l2anchor).not.toHaveClass('hover');
   });
 
-  it('Should open offcanvas on mobile', function () {
+  it('Should open offcanvas on mobile using main toggle', function () {
     viewport.set(375, 850);
     toggleBtn.click();
     expect(offcanvas).toHaveClass('active');
   });
 
+  it('Should close offcanvas on mobile main toggle', function () {
+    viewport.set(375, 850);
+    toggleBtn.click();
+    expect(offcanvas).not.toHaveClass('active');
+  });
+
   it('Should open Level 1 on mobile', function () {
     viewport.set(375, 850);
+    toggleBtn.click();
     l0anchor.click();
     expect(l0panel).toHaveClass('active');
   });

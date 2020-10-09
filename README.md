@@ -125,14 +125,22 @@ npm install amegmen
 								<!-- Level 1 UL/LI -->
                 <ul>
                   <li>
+                    <!-- Level 1 anchor -->
                     <a href="#">Et elementum gravida Porttitor</a>
+                    <!-- Level 1 Megamenu panel -->
                     <section class="__amegmen--panel">
+                      <!-- Container for Level 1 anchor's landing page url -->
                       <div class="__amegmen--landing">
+                        <!-- Button (on mobile) to go previous menu (level 1)  -->
                         <button class="__amegmen--back-cta">Back</button>
+                        <!-- Level 1 anchor's landing page url -->
                         <a href="#">Landing page: Magnis congue vehicula Aliquam turpis</a>
                       </div>
+                      <!-- Level 2 navigation -->
                       <nav>
+                        <!-- Level 2 navigation column -->
                         <div class="__amegmen--col">
+                          <!-- Level 2 UL/LI/A -->
                           <ul>
                             <li><a href="#">Pulvinar consectetur elementum Phasellus dolor</a></li>
                             <li><a href="#">Nullam vivamus turpis Ut</a></li>
@@ -146,9 +154,11 @@ npm install amegmen
                   </li>
                 </ul>
               </div>
+              <!-- Repeat Level 1 navigation columns -->
             </nav>
           </section>
         </li>
+        <!-- Repeat Repeat Level 0 LI -->
       </ul>
     </section>
   </div>
@@ -165,6 +175,8 @@ npm install amegmen
 var amegmen_instance = AMegMen.Root.getInstance();
 var amegmen_options = {};
 amegmen_instance.init("#__amegmen_root", amegmen_options);
+/* If you need to */
+amegmen_instance.destroy("#__amegmen_root");
 ```
 
 ### CSS

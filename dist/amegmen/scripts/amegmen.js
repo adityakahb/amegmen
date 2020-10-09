@@ -294,15 +294,15 @@ var AMegMen;
             var thiscore = AllAMegMenInstances[i];
             var rootElem = thiscore.rootElem;
             var shouldExecute = false;
-            if (eventtype === 'mouseover' && (AllAMegMenInstances[i].settings || {}).actOnHover === true) {
+            if (eventtype === 'mouseover' && (thiscore.settings || {}).actOnHover === true) {
                 shouldExecute = true;
             }
             if (eventtype === 'click') {
                 shouldExecute = true;
             }
             if (shouldExecute && _HasClass(rootElem, activeCls)) {
-                var mainElem = AllAMegMenInstances[i].mainElem;
-                var l0nav = AllAMegMenInstances[i].l0nav || [];
+                var mainElem = thiscore.mainElem;
+                var l0nav = thiscore.l0nav || [];
                 if (shouldCloseL0Panel) {
                     _RemoveClass(rootElem, activeCls);
                     _RemoveClass(mainElem, overflowHiddenCls);
@@ -537,11 +537,29 @@ var AMegMen;
             }
         };
     };
+    /**
+     * Mouseleave event for Level 0 link
+     *
+     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
+     * @param hoverCls - Class for hovered elements
+     *
+     */
     var amm_l0MouseleaveFn = function (l0anchor, hoverCls) {
         return function () {
             _RemoveClass(l0anchor, hoverCls);
         };
     };
+    /**
+     * Click event for Level 1 link
+     *
+     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+     * @param l1panel - Adjecent Panel to the l1anchor
+     * @param l0navelement - Parent `nav` element of l1anchor
+     * @param overflowHiddenCls - Class which disables scrollbars on mobile
+     * @param activeCls - Class for active elements
+     * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
+     *
+     */
     var amm_l1ClickFn = function (l1anchor, l1panel, l0navelement, overflowHiddenCls, activeCls, eventtype) {
         return function () {
             if (event && l1panel) {
@@ -560,6 +578,15 @@ var AMegMen;
             }
         };
     };
+    /**
+     * Mouseenter event for Level 1 link
+     *
+     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+     * @param hoverCls - Class for hovered elements
+     * @param actOnHover - If `true`, megamenu activates on hover
+     * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
+     *
+     */
     var amm_l1MouseenterFn = function (l1anchor, hoverCls, actOnHover, actOnHoverAt) {
         return function () {
             _AddClass(l1anchor, hoverCls);
@@ -571,11 +598,26 @@ var AMegMen;
             }
         };
     };
+    /**
+     * Mouseleave event for Level 1 link
+     *
+     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
+     * @param hoverCls - Class for hovered elements
+     *
+     */
     var amm_l1MouseleaveFn = function (l1anchor, hoverCls) {
         return function () {
             _RemoveClass(l1anchor, hoverCls);
         };
     };
+    /**
+     * Click event for closing megamenu on mobile
+     *
+     * @param togglenav - Button element to close Offcanvas on mobile
+     * @param offcanvas - Offcanvas element containing megamenu
+     * @param activeCls - Class which activates the megamenu links and panels
+     *
+     */
     var amm_closeMain = function (togglenav, offcanvas, activeCls) {
         return function () {
             if (event) {
@@ -585,6 +627,14 @@ var AMegMen;
             _RemoveClass(offcanvas, activeCls);
         };
     };
+    /**
+     * Click event for opening/closing megamenu on mobile
+     *
+     * @param togglenav - Button element to close Offcanvas on mobile
+     * @param offcanvas - Offcanvas element containing megamenu
+     * @param activeCls - Class which activates the megamenu links and panels
+     *
+     */
     var amm_toggleMain = function (togglenav, offcanvas, activeCls) {
         return function () {
             if (event) {
@@ -600,9 +650,25 @@ var AMegMen;
             }
         };
     };
+    /**
+     * Function to add/remove events related to megamenu elements
+     *
+     * @param shouldAdd - If `true`, adds the event to the element, otherwise removes it
+     * @param element - The element to which event is added/removed
+     * @param eventtype - Eventtype as a string, like 'click', 'mouseenter', 'mouseleave' etc.
+     * @param fn - The Eventlistener function which is attached to the respective event
+     *
+     */
     var amm_eventScheduler = function (shouldAdd, element, eventtype, fn) {
         shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
     };
+    /**
+     * Function to toggle events to AMegMen instance elements
+     *
+     * @param core - AMegMen instance core object
+     * @param settings - AMegMen instance settings object
+     *
+     */
     var amm_toggleevents = function (core, settings) {
         var togglenav = core.togglenav;
         var closenav = core.closenav;
@@ -766,6 +832,16 @@ var AMegMen;
             amm_eventScheduler(true, window, 'mouseover', window.amm_docMouseoverFn);
         }
     };
+    /**
+     * Function to initialize AMegMen instance
+     *
+     * @param core - AMegMen instance core object
+     * @param rootElem - Parent `nav` element
+     * @param settings - AMegMen instance settings object
+     *
+     * @returns The AMegMen instance core object after updating elements and events
+     *
+     */
     var amm_init = function (core, rootElem, settings) {
         _AddClass(rootElem, settings.rootCls ? settings.rootCls : '');
         core.rootElem = rootElem;
@@ -857,6 +933,13 @@ var AMegMen;
         amm_toggleevents(core, settings);
         return core;
     };
+    /**
+     * Function to destroy AMegMen instance
+     *
+     * @param thisid - Element id of the AMegMen instance
+     * @param core - AMegMen instance core object
+     *
+     */
     var amm_destroy = function (thisid, core) {
         var rootElem = core.rootElem;
         var settings = core.settings;
@@ -955,7 +1038,7 @@ var AMegMen;
      */
     var Root = /** @class */ (function () {
         /**
-         * Constructor to initiate polyfills and adding the AMegMen to window object.
+         * Constructor to initiate polyfills
          *
          */
         function Root() {
@@ -1033,6 +1116,8 @@ var AMegMen;
         }
         /**
          * Function to return single instance
+         *
+         * @returns Single AMegMen Instance
          *
          */
         Root.getInstance = function () {
