@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AMegMen - Accessible Mega Menu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Poller+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Kumar+One&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="dist/site/styles/index.min.css" rel="stylesheet" />
   <link href="dist/amegmen/styles/amegmen.min.css" rel="stylesheet" />
@@ -49,7 +49,7 @@
   </section>
   <section>
     <div class="max-wrap py-5 text-center">
-      <h2>Choose Demo</h2>
+      <h2>Demo</h2>
       <div>
         <div class="d-inline-block w-auto">
           <select id="demo_select" class="form-control form-control-lg">
@@ -60,7 +60,8 @@
           </select>
         </div>
       </div>
-      <hr />
+      <button type="button" class="btn btn-primary btn-lg d-none" id="destory_dd">Destroy</button>
+      <div class="mb-3"></div>
       <nav id="__amegmen_1">
         <button class="__amegmen--toggle-cta">
           <span class="sr-only">Menu</span>
@@ -7057,8 +7058,7 @@
 &lt;/nav&gt;
         </code></samp></pre>
       </div>
-      <hr/>
-      <h3>JavaScript</h3>
+      <h3 class="mt-5">JavaScript</h3>
       <div class="alert alert-info m-0 text-left">
         <pre class="m-0"><samp><code>
 &lt;script&gt; src="path/to/amegmen.min.js"&gt;&lt;/script&gt;
@@ -7066,17 +7066,136 @@
   var amegmen_instance = AMegMen.Root.getInstance();
   var amegmen_options = {};
   amegmen_instance.init("#__amegmen_root", amegmen_options);
-  /* If you need to */
+  /* You can destroy it as well */
   amegmen_instance.destroy("#__amegmen_root");
 &lt;/script&gt;
-        </code></pre>
+        </code></samp></pre>
       </div>
-      <hr/>
-      <h3>CSS</h3>
+      <h3 class="mt-5">CSS</h3>
       <div class="alert alert-info m-0 text-left">
         <pre class="m-0"><samp><code>
 &lt;link href="path/to/amegmen.min.css" rel="stylesheet" /&gt;
-        </code></pre>
+        </code></samp></pre>
+      </div>
+    </div>
+    <div class="max-wrap py-5 text-center">
+      <h2 class="mt-5">Options</h2>
+      <div class="alert alert-dark m-0">
+        <strong>activeCls</strong>: CSS Class
+        <br/>Default: `active`
+        <br/>Associated with the root element and its children which get a subnav panel opened or activated
+        <br/>
+        <br/><strong>actOnHover</strong>: Boolean
+        <br/>Default: `false`
+        <br/>Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`
+        <br/>
+        <br/><strong>actOnHoverAt</strong>: Number
+        <br/>Default: `1280`
+        <br/>If `actOnHover` is enabled, Hover behaviour will be activated on or after this breakpoint.
+        <br/>
+        <br/><strong>backBtnCls</strong>: CSS Class
+        <br/>Default: `__amegmen--back-cta`
+        <br/>Associated with the Level 2 Buttons on mobile, which navigates to the Level 1 Menu.
+        <br/>
+        <br/><strong>closeBtnCls</strong>: CSS Class
+        <br/>Default: `__amegmen--close-cta`
+        <br/>Associated with the Button on mobile, which closes the Megamenu.
+        <br/>
+        <br/><strong>colCls</strong>: CSS Class
+        <br/>Default: `__amegmen--col`
+        <br/>Associated with the Columns on Panels at Level 1 and level 2.
+        <br/>
+        <br/><strong>focusCls</strong>: CSS Class
+        <br/>Default: `focus`
+        <br/>Triggered when focus event is fired on related elements.
+        <br/>
+        <br/><strong>hoverCls</strong>: CSS Class
+        <br/>Default: `hover`
+        <br/>Triggered when hover event is fired on related elements.
+        <br/>
+        <br/><strong>idPrefix</strong>: String
+        <br/>Default: `__amegmen_id`
+        <br/>Some elements need an id associated with them for behavior calculation. This is a prefix string for those IDs.
+        <br/>
+        <br/><strong>isRTL</strong>: Boolean
+        <br/>Default: `false`
+        <br/>Changes the direction of the Megamenu to Right to Left. Caution: It uses CSS property `direction: rtl`
+        <br/>
+        <br/><strong>l0AnchorCls</strong>: CSS Class
+        <br/>Default: `__amegmen--anchor-l0`
+        <br/>Associated with the links at Level 0
+        <br/>
+        <br/><strong>l0PanelCls</strong>: CSS Class
+        <br/>Default: `__amegmen--panel-l0`
+        <br/>Associated with the Subnav Panel at Level 0
+        <br/>
+        <br/><strong>l1AnchorCls</strong>: CSS Class
+        <br/>Default: `__amegmen--anchor-l1`
+        <br/>Associated with the links at Level 1
+        <br/>
+        <br/><strong>l1PanelCls</strong>: CSS Class
+        <br/>Default: `__amegmen--panel-l1`
+        <br/>Associated with the Subnav Panel at Level 1
+        <br/>
+        <br/><strong>l2AnchorCls</strong>: CSS Class
+        <br/>Default: `__amegmen--anchor-l2`
+        <br/>Associated with the links at Level 2
+        <br/>
+        <br/><strong>landingCtaCls</strong>: CSS Class
+        <br/>Default: `__amegmen--landing`
+        <br/>Associated with the containers at Level 1 and 2 which contain links to parent links at Level 0 and Level 1 respectively
+        <br/>
+        <br/><strong>lastcolCls</strong>: CSS Class
+        <br/>Default: `__amegmen--col-last`
+        <br/>Associated with the last column at Level 1
+        <br/>
+        <br/><strong>mainBtnCls</strong>: CSS Class
+        <br/>Default: `__amegmen--main-cta`
+        <br/>Associated with the Level 1 Buttons on mobile, which navigates to the Level 0 Menu.
+        <br/>
+        <br/><strong>mainElementCls</strong>: CSS Class
+        <br/>Default: `__amegmen--main`
+        <br/>Associated with the Level 0 main section which contains Level 0 anchors
+        <br/>
+        <br/><strong>offcanvasCls</strong>: CSS Class
+        <br/>Default: `__amegmen--canvas`
+        <br/>Associated with scrollable elements which the scrolling needs to be disabled
+        <br/>
+        <br/><strong>overflowHiddenCls</strong>: CSS Class
+        <br/>Default: `__amegmen--nooverflow`
+        <br/>Associated with scrollable elements which the scrolling needs to be disabled
+        <br/>
+        <br/><strong>panelCls</strong>: CSS Class
+        <br/>Default: `__amegmen--panel`
+        <br/>Associated with the Subnav Panels at Level 1 and Level 2
+        <br/>
+        <br/><strong>rootCls</strong>: CSS Class
+        <br/>Default: `__amegmen`
+        <br/>Associated with the Root Element
+        <br/>
+        <br/><strong>rtl_Cls</strong>: CSS Class
+        <br/>Default: `__amegmen--r-to-l`
+        <br/>Associated with the Root Element, if `isRTL` is enabled
+        <br/>
+        <br/><strong>supportedCols</strong>: Number 
+        <br/>Default: `4`
+        <br/>Maximum number of columns associated with Level 1 Subnav Panel
+        <br/>
+        <br/><strong>toggleBtnCls</strong>: CSS Class
+        <br/>Default: `__amegmen--toggle-cta`
+        <br/>Associated with the Button on mobile, which toggles the Megamenu specified by `offcanvasCls`
+      </div>
+    </div>
+    <div class="max-wrap py-5 text-center">
+      <h2 class="mt-5">Methods</h2>
+      <div class="alert alert-dark m-0">
+        <strong>init</strong>
+        <br/>Parameters: CSS Selector
+        <br/>The Root element id or class to be passed to initialize the Megamenu. Example `#root`, `.root`
+        <br/>
+        <br/><strong>destroy</strong>
+        <br/>Parameters: CSS Selector
+        <br/>The Root element id or class to be passed to destroy the Megamenu. Example `#root`, `.root`
       </div>
     </div>
   </section>
@@ -7107,6 +7226,13 @@
         }
       }
     };
+    var destory_dd = document.getElementById('destory_dd');
+    if (destory_dd) {
+      destory_dd.addEventListener('click', function() {
+        mm_instance1.destroy('#__amegmen_1');
+        defaultselect = '';
+      });
+    }
     select.addEventListener('change', changeselect);
   </script>
 </body>

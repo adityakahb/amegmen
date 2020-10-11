@@ -308,14 +308,21 @@ var AMegMen;
                     _RemoveClass(mainElem, overflowHiddenCls);
                 }
                 for (var j = l0nav.length - 1; j >= 0; j--) {
+                    var thisl0 = l0nav[j];
                     if (shouldCloseL0Panel) {
-                        _RemoveClass(l0nav[j].l0anchor, activeCls);
-                        _RemoveClass(l0nav[j].l0panel, activeCls);
+                        _RemoveClass(thisl0.l0anchor, activeCls);
+                        _RemoveClass(thisl0.l0panel, activeCls);
+                        thisl0.l0anchor.setAttribute('aria-expanded', 'false');
+                        thisl0.l0panel.setAttribute('aria-expanded', 'false');
+                        thisl0.l0panel.setAttribute('aria-hidden', 'true');
                     }
-                    _RemoveClass(l0nav[j].navelement, overflowHiddenCls);
-                    var l1nav = l0nav[j].l1nav || [];
+                    _RemoveClass(thisl0.navelement, overflowHiddenCls);
+                    var l1nav = thisl0.l1nav || [];
                     for (var k = l1nav.length - 1; k >= 0; k--) {
                         var thisl1 = l1nav[k];
+                        thisl1.l1anchor.setAttribute('aria-expanded', 'false');
+                        thisl1.l1panel.setAttribute('aria-expanded', 'false');
+                        thisl1.l1panel.setAttribute('aria-hidden', 'true');
                         _RemoveClass(thisl1.l1anchor, activeCls);
                         _RemoveClass(thisl1.l1panel, activeCls);
                     }
@@ -510,6 +517,9 @@ var AMegMen;
                 amm_subnavclose(true, overflowHiddenCls, activeCls, eventtype);
                 active_amegmen.elem = parent;
                 active_amegmen.closestl0li = l0anchor.closest('li').getAttribute('id');
+                l0anchor.setAttribute('aria-expanded', 'true');
+                l0panel.setAttribute('aria-expanded', 'true');
+                l0panel.setAttribute('aria-hidden', 'false');
                 _AddClass(parent, activeCls);
                 _AddClass(l0anchor, activeCls);
                 _AddClass(l0panel, activeCls);
@@ -572,6 +582,9 @@ var AMegMen;
             else {
                 active_amegmen.closestl1li = l1anchor.closest('li').getAttribute('id');
                 amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);
+                l1anchor.setAttribute('aria-expanded', 'true');
+                l1panel.setAttribute('aria-expanded', 'true');
+                l1panel.setAttribute('aria-hidden', 'false');
                 _AddClass(l1anchor, activeCls);
                 _AddClass(l1panel, activeCls);
                 _AddClass(l0navelement, overflowHiddenCls);
@@ -867,6 +880,11 @@ var AMegMen;
                 _AddClass(nav0obj.l0anchor, settings.l0AnchorCls ? settings.l0AnchorCls : '');
                 var l0panel = thisl0li.querySelector(":scope > ." + settings.panelCls);
                 if (l0panel) {
+                    nav0obj.l0anchor.setAttribute('role', 'button');
+                    nav0obj.l0anchor.setAttribute('aria-expanded', 'false');
+                    l0panel.setAttribute('role', 'region');
+                    l0panel.setAttribute('aria-expanded', 'false');
+                    l0panel.setAttribute('aria-hidden', 'true');
                     _AddClass(l0panel, settings.l0PanelCls ? settings.l0PanelCls : '');
                     nav0obj.l0panel = l0panel;
                     nav0obj.l0tomain = l0panel.querySelector("." + settings.mainBtnCls);
@@ -896,6 +914,11 @@ var AMegMen;
                                 _AddClass(nav1obj.l1anchor, settings.l1AnchorCls ? settings.l1AnchorCls : '');
                                 var l1panel = thisl1li.querySelector(":scope > ." + settings.panelCls);
                                 if (l1panel) {
+                                    nav1obj.l1anchor.setAttribute('role', 'button');
+                                    nav1obj.l1anchor.setAttribute('aria-expanded', 'false');
+                                    l1panel.setAttribute('role', 'region');
+                                    l1panel.setAttribute('aria-expanded', 'false');
+                                    l1panel.setAttribute('aria-hidden', 'true');
                                     _AddClass(l1panel, settings.l1PanelCls ? settings.l1PanelCls : '');
                                     nav1obj.l1panel = l1panel;
                                     nav1obj.l1toback = l1panel.querySelector("." + settings.backBtnCls);
@@ -959,6 +982,15 @@ var AMegMen;
         _RemoveClass(rootElem, cls);
         for (var i = allElems.length - 1; i >= 0; i--) {
             var thiselem = allElems[i];
+            if ((_HasClass(thiselem, settings.l0AnchorCls) || _HasClass(thiselem, settings.l1AnchorCls)) && thiselem.getAttribute('role') === 'button') {
+                thiselem.removeAttribute('role');
+                thiselem.removeAttribute('aria-expanded');
+            }
+            if ((_HasClass(thiselem, settings.l0PanelCls) || _HasClass(thiselem, settings.l1PanelCls)) && thiselem.getAttribute('role') === 'region') {
+                thiselem.removeAttribute('role');
+                thiselem.removeAttribute('aria-expanded');
+                thiselem.removeAttribute('aria-hidden');
+            }
             _RemoveClass(thiselem, cls);
             _ToggleUniqueId(thiselem, settings, i, false);
             for (var j = _EventList.length - 1; j >= 0; j--) {
