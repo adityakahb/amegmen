@@ -272,7 +272,7 @@ var AMegMen;
      */
     var amm_subnav_out = function (overflowHiddenCls, activeCls, eventtype) {
         return function () {
-            if (event) {
+            if (event && _StringTrim(active_amegmen.closestl1li || '').length > 0) {
                 var closest = event.target.closest('#' + active_amegmen.closestl1li);
                 if (!closest) {
                     amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);

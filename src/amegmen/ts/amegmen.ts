@@ -316,7 +316,7 @@ namespace AMegMen {
    */
   const amm_subnav_out = (overflowHiddenCls: string, activeCls: string, eventtype: string) => {
     return () => {
-      if (event) {
+      if (event && _StringTrim(active_amegmen.closestl1li || '').length > 0) {
         const closest = (event.target as HTMLElement).closest('#' + active_amegmen.closestl1li);
         if (!closest) {
           amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);
