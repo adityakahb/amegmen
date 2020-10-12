@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Sat Oct 06 2018 10:51:29 GMT-0500 (Central Daylight Time)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -22,24 +22,38 @@ module.exports = function(config) {
 
 
     // list of files / patterns to exclude
-    exclude: [
-    ],
+    exclude: [],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dist/amegmen/scripts/amegmen.js': ['coverage']
+      'dist/amegmen/scripts/amegmen.js': ['coverage'],
+      'spec/amegmen.spec.js': ['babel']
+    },
+
+    babelPreprocessor: {
+      options: {
+        presets: ['@babel/preset-env'],
+        sourceMap: 'inline'
+      },
+      filename: function (file) {
+        return file.originalPath.replace(/\.js$/, '.es5.js');
+      },
+      sourceFileName: function (file) {
+        return file.originalPath;
+      }
     },
 
     plugins: [
-        require('karma-jasmine'),
-        require('karma-chrome-launcher'),
-        require('karma-ie-launcher'),
-        require('karma-spec-reporter'),
-        require('karma-jasmine-html-reporter'),
-        require('karma-coverage'),
-        require('karma-viewport')
+      require('karma-babel-preprocessor'),
+      require('karma-chrome-launcher'),
+      require('karma-coverage'),
+      require('karma-ie-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-jasmine'),
+      require('karma-spec-reporter'),
+      require('karma-viewport')
     ],
 
     // test results reporter to use
@@ -72,7 +86,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['IE'],
 
     client: {
       clearContext: false,

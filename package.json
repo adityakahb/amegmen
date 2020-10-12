@@ -39,10 +39,13 @@
   },
   "homepage": "https://adityakahb.github.io/amegmen",
   "dependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
     "bootstrap": "^4.5.2",
     "istanbul": "^0.4.5",
     "jasmine-core": "^3.6.0",
     "karma": "^5.2.3",
+    "karma-babel-preprocessor": "^8.0.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
     "karma-ie-launcher": "^1.0.0",
