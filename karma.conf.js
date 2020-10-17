@@ -49,6 +49,7 @@ module.exports = function (config) {
       require('karma-babel-preprocessor'),
       require('karma-chrome-launcher'),
       require('karma-coverage'),
+      require('karma-firefox-launcher'),
       require('karma-ie-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-jasmine'),
@@ -86,7 +87,7 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'Firefox', 'IE'],
 
     client: {
       clearContext: false,

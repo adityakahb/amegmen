@@ -19,6 +19,7 @@ AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framewo
 - Can have multiple instances with multiple configurations
 - Compiled through Typescript
 - Styled through SASS (Mobile first and with one breakpoint)
+- Tested through Karma and Jasmine
 
 ## Development Points
 
@@ -34,7 +35,6 @@ Since AMegMen supports 3 levels, following points are considered during the deve
 - Mobile devices don't support Hover, so it is separated from the default behavior. If required, it can be enabled through an option.
 - Right to Left is based on just a CSS property `direction: rtl`, and it may not be supported on old browsers.
 - Actual code resides in Typescript, which is compiled to Javascript (ES3 and NO Module code generation) and is compressed through Uglify-JS.
-- NO Normalize or Reset CSS included.
 - Styles reside in SASS files with minimum configurations and changes mobile to desktop view at 768px. The styles are compressed through UglifyCSS.
 
 ## Installation
