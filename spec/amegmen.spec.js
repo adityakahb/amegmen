@@ -3296,6 +3296,7 @@ describe("AMegMen", function () {
   let offcanvas;
   let outdiv;
   let toggleBtn;
+  let evt;
 
   beforeAll(function () {
     let fixture = blankdiv + nav1 + nav2;
@@ -3307,6 +3308,7 @@ describe("AMegMen", function () {
   });
 
   beforeEach(function () {
+    jasmine.clock().install();
     outdiv = document.querySelector('#outdiv');
     l0anchor = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--anchor-l0');
     l0panel = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0');
@@ -3319,6 +3321,9 @@ describe("AMegMen", function () {
     mainBtn = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > .__amegmen--landing > .__amegmen--main-cta');
     backBtn = document.querySelector('#__amegmen_1 .__amegmen--main > ul > li > .__amegmen--panel-l0 > nav > .__amegmen--col > ul > li > .__amegmen--panel-l1 > .__amegmen--landing > .__amegmen--back-cta');
     offcanvas = document.querySelector('#__amegmen_1 .__amegmen--canvas');
+  });
+  afterEach(function () {
+    jasmine.clock().uninstall();
   });
 
   it('Should validate the AMegMen Instance', function () {
@@ -3366,99 +3371,145 @@ describe("AMegMen", function () {
   });
 
   it('Should try focus on 0th Level Navigation', function () {
-    l0anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('focus', true, true);
+    l0anchor.dispatchEvent(evt);
     expect(l0anchor).toHaveClass('focus');
   });
 
   it('Should try blur on 0th Level Navigation', function () {
-    l0anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('blur', true, true);
+    l0anchor.dispatchEvent(evt);
     expect(l0anchor).not.toHaveClass('focus');
   });
 
   it('Should try mouseenter on 0th Level Navigation', function () {
-    l0anchor.dispatchEvent(new MouseEvent('mouseenter', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseenter', true, true);
+    l0anchor.dispatchEvent(evt);
     expect(l0anchor).toHaveClass('hover');
   });
 
   it('Should try mouseleave on 0th Level Navigation', function () {
-    l0anchor.dispatchEvent(new MouseEvent('mouseleave', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseleave', true, true);
+    l0anchor.dispatchEvent(evt);
     expect(l0anchor).not.toHaveClass('hover');
   });
   
-  it('Should try click on 0th Level Navigation', function () {
-    l0anchor.click();
-    expect(l0panel).toHaveClass('active');
+  it('Should try click on 0th Level Navigation: part 1', function () {
     outdiv.click();
+    l0anchor.click();
+    jasmine.clock().tick(1000);
+    expect(l0panel).toHaveClass('active');
+  });
+
+  it('Should try click on 0th Level Navigation: part 2', function () {
+    outdiv.click();
+    jasmine.clock().tick(1000);
     expect(l0panel).not.toHaveClass('active');
   });
 
   it('Should try focus on 0th Level Navigation Landing', function () {
     l0anchor.click();
-    l0landing.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('focus', true, true);
+    l0landing.dispatchEvent(evt);
     expect(l0landing).toHaveClass('focus');
   });
 
   it('Should try blur on 0th Level Navigation Landing', function () {
-    l0landing.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('blur', true, true);
+    l0landing.dispatchEvent(evt);
     expect(l0landing).not.toHaveClass('focus');
   });
 
   it('Should try mouseenter on 0th Level Navigation Landing', function () {
-    l0landing.dispatchEvent(new MouseEvent('mouseenter', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseenter', true, true);
+    l0landing.dispatchEvent(evt);
     expect(l0landing).toHaveClass('hover');
   });
 
   it('Should try mouseleave on 0th Level Navigation Landing', function () {
-    l0landing.dispatchEvent(new MouseEvent('mouseleave', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseleave', true, true);
+    l0landing.dispatchEvent(evt);
     expect(l0landing).not.toHaveClass('hover');
   });
 
   it('Should try focus on 1st Level Navigation', function () {
-    l1anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('focus', true, true);
+    l1anchor.dispatchEvent(evt);
     expect(l1anchor).toHaveClass('focus');
   });
 
   it('Should try blur on 1st Level Navigation', function () {
-    l1anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('blur', true, true);
+    l1anchor.dispatchEvent(evt);
     expect(l1anchor).not.toHaveClass('focus');
   });
 
   it('Should try mouseenter on 1st Level Navigation', function () {
-    l1anchor.dispatchEvent(new KeyboardEvent('mouseenter', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseenter', true, true);
+    l1anchor.dispatchEvent(evt);
     expect(l1anchor).toHaveClass('hover');
   });
 
   it('Should try mouseleave on 1st Level Navigation', function () {
-    l1anchor.dispatchEvent(new KeyboardEvent('mouseleave', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseleave', true, true);
+    l1anchor.dispatchEvent(evt);
     expect(l1anchor).not.toHaveClass('hover');
   });
 
-  it('Should try click on 1st Level Navigation', function () {
-    l1anchor.click();
-    expect(l1panel).toHaveClass('active');
+  it('Should try click on 1st Level Navigation: part 1', function () {
     outdiv.click();
+    l0anchor.click();
+    l1anchor.click();
+    jasmine.clock().tick(1000);
+    expect(l1panel).toHaveClass('active');
+  });
+
+  it('Should try click on 1st Level Navigation: part 2', function () {
+    outdiv.click();
+    jasmine.clock().tick(1000);
     expect(l1panel).not.toHaveClass('active');
   });
 
   it('Should try focus on 2nd Level Navigation', function () {
     l0anchor.click();
     l1anchor.click();
-    l2anchor.dispatchEvent(new KeyboardEvent('focus', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('focus', true, true);
+    l2anchor.dispatchEvent(evt);
     expect(l2anchor).toHaveClass('focus');
   });
 
   it('Should try blur on 2nd Level Navigation', function () {
-    l2anchor.dispatchEvent(new KeyboardEvent('blur', { 'bubbles': true }));
+    evt = document.createEvent('KeyboardEvent');
+    evt.initEvent('blur', true, true);
+    l2anchor.dispatchEvent(evt);
     expect(l2anchor).not.toHaveClass('focus');
   });
 
   it('Should try mouseenter on 2nd Level Navigation', function () {
-    l2anchor.dispatchEvent(new KeyboardEvent('mouseenter', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseenter', true, true);
+    l2anchor.dispatchEvent(evt);
+    jasmine.clock().tick(1000);
     expect(l2anchor).toHaveClass('hover');
   });
 
   it('Should try mouseleave on 2nd Level Navigation', function () {
-    l2anchor.dispatchEvent(new KeyboardEvent('mouseleave', { 'bubbles': true }));
+    evt = document.createEvent('MouseEvent');
+    evt.initEvent('mouseleave', true, true);
+    l2anchor.dispatchEvent(evt);
     outdiv.click();
     expect(l2anchor).not.toHaveClass('hover');
   });
@@ -3505,9 +3556,4 @@ describe("AMegMen", function () {
     closeBtn.click();
     expect(offcanvas).not.toHaveClass('active');
   });
-
 });
-// 164383
-// Surabhi2017
-
-// 734780
