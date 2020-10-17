@@ -25,7 +25,7 @@
   background-color: #3f6a96; }
 
 .__amegmen-2 .__amegmen--canvas {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   background-color: #284460;
   border: 1px solid #284460;
   height: 100%;
@@ -69,7 +69,7 @@
       padding: 0; }
 
 .__amegmen-2 .__amegmen--anchor-l0, .__amegmen-2 .__amegmen--anchor-l1, .__amegmen-2 .__amegmen--anchor-l2 {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   border: 1px solid transparent;
   display: block;
   text-align: left;
@@ -115,7 +115,7 @@
   padding: 0; }
 
 .__amegmen-2 .__amegmen--panel {
-  transition: all 250ms ease;
+  transition: all 500ms ease;
   border: 1px solid #284460;
   height: 100%;
   left: 0;
@@ -241,7 +241,7 @@
       transform: translate(0, 0);
       top: 60px; }
       .__amegmen-2 .__amegmen--panel.active {
-        transition: all 250ms ease; }
+        transition: all 500ms ease; }
     .__amegmen-2 .__amegmen--panel-l0 {
       height: auto;
       overflow: visible; }

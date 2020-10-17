@@ -1,6 +1,6 @@
 {
   "name": "amegmen",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.",
   "private": false,
   "scripts": {
@@ -10,8 +10,9 @@
     "uglify:js": "uglifyjs dist/amegmen/scripts/amegmen.js -o dist/amegmen/scripts/amegmen.min.js -c -m",
     "uglify:css": "uglifycss dist/amegmen/styles/amegmen.css --output dist/amegmen/styles/amegmen.min.css && uglifycss dist/amegmen-2/styles/amegmen.css --output dist/amegmen-2/styles/amegmen.min.css",
     "build:dev": "npm run compile:ts && npm run compile:sass",
-    "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css",
-    "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css"
+    "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css && npm run compile:sitesass",
+    "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css",
+    "test": "karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -36,12 +37,28 @@
   "bugs": {
     "url": "https://github.com/adityakahb/amegmen/issues"
   },
-  "homepage": "https://github.com/adityakahb/amegmen#readme",
+  "homepage": "https://adityakahb.github.io/amegmen",
   "dependencies": {
-    "bootstrap": "^4.5.2",
+    "bootstrap": "^4.5.3",
     "node-sass": "^4.14.1",
-    "typescript": "^4.0.3",
-    "uglify-js": "^3.10.4",
+    "uglify-js": "^3.11.2",
     "uglifycss": "0.0.29"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "istanbul": "^0.4.5",
+    "jasmine-core": "^3.6.0",
+    "karma": "^5.2.3",
+    "karma-babel-preprocessor": "^8.0.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-firefox-launcher": "^1.3.0",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-jasmine-html-reporter": "^1.5.4",
+    "karma-spec-reporter": "0.0.32",
+    "karma-viewport": "^1.0.7",
+    "typescript": "^4.0.3"
   }
 }

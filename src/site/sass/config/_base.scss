@@ -1,24 +1,72 @@
 html {
   font-size: 16px;
 }
+
 body {
   background-color: $gray-200;
   backface-visibility: hidden;
   // letter-spacing: rem(0.4px);
   color: $gray-900;
+
   .material-icons {
     font-size: inherit !important;
     vertical-align: top !important;
     line-height: inherit !important;
   }
 }
+
 .max-wrap {
   max-width: rem(1200px);
   margin: 0 auto;
 }
 
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6,
-.display-1, .display-2, .display-3, .display-4 {
-  font-family: 'Poller One', cursive;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.display-1,
+.display-2,
+.display-3,
+.display-4 {
+  font-family: 'Kumar One', cursive;
+}
+
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out
+}
+
+@keyframes octocat-wave {
+
+  0%,
+  100% {
+    transform: rotate(0)
+  }
+
+  20%,
+  60% {
+    transform: rotate(-25deg)
+  }
+
+  40%,
+  80% {
+    transform: rotate(10deg)
+  }
+}
+
+@media (max-width:500px) {
+  .github-corner:hover .octo-arm {
+    animation: none
+  }
+
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+  }
 }

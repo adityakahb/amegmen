@@ -178,7 +178,7 @@ const genPageMenu = (len, count) => {
 const generateData = () => {
   let m5 = genPageMenu(4, 5);
 
-  fs.writeFile('./templates/m5.html', m5, function (err) {
+  fs.writeFile('./examples/m5.html', m5, function (err) {
     if (err) throw err;
     console.log('Menu 5 Replaced!');
   });
