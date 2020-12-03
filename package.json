@@ -40,25 +40,25 @@
   "homepage": "https://adityakahb.github.io/amegmen",
   "dependencies": {
     "bootstrap": "^4.5.3",
-    "node-sass": "^4.14.1",
-    "uglify-js": "^3.11.2",
+    "node-sass": "^5.0.0",
+    "uglify-js": "^3.12.1",
     "uglifycss": "0.0.29"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
     "istanbul": "^0.4.5",
     "jasmine-core": "^3.6.0",
     "karma": "^5.2.3",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
-    "karma-firefox-launcher": "^1.3.0",
+    "karma-firefox-launcher": "^2.1.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-spec-reporter": "0.0.32",
     "karma-viewport": "^1.0.7",
-    "typescript": "^4.0.3"
+    "typescript": "^4.1.2"
   }
 }
