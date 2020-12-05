@@ -295,6 +295,7 @@ var AMegMen;
         for (var i in AllAMegMenInstances) {
             var thiscore = AllAMegMenInstances[i];
             var rootElem = thiscore.rootElem;
+            var offcanvas = thiscore.offcanvas;
             var shouldExecute = false;
             if (eventtype === 'mouseover' && (thiscore.settings || {}).actOnHover === true) {
                 shouldExecute = true;
@@ -306,10 +307,11 @@ var AMegMen;
                 var mainElem = thiscore.mainElem;
                 var l0nav = thiscore.l0nav || [];
                 if (shouldCloseL0Panel) {
-                    _RemoveClass(rootElem, activeCls + ' ' + l1ActiveCls);
+                    _RemoveClass(offcanvas, l1ActiveCls);
+                    _RemoveClass(rootElem, activeCls);
                     _RemoveClass(mainElem, overflowHiddenCls);
                 }
-                _RemoveClass(rootElem, l2ActiveCls);
+                _RemoveClass(offcanvas, l2ActiveCls);
                 for (var j = l0nav.length - 1; j >= 0; j--) {
                     var thisl0 = l0nav[j];
                     if (shouldCloseL0Panel) {
@@ -506,7 +508,7 @@ var AMegMen;
      * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
      *
      */
-    var amm_l0ClickFn = function (l0anchor, l0panel, parent, mainElem, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+    var amm_l0ClickFn = function (l0anchor, l0panel, parent, mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
         return function () {
             if (event && l0panel) {
                 event.preventDefault();
@@ -523,7 +525,8 @@ var AMegMen;
                 l0anchor.setAttribute('aria-expanded', 'true');
                 l0panel.setAttribute('aria-expanded', 'true');
                 l0panel.setAttribute('aria-hidden', 'false');
-                _AddClass(parent, activeCls + ' ' + l1ActiveCls);
+                _AddClass(parent, activeCls);
+                _AddClass(offcanvas, l1ActiveCls);
                 _AddClass(l0anchor, activeCls);
                 _AddClass(l0panel, activeCls);
                 _AddClass(mainElem, overflowHiddenCls);
@@ -573,7 +576,7 @@ var AMegMen;
      * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
      *
      */
-    var amm_l1ClickFn = function (l1anchor, l1panel, parent, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+    var amm_l1ClickFn = function (l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
         return function () {
             if (event && l1panel) {
                 event.preventDefault();
@@ -588,7 +591,7 @@ var AMegMen;
                 l1anchor.setAttribute('aria-expanded', 'true');
                 l1panel.setAttribute('aria-expanded', 'true');
                 l1panel.setAttribute('aria-hidden', 'false');
-                _AddClass(parent, l2ActiveCls);
+                _AddClass(offcanvas, l2ActiveCls);
                 _AddClass(l1anchor, activeCls);
                 _AddClass(l1panel, activeCls);
                 _AddClass(l0navelement, overflowHiddenCls);
@@ -762,7 +765,7 @@ var AMegMen;
             var l0navelement = thisl0nav.navelement;
             var l1nav = thisl0nav.l1nav || [];
             if (!l0anchor.amm_l0ClickFn) {
-                l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+                l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
             }
             if (!l0anchor.amm_l0MouseenterFn) {
                 l0anchor.amm_l0MouseenterFn = amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
@@ -799,7 +802,7 @@ var AMegMen;
                 var l2nav = l1nav[j].l2nav || [];
                 if (l1anchor) {
                     if (!l1anchor.amm_l1ClickFn) {
-                        l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, core.rootElem, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+                        l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
                     }
                     if (!l1anchor.amm_l1MouseenterFn) {
                         l1anchor.amm_l1MouseenterFn = amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
