@@ -313,44 +313,39 @@ var AMegMen;
                 }
                 _RemoveClass(offcanvas, l2ActiveCls);
                 for (var j = l0nav.length - 1; j >= 0; j--) {
-                    var thisl0 = l0nav[j];
+                    var thisl0 = l0nav[j] || {};
                     if (shouldCloseL0Panel) {
-                        _RemoveClass(thisl0.l0anchor, activeCls);
-                        _RemoveClass(thisl0.l0panel, activeCls);
-                        thisl0.l0anchor.setAttribute('aria-expanded', 'false');
-                        thisl0.l0panel.setAttribute('aria-expanded', 'false');
-                        thisl0.l0panel.setAttribute('aria-hidden', 'true');
+                        if (thisl0.l0anchor) {
+                            _RemoveClass(thisl0.l0anchor, activeCls);
+                            thisl0.l0anchor.setAttribute('aria-expanded', 'false');
+                        }
+                        if (thisl0.l0panel) {
+                            _RemoveClass(thisl0.l0panel, activeCls);
+                            thisl0.l0panel.setAttribute('aria-expanded', 'false');
+                            thisl0.l0panel.setAttribute('aria-hidden', 'true');
+                        }
                     }
-                    _RemoveClass(thisl0.navelement, overflowHiddenCls);
+                    if (thisl0.navelement) {
+                        _RemoveClass(thisl0.navelement, overflowHiddenCls);
+                    }
                     var l1nav = thisl0.l1nav || [];
-                    for (var k = l1nav.length - 1; k >= 0; k--) {
-                        var thisl1 = l1nav[k];
-                        thisl1.l1anchor.setAttribute('aria-expanded', 'false');
-                        thisl1.l1panel.setAttribute('aria-expanded', 'false');
-                        thisl1.l1panel.setAttribute('aria-hidden', 'true');
-                        _RemoveClass(thisl1.l1anchor, activeCls);
-                        _RemoveClass(thisl1.l1panel, activeCls);
+                    if (l1nav.length > 0) {
+                        for (var k = l1nav.length - 1; k >= 0; k--) {
+                            var thisl1 = l1nav[k] || {};
+                            if (thisl1.l1anchor) {
+                                _RemoveClass(thisl1.l1anchor, activeCls);
+                                thisl1.l1anchor.setAttribute('aria-expanded', 'false');
+                            }
+                            if (thisl1.l1panel) {
+                                _RemoveClass(thisl1.l1panel, activeCls);
+                                thisl1.l1panel.setAttribute('aria-expanded', 'false');
+                                thisl1.l1panel.setAttribute('aria-hidden', 'true');
+                            }
+                        }
                     }
                 }
             }
         }
-    };
-    /**
-     * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
-     *
-     * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class which activates the megamenu links and panels
-     * @param eventtype - Is `click` or `mouseover`
-     *
-     */
-    var amm_gotoMain = function (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        return function () {
-            if (event) {
-                event.preventDefault();
-            }
-            amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        };
     };
     /**
      * Mouseenter event for Landing link on the panels
@@ -631,6 +626,23 @@ var AMegMen;
         };
     };
     /**
+     * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
+     *
+     * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
+     * @param overflowHiddenCls - Class which disables scrollbars on mobile
+     * @param activeCls - Class which activates the megamenu links and panels
+     * @param eventtype - Is `click` or `mouseover`
+     *
+     */
+    var amm_gotoMain = function (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
+            if (event) {
+                event.preventDefault();
+            }
+            amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
+        };
+    };
+    /**
      * Click event for closing megamenu on mobile
      *
      * @param togglenav - Button element to close Offcanvas on mobile
@@ -638,11 +650,12 @@ var AMegMen;
      * @param activeCls - Class which activates the megamenu links and panels
      *
      */
-    var amm_closeMain = function (togglenav, offcanvas, activeCls) {
+    var amm_closeMain = function (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
         return function () {
             if (event) {
                 event.preventDefault();
             }
+            amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
             _RemoveClass(togglenav, activeCls);
             _RemoveClass(offcanvas, activeCls);
         };
@@ -655,13 +668,14 @@ var AMegMen;
      * @param activeCls - Class which activates the megamenu links and panels
      *
      */
-    var amm_toggleMain = function (togglenav, offcanvas, activeCls) {
+    var amm_toggleMain = function (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
         return function () {
             if (event) {
                 event.preventDefault();
                 if (_HasClass(togglenav, activeCls)) {
                     _RemoveClass(togglenav, activeCls);
                     _RemoveClass(offcanvas, activeCls);
+                    amm_closeMain(togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
                 }
                 else {
                     _AddClass(togglenav, activeCls);
@@ -729,13 +743,13 @@ var AMegMen;
         }
         if (togglenav && offcanvas) {
             if (!togglenav.amm_toggleMainClickFn) {
-                togglenav.amm_toggleMainClickFn = amm_toggleMain(togglenav, offcanvas, activeCls);
+                togglenav.amm_toggleMainClickFn = amm_toggleMain(togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
             }
             amm_eventScheduler(true, togglenav, 'click', togglenav.amm_toggleMainClickFn);
         }
         if (closenav && offcanvas) {
             if (!closenav.amm_closeMainClickFn) {
-                closenav.amm_closeMainClickFn = amm_closeMain(togglenav, offcanvas, activeCls);
+                closenav.amm_closeMainClickFn = amm_closeMain(togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
             }
             amm_eventScheduler(true, closenav, 'click', closenav.amm_closeMainClickFn);
         }
