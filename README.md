@@ -235,6 +235,10 @@ Associated with the links at Level 0
 Default: `__amegmen--panel-l0`
 Associated with the Subnav Panel at Level 0
 
+**l1ActiveCls** - CSS Class
+Default: `__amegmen--l1-active`
+Associated when the Subnav Panel at Level 0 is active
+
 **l1AnchorCls** - CSS Class
 Default: `__amegmen--anchor-l1`
 Associated with the links at Level 1
@@ -242,6 +246,10 @@ Associated with the links at Level 1
 **l1PanelCls** - CSS Class
 Default: `__amegmen--panel-l1`
 Associated with the Subnav Panel at Level 1
+
+**l2ActiveCls** - CSS Class
+Default: `__amegmen--l2-active`
+Associated when the Subnav Panel at Level 1 is active
 
 **l2AnchorCls** - CSS Class
 Default: `__amegmen--anchor-l2`
