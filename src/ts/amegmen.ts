@@ -17,6 +17,7 @@ namespace AMegMen {
   }
   interface IAMegMenSettings {
     activeCls?: string;
+    actOnHover?: boolean;
     actOnHoverAt?: number;
     backBtnCls?: string;
     closeBtnCls?: string;
@@ -29,20 +30,21 @@ namespace AMegMen {
     isRTL?: boolean;
     l0AnchorCls?: string;
     l0PanelCls?: string;
+    l1ActiveCls?: string;
     l1AnchorCls?: string;
     l1PanelCls?: string;
+    l2ActiveCls?: string;
     l2AnchorCls?: string;
     landingCtaCls?: string;
     lastcolCls?: string;
     mainBtnCls?: string;
     mainElementCls?: string;
-    rootCls?: string;
     offcanvasCls?: string;
     overflowHiddenCls?: string;
     panelCls?: string;
+    rootCls?: string;
     rtl_Cls?: string;
     shiftColumns?: boolean;
-    actOnHover?: boolean;
     supportedCols?: number;
     toggleBtnCls?: string;
   }
@@ -66,8 +68,10 @@ namespace AMegMen {
     isRTL: false,
     l0AnchorCls: '__amegmen--anchor-l0',
     l0PanelCls: '__amegmen--panel-l0',
+    l1ActiveCls: '__amegmen--l1-active',
     l1AnchorCls: '__amegmen--anchor-l1',
     l1PanelCls: '__amegmen--panel-l1',
+    l2ActiveCls: '__amegmen--l2-active',
     l2AnchorCls: '__amegmen--anchor-l2',
     landingCtaCls: '__amegmen--landing',
     lastcolCls: '__amegmen--col-last',
@@ -295,12 +299,12 @@ namespace AMegMen {
    * @param eventtype - Is `click` or `mouseover`
    *
    */
-  const amm_document_out = (overflowHiddenCls: string, activeCls: string, eventtype: string) => {
+  const amm_document_out = (overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event && _StringTrim(active_amegmen.closestl0li || '').length > 0) {
         const closest = (event.target as HTMLElement).closest('#' + active_amegmen.closestl0li);
         if (!closest) {
-          amm_subnavclose(true, overflowHiddenCls, activeCls, eventtype);
+          amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         }
       }
     };
@@ -314,12 +318,12 @@ namespace AMegMen {
    * @param eventtype - Is `click` or `mouseover`
    *
    */
-  const amm_subnav_out = (overflowHiddenCls: string, activeCls: string, eventtype: string) => {
+  const amm_subnav_out = (overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event && _StringTrim(active_amegmen.closestl1li || '').length > 0) {
         const closest = (event.target as HTMLElement).closest('#' + active_amegmen.closestl1li);
         if (!closest) {
-          amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);
+          amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         }
       }
     };
@@ -334,10 +338,11 @@ namespace AMegMen {
    * @param eventtype - Is `click` or `mouseover`
    *
    */
-  const amm_subnavclose = (shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
+  const amm_subnavclose = (shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     for (let i in AllAMegMenInstances) {
       const thiscore = AllAMegMenInstances[i];
       const rootElem = thiscore.rootElem;
+      const offcanvas = thiscore.offcanvas;
       let shouldExecute = false;
       if (eventtype === 'mouseover' && (thiscore.settings || {}).actOnHover === true) {
         shouldExecute = true;
@@ -349,49 +354,45 @@ namespace AMegMen {
         const mainElem = thiscore.mainElem;
         const l0nav = thiscore.l0nav || [];
         if (shouldCloseL0Panel) {
+          _RemoveClass(offcanvas, l1ActiveCls);
           _RemoveClass(rootElem, activeCls);
           _RemoveClass(mainElem, overflowHiddenCls);
         }
+        _RemoveClass(offcanvas, l2ActiveCls);
         for (let j = l0nav.length - 1; j >= 0; j--) {
-          let thisl0 = l0nav[j];
+          let thisl0 = l0nav[j] || {};
           if (shouldCloseL0Panel) {
-            _RemoveClass(thisl0.l0anchor, activeCls);
-            _RemoveClass(thisl0.l0panel, activeCls);
-            thisl0.l0anchor.setAttribute('aria-expanded', 'false');
-            thisl0.l0panel.setAttribute('aria-expanded', 'false');
-            thisl0.l0panel.setAttribute('aria-hidden', 'true');
+            if (thisl0.l0anchor) {
+              _RemoveClass(thisl0.l0anchor, activeCls);
+              thisl0.l0anchor.setAttribute('aria-expanded', 'false');
+            }
+            if (thisl0.l0panel) {
+              _RemoveClass(thisl0.l0panel, activeCls);
+              thisl0.l0panel.setAttribute('aria-expanded', 'false');
+              thisl0.l0panel.setAttribute('aria-hidden', 'true');
+            }
           }
-          _RemoveClass(thisl0.navelement, overflowHiddenCls);
+          if (thisl0.navelement) {
+            _RemoveClass(thisl0.navelement, overflowHiddenCls);
+          }
           const l1nav = thisl0.l1nav || [];
-          for (let k = l1nav.length - 1; k >= 0; k--) {
-            let thisl1 = l1nav[k];
-            thisl1.l1anchor.setAttribute('aria-expanded', 'false');
-            thisl1.l1panel.setAttribute('aria-expanded', 'false');
-            thisl1.l1panel.setAttribute('aria-hidden', 'true');
-            _RemoveClass(thisl1.l1anchor, activeCls);
-            _RemoveClass(thisl1.l1panel, activeCls);
+          if (l1nav.length > 0) {
+            for (let k = l1nav.length - 1; k >= 0; k--) {
+              let thisl1 = l1nav[k] || {};
+              if (thisl1.l1anchor) {
+                _RemoveClass(thisl1.l1anchor, activeCls);
+                thisl1.l1anchor.setAttribute('aria-expanded', 'false');
+              }
+              if (thisl1.l1panel) {
+                _RemoveClass(thisl1.l1panel, activeCls);
+                thisl1.l1panel.setAttribute('aria-expanded', 'false');
+                thisl1.l1panel.setAttribute('aria-hidden', 'true');
+              }
+            }
           }
         }
       }
     }
-  };
-
-  /**
-   * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
-   * 
-   * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
-   * @param overflowHiddenCls - Class which disables scrollbars on mobile
-   * @param activeCls - Class which activates the megamenu links and panels
-   * @param eventtype - Is `click` or `mouseover`
-   *
-   */
-  const amm_gotoMain = (shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
-    return () => {
-      if (event) {
-        event.preventDefault();
-      }
-      amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, eventtype);
-    };
   };
 
   /**
@@ -562,7 +563,7 @@ namespace AMegMen {
    * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
    *
    */
-  const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
+  const amm_l0ClickFn = (l0anchor: HTMLElement, l0panel: HTMLElement, parent: HTMLElement, mainElem: HTMLElement, offcanvas: HTMLElement, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event && l0panel) {
         event.preventDefault();
@@ -570,15 +571,16 @@ namespace AMegMen {
       if (_HasClass(l0anchor, activeCls)) {
         (active_amegmen as any).elem = null;
         (active_amegmen as any).closestl0li = '';
-        amm_subnavclose(true, overflowHiddenCls, activeCls, eventtype);
+        amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
       } else {
-        amm_subnavclose(true, overflowHiddenCls, activeCls, eventtype);
+        amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         (active_amegmen as any).elem = parent;
         (active_amegmen as any).closestl0li = (l0anchor.closest('li') as HTMLElement).getAttribute('id');
         l0anchor.setAttribute('aria-expanded', 'true');
         l0panel.setAttribute('aria-expanded', 'true');
         l0panel.setAttribute('aria-hidden', 'false');
         _AddClass(parent, activeCls);
+        _AddClass(offcanvas, l1ActiveCls);
         _AddClass(l0anchor, activeCls);
         _AddClass(l0panel, activeCls);
         _AddClass(mainElem, overflowHiddenCls);
@@ -631,20 +633,21 @@ namespace AMegMen {
    * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
    *
    */
-  const amm_l1ClickFn = (l1anchor: HTMLElement, l1panel: HTMLElement, l0navelement: HTMLElement, overflowHiddenCls: string, activeCls: string, eventtype: string) => {
+  const amm_l1ClickFn = (l1anchor: HTMLElement, l1panel: HTMLElement, offcanvas: HTMLElement, l0navelement: HTMLElement, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event && l1panel) {
         event.preventDefault();
       }
       if (_HasClass(l1anchor, activeCls)) {
         (active_amegmen as any).closestl1li = '';
-        amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);
+        amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
       } else {
         (active_amegmen as any).closestl1li = (l1anchor.closest('li') as HTMLElement).getAttribute('id');
-        amm_subnavclose(false, overflowHiddenCls, activeCls, eventtype);
+        amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         l1anchor.setAttribute('aria-expanded', 'true');
         l1panel.setAttribute('aria-expanded', 'true');
         l1panel.setAttribute('aria-hidden', 'false');
+        _AddClass(offcanvas, l2ActiveCls);
         _AddClass(l1anchor, activeCls);
         _AddClass(l1panel, activeCls);
         _AddClass(l0navelement, overflowHiddenCls);
@@ -687,6 +690,24 @@ namespace AMegMen {
   };
 
   /**
+   * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
+   * 
+   * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
+   * @param overflowHiddenCls - Class which disables scrollbars on mobile
+   * @param activeCls - Class which activates the megamenu links and panels
+   * @param eventtype - Is `click` or `mouseover`
+   *
+   */
+  const amm_gotoMain = (shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
+    return () => {
+      if (event) {
+        event.preventDefault();
+      }
+      amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
+    };
+  };
+
+  /**
    * Click event for closing megamenu on mobile 
    * 
    * @param togglenav - Button element to close Offcanvas on mobile
@@ -694,11 +715,12 @@ namespace AMegMen {
    * @param activeCls - Class which activates the megamenu links and panels
    *
    */
-  const amm_closeMain = (togglenav: HTMLElement, offcanvas: HTMLElement, activeCls: string) => {
+  const amm_closeMain = (togglenav: HTMLElement, offcanvas: HTMLElement, shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event) {
         event.preventDefault();
       }
+      amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
       _RemoveClass(togglenav, activeCls);
       _RemoveClass(offcanvas, activeCls);
     };
@@ -712,13 +734,14 @@ namespace AMegMen {
    * @param activeCls - Class which activates the megamenu links and panels
    *
    */
-  const amm_toggleMain = (togglenav: HTMLElement, offcanvas: HTMLElement, activeCls: string) => {
+  const amm_toggleMain = (togglenav: HTMLElement, offcanvas: HTMLElement, shouldCloseL0Panel: boolean, overflowHiddenCls: string, activeCls: string, l1ActiveCls: string, l2ActiveCls: string, eventtype: string) => {
     return () => {
       if (event) {
         event.preventDefault();
         if (_HasClass(togglenav, activeCls)) {
           _RemoveClass(togglenav, activeCls);
           _RemoveClass(offcanvas, activeCls);
+          amm_closeMain(togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         } else {
           _AddClass(togglenav, activeCls);
           _AddClass(offcanvas, activeCls);
@@ -757,6 +780,8 @@ namespace AMegMen {
     const activeCls = settings.activeCls ? settings.activeCls : '';
     const hoverCls = settings.hoverCls ? settings.hoverCls : '';
     const focusCls = settings.focusCls ? settings.focusCls : '';
+    const l1ActiveCls = settings.l1ActiveCls ? settings.l1ActiveCls : '';
+    const l2ActiveCls = settings.l2ActiveCls ? settings.l2ActiveCls : '';
     const hoverprops: any = {
       actOnHover: settings.actOnHover ? settings.actOnHover : false,
       actOnHoverAt: settings.actOnHoverAt ? settings.actOnHoverAt : 1280
@@ -787,14 +812,14 @@ namespace AMegMen {
 
     if (togglenav && offcanvas) {
       if (!togglenav.amm_toggleMainClickFn) {
-        togglenav.amm_toggleMainClickFn = amm_toggleMain(togglenav, offcanvas, activeCls);
+        togglenav.amm_toggleMainClickFn = amm_toggleMain(togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }
       amm_eventScheduler(true, togglenav as HTMLElement, 'click', togglenav.amm_toggleMainClickFn);
     }
 
     if (closenav && offcanvas) {
       if (!closenav.amm_closeMainClickFn) {
-        closenav.amm_closeMainClickFn = amm_closeMain(togglenav, offcanvas, activeCls);
+        closenav.amm_closeMainClickFn = amm_closeMain(togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }
       amm_eventScheduler(true, closenav as HTMLElement, 'click', closenav.amm_closeMainClickFn);
     }
@@ -803,7 +828,7 @@ namespace AMegMen {
       for (let i = tomain.length - 1; i >= 0 ; i--) {
         let thismain = tomain[i];
         if (!thismain.amm_gotoMainClickFn) {
-          thismain.amm_gotoMainClickFn = amm_gotoMain(true, overflowHiddenCls, activeCls, 'click');
+          thismain.amm_gotoMainClickFn = amm_gotoMain(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }
         amm_eventScheduler(true, thismain as HTMLElement, 'click', thismain.amm_gotoMainClickFn);
       }
@@ -813,7 +838,7 @@ namespace AMegMen {
       for (let i = toprevious.length - 1; i >= 0 ; i--) {
         let thisprevious = toprevious[i];
         if (!thisprevious.amm_gotoMainClickFn) {
-          thisprevious.amm_gotoMainClickFn = amm_gotoMain(false, overflowHiddenCls, activeCls, 'click');
+          thisprevious.amm_gotoMainClickFn = amm_gotoMain(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }
         amm_eventScheduler(true, thisprevious as HTMLElement, 'click', thisprevious.amm_gotoMainClickFn);
       }
@@ -828,7 +853,7 @@ namespace AMegMen {
       const l1nav = thisl0nav.l1nav || [];
       
       if (!l0anchor.amm_l0ClickFn) {
-        l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, overflowHiddenCls, activeCls, 'click');
+        l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }
       if (!l0anchor.amm_l0MouseenterFn) {
         l0anchor.amm_l0MouseenterFn = amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
@@ -851,12 +876,12 @@ namespace AMegMen {
 
       if (l0panel) {
         if (!l0panel.amm_panelClickFn) {
-          l0panel.amm_panelClickFn = amm_subnav_out(overflowHiddenCls, activeCls, 'click');
+          l0panel.amm_panelClickFn = amm_subnav_out(overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }
         amm_eventScheduler(true, l0panel as HTMLElement, 'click', l0panel.amm_panelClickFn);
         if (hoverprops.actOnHover) {
           if (!l0panel.amm_panelMouseoverFn) {
-            l0panel.amm_panelMouseoverFn = amm_subnav_out(overflowHiddenCls, activeCls, 'mouseover');
+            l0panel.amm_panelMouseoverFn = amm_subnav_out(overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
           }
           amm_eventScheduler(true, l0panel as HTMLElement, 'mouseover', l0panel.amm_panelMouseoverFn);
         }
@@ -869,7 +894,7 @@ namespace AMegMen {
         
         if (l1anchor) {
           if (!l1anchor.amm_l1ClickFn) {
-            l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, l0navelement, overflowHiddenCls, activeCls, 'click');
+            l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
           }
           if (!l1anchor.amm_l1MouseenterFn) {
             l1anchor.amm_l1MouseenterFn = amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
@@ -916,12 +941,12 @@ namespace AMegMen {
     }
 
     if (!(document as any).amm_docClickFn) {
-      (document as any).amm_docClickFn = amm_document_out(overflowHiddenCls, activeCls, 'click');
+      (document as any).amm_docClickFn = amm_document_out(overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
     }
     amm_eventScheduler(true, document as HTMLDocument, 'click', (document as any).amm_docClickFn);
     if (hoverprops.actOnHover) {
       if (!(window as any).amm_docMouseoverFn) {
-        (window as any).amm_docMouseoverFn = amm_document_out(overflowHiddenCls, activeCls, 'mouseover');
+        (window as any).amm_docMouseoverFn = amm_document_out(overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
       }
       amm_eventScheduler(true, window as Window, 'mouseover', (window as any).amm_docMouseoverFn);
     }
@@ -1074,6 +1099,8 @@ namespace AMegMen {
       + settings.focusCls + ' '
       + settings.hoverCls + ' '
       + settings.rtl_Cls + ' '
+      + settings.l2ActiveCls + ' '
+      + settings.l1ActiveCls + ' '
       + settings.overflowHiddenCls;
 
     _RemoveClass(rootElem, cls);
@@ -1267,4 +1294,7 @@ namespace AMegMen {
       }
     };
   }
+}
+if (typeof exports === 'object' && typeof module !== 'undefined') {
+  module.exports = AMegMen;
 }

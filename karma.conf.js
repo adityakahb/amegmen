@@ -15,8 +15,8 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'dist/amegmen/styles/amegmen.min.css',
-      'dist/amegmen/scripts/amegmen.js',
+      'native/styles/amegmen.min.css',
+      'native/scripts/amegmen.js',
       'spec/amegmen.spec.js'
     ],
 

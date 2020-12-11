@@ -11,6 +11,7 @@
 declare namespace AMegMen {
     interface IAMegMenSettings {
         activeCls?: string;
+        actOnHover?: boolean;
         actOnHoverAt?: number;
         backBtnCls?: string;
         closeBtnCls?: string;
@@ -23,20 +24,21 @@ declare namespace AMegMen {
         isRTL?: boolean;
         l0AnchorCls?: string;
         l0PanelCls?: string;
+        l1ActiveCls?: string;
         l1AnchorCls?: string;
         l1PanelCls?: string;
+        l2ActiveCls?: string;
         l2AnchorCls?: string;
         landingCtaCls?: string;
         lastcolCls?: string;
         mainBtnCls?: string;
         mainElementCls?: string;
-        rootCls?: string;
         offcanvasCls?: string;
         overflowHiddenCls?: string;
         panelCls?: string;
+        rootCls?: string;
         rtl_Cls?: string;
         shiftColumns?: boolean;
-        actOnHover?: boolean;
         supportedCols?: number;
         toggleBtnCls?: string;
     }

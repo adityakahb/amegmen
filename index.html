@@ -7,9 +7,9 @@
   <title>AMegMen - Accessible Mega Menu</title>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Kumar+One&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="dist/site/styles/index.min.css" rel="stylesheet" />
-  <link href="dist/amegmen/styles/amegmen.min.css" rel="stylesheet" />
-  <link href="dist/amegmen-2/styles/amegmen.min.css" rel="stylesheet" />
+  <link href="native/styles/site/index.min.css" rel="stylesheet" />
+  <link href="native/styles/theme-1/amegmen.min.css" rel="stylesheet" />
+  <link href="native/styles/theme-2/amegmen.min.css" rel="stylesheet" />
   
   <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-icon-57x57.png" />
   <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-icon-60x60.png" />
@@ -51,17 +51,17 @@
           <div class="col-12 col-md-6 d-flex justify-content-center align-items-center flex-column text-center">
             <h2 class="d-md-none">Features</h2>
             <ul class="list-unstyled m-0">
-              <li class="my-2">Written in Vanilla Javascript,</li>
-              <li class="my-2">Framework-free,</li>
-              <li class="my-2">Can be navigated through Tab Key,</li>
-              <li class="my-2">Supports 3 levels,</li>
-              <li class="my-2">Supports Click and Hover behaviors,</li>
-              <li class="my-2">Supports Right to Left UI,</li>
-              <li class="my-2">Fully responsive,</li>
-              <li class="my-2">With bare minimum css (with no icons, reset, normalize, custom fonts or images),</li>
-              <li class="my-2">Can have multiple instances with multiple configurations,</li>
-              <li class="my-2">Compiled through Typescript, and</li>
-              <li class="my-2">Styled through SASS (Mobile first and with one breakpoint)</li>
+              <li class="my-2">Available in Vanilla Javascript and CommonJS module</li>
+              <li class="my-2">Framework-free</li>
+              <li class="my-2">Can be used as ES6 module import OR direct source</li>
+              <li class="my-2">Supports 3 levels</li>
+              <li class="my-2">Supports Click and Hover behaviors</li>
+              <li class="my-2">Supports Right to Left UI</li>
+              <li class="my-2">Fully responsive</li>
+              <li class="my-2">With bare minimum css (with no icons, reset, normalize, custom fonts or images)</li>
+              <li class="my-2">Can have multiple instances with multiple configurations</li>
+              <li class="my-2">Compiled through Typescript</li>
+              <li class="my-2">Styled through SASS (Mobile first and with one breakpoint) - Source included for customization</li>
               <li class="my-2">Tested through Karma and Jasmine</li>
             </ul>
           </div>
@@ -7164,6 +7164,10 @@
         <br/>Default: `__amegmen--panel-l0`
         <br/>Associated with the Subnav Panel at Level 0
         <br/>
+        <br/><strong>l1ActiveCls</strong>: CSS Class
+        <br/>Default: `__amegmen--l1-active`
+        <br/>Associated when the Subnav Panel at Level 0 is active
+        <br/>
         <br/><strong>l1AnchorCls</strong>: CSS Class
         <br/>Default: `__amegmen--anchor-l1`
         <br/>Associated with the links at Level 1
@@ -7171,6 +7175,10 @@
         <br/><strong>l1PanelCls</strong>: CSS Class
         <br/>Default: `__amegmen--panel-l1`
         <br/>Associated with the Subnav Panel at Level 1
+        <br/>
+        <br/><strong>l2ActiveCls</strong>: CSS Class
+        <br/>Default: `__amegmen--l2-active`
+        <br/>Associated when the Subnav Panel at Level 1 is active
         <br/>
         <br/><strong>l2AnchorCls</strong>: CSS Class
         <br/>Default: `__amegmen--anchor-l2`
@@ -7237,7 +7245,7 @@
   <footer class="py-5 text-center">
     &copy; <a href="http://www.adityabhakay.com" target="_blank">Aditya Bhakay</a>
   </footer>
-  <script src="dist/amegmen/scripts/amegmen.min.js" type="text/javascript"></script>
+  <script src="native/scripts/amegmen.min.js" type="text/javascript"></script>
   <script>
     var mm_instance1 = AMegMen.Root.getInstance();
     mm_instance1.init('#__amegmen_1');
