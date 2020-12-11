@@ -1188,4 +1188,7 @@ var AMegMen;
     }());
     AMegMen.Root = Root;
 })(AMegMen || (AMegMen = {}));
+if (typeof exports === 'object' && typeof module !== 'undefined') {
+    module.exports = AMegMen;
+}
 //# sourceMappingURL=amegmen.js.map

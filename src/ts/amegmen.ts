@@ -1295,3 +1295,6 @@ namespace AMegMen {
     };
   }
 }
+if (typeof exports === 'object' && typeof module !== 'undefined') {
+  module.exports = AMegMen;
+}

@@ -1,14 +1,11 @@
 # AMegMen
-
 AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.
 
 ## Demo
-
 [https://adityakahb.github.io/amegmen](https://adityakahb.github.io/amegmen/)
 
 ## Features
-
-- Written in Vanilla Javascript
+- Available in Vanilla Javascript and CommonJS module
 - Framework-free
 - Can be navigated through Tab Key
 - Supports 3 levels
@@ -18,19 +15,17 @@ AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framewo
 - With bare minimum css (with no icons, reset, normalize, custom fonts or images)
 - Can have multiple instances with multiple configurations
 - Compiled through Typescript
-- Styled through SASS (Mobile first and with one breakpoint)
+- Styled through SASS (Mobile first and with one breakpoint) - Source included for customization
 - Tested through Karma and Jasmine
 
 ## Development Points
-
 Since AMegMen supports 3 levels, following points are considered during the development:
-
 - Levels start from 0, just like and array.
-  - Root -> Level 0 UL/LI -> Level 0 Anchor and Level 0 Subnav Panel
-  - Level 0 Subnav Panel -> Level 0 Landing link and Level 1 Panel Columns
-  - Level 1 Panel Columns -> Level 1 UL/LI -> Level 1 Anchor and Level 2 Subnav Panel
-  - Level 2 Subnav Panel -> Level 1 Landing link and Level 2 a Single Panel Column
-  - Level 2 Panel Column -> Level 2 UL/LI -> Level 2 Anchor
+- Root -> Level 0 UL/LI -> Level 0 Anchor and Level 0 Subnav Panel
+- Level 0 Subnav Panel -> Level 0 Landing link and Level 1 Panel Columns
+- Level 1 Panel Columns -> Level 1 UL/LI -> Level 1 Anchor and Level 2 Subnav Panel
+- Level 2 Subnav Panel -> Level 1 Landing link and Level 2 a Single Panel Column
+- Level 2 Panel Column -> Level 2 UL/LI -> Level 2 Anchor
 - All Subnav panels must have columns in them, to position the 3rd level accurately.
 - Mobile devices don't support Hover, so it is separated from the default behavior. If required, it can be enabled through an option.
 - Right to Left is based on just a CSS property `direction: rtl`, and it may not be supported on old browsers.
@@ -45,145 +40,145 @@ Since AMegMen supports 3 levels, following points are considered during the deve
 npm install amegmen
 ```
 
+```html
+<link  href="node_modules/native/styles/theme-1/amegmen.css"/>
+<script  src="node_modules/native/scripts/amegmen.min.js"></script>
+```
+**OR**
+```javascript
+import  AMegMen  from  'amegmen';
+```
+```sass
+@import '~amegmen\src\sass-theme-1\amegmen';
+```
+
 ### HTML
 
 ```html
 <!-- Root Element -->
-<nav id="__amegmen_root">
-  <!-- Button (on mobile) to toggle Megamenu on mobile device -->
-  <button class="__amegmen--toggle-cta">
-    Menu
-  </button>
-  <!-- Off-Canvas which slides on mobile device -->
-  <div class="__amegmen--canvas">
-	<!-- Nav Header containing a Button to close the Megamenu -->
-    <header>
-	  <!-- Button (on mobile) to close the Megamenu -->
-      <button class="__amegmen--close-cta">
-        Close
-      </button>
-    </header>
-	<!-- Main section containing Megamenu navigation -->
-    <section class="__amegmen--main">
-	  <!-- Level 0 UL/LI -->
-      <ul>
-        <li>
-		  <!-- Level 0 anchor -->
-          <a href="#">Risus</a>
-		  <!-- Level 0 Megamenu panel -->
-          <section class="__amegmen--panel">
-			<!-- Container for Level 0 anchor's landing page url -->
-            <div class="__amegmen--landing">
-			  <!-- Button (on mobile) to go main menu (level 0)  -->
-              <button class="__amegmen--main-cta">Main</button>
-			  <!-- Level 0 anchor's landing page url -->
-              <a href="#Tempor sit maecenas">Landing page: Tempor sit maecenas</a>
-            </div>
-			<!-- Level 1 navigation -->
-            <nav>
-			  <!-- Level 1 navigation column 0 -->
-              <div class="__amegmen--col">
-                <!-- Level 1 UL/LI -->
-				<ul>
-                  <li>
-					<!-- Level 1 anchor -->
-                    <a href="#">Amet nunc dis Sem</a>
-					<!-- Level 1 Megamenu panel -->
-                    <section class="__amegmen--panel">
-					  <!-- Container for Level 1 anchor's landing page url -->
-                      <div class="__amegmen--landing">
-						<!-- Button (on mobile) to go previous menu (level 1)  -->
-                        <button class="__amegmen--back-cta">Back</button>
-						<!-- Level 1 anchor's landing page url -->
-                        <a href="#">Landing page: Tempor consectetur gravida Malesuada penatibus Purus</a>
-                      </div>
-					  <!-- Level 2 navigation -->
-                      <nav>
-						<!-- Level 2 navigation column -->
-                        <div class="__amegmen--col">
-						  <!-- Level 2 UL/LI/A -->
-                          <ul>
-                            <li><a href="#">Vivamus maecenas ex</a></li>
-                            <li><a href="#">Amet vulputate malesuada</a></li>
-                            <li><a href="#">Nulla maximus malesuada Magnis metus Etiam</a></li>
-                            <li><a href="#">Eget velit elit</a></li>
-                            <li><a href="#">Nullam molestie vestibulum In amet In</a></li>
-                            <li><a href="#">Neque congue elit Ut</a></li>
-                            <li><a href="#">Nisl et lorem Nullam</a></li>
-                            <li><a href="#">Nullam fermentum malesuada Ut ac Quam</a></li>
-                            <li><a href="#">Erat quam a In mattis</a></li>
-                          </ul>
-                        </div>
-                      </nav>
-                    </section>
-                  </li>
-                  . . .
-                </ul>
-              </div>
-			  <!-- Level 1 navigation column 1 -->
-              <div class="__amegmen--col">
-				<!-- Level 1 UL/LI -->
-                <ul>
-                  <li>
-                    <!-- Level 1 anchor -->
-                    <a href="#">Et elementum gravida Porttitor</a>
-                    <!-- Level 1 Megamenu panel -->
-                    <section class="__amegmen--panel">
-                      <!-- Container for Level 1 anchor's landing page url -->
-                      <div class="__amegmen--landing">
-                        <!-- Button (on mobile) to go previous menu (level 1)  -->
-                        <button class="__amegmen--back-cta">Back</button>
-                        <!-- Level 1 anchor's landing page url -->
-                        <a href="#">Landing page: Magnis congue vehicula Aliquam turpis</a>
-                      </div>
-                      <!-- Level 2 navigation -->
-                      <nav>
-                        <!-- Level 2 navigation column -->
-                        <div class="__amegmen--col">
-                          <!-- Level 2 UL/LI/A -->
-                          <ul>
-                            <li><a href="#">Pulvinar consectetur elementum Phasellus dolor</a></li>
-                            <li><a href="#">Nullam vivamus turpis Ut</a></li>
-                            <li><a href="#">Tempus et proin</a></li>
-                            <li><a href="#">Maximus non nunc Porta in</a></li>
-                            . . .
-                          </ul>
-                        </div>
-                      </nav>
-                    </section>
-                  </li>
-                </ul>
-              </div>
-              <!-- Repeat Level 1 navigation columns -->
-            </nav>
-          </section>
-        </li>
-        <!-- Repeat Repeat Level 0 LI -->
-      </ul>
-    </section>
-  </div>
+<nav  id="__amegmen_root">
+    <!-- Button (on mobile) to toggle Megamenu on mobile device -->
+    <button  class="__amegmen--toggle-cta">Menu</button>
+    <!-- Off-Canvas which slides on mobile device -->
+    <div  class="__amegmen--canvas">
+        <!-- Nav Header containing a Button to close the Megamenu -->
+        <header>
+            <!-- Button (on mobile) to close the Megamenu -->
+            <button  class="__amegmen--close-cta">Close</button>
+        </header>
+        <!-- Main section containing Megamenu navigation -->
+        <section  class="__amegmen--main">
+            <!-- Level 0 UL/LI -->
+            <ul>
+                <li>
+                    <!-- Level 0 anchor -->
+                    <a  href="#">Risus</a>
+                        <!-- Level 0 Megamenu panel -->
+                        <section  class="__amegmen--panel">
+                            <!-- Container for Level 0 anchor's landing page url -->
+                            <div  class="__amegmen--landing">
+                                <!-- Button (on mobile) to go main menu (level 0) -->
+                                <button  class="__amegmen--main-cta">Main</button>
+                                <!-- Level 0 anchor's landing page url -->
+                                <a  href="#Tempor sit maecenas">Landing page: Tempor sit maecenas</a>
+                            </div>
+                            <!-- Level 1 navigation -->
+                            <nav>
+                                <!-- Level 1 navigation column 0 -->
+                                <div  class="__amegmen--col">
+                                    <!-- Level 1 UL/LI -->
+                                    <ul>
+                                        <li>
+                                            <!-- Level 1 anchor -->
+                                            <a  href="#">Amet nunc dis Sem</a>
+                                            <!-- Level 1 Megamenu panel -->
+                                            <section  class="__amegmen--panel">
+                                                <!-- Container for Level 1 anchor's landing page url -->
+                                                <div  class="__amegmen--landing">
+                                                    <!-- Button (on mobile) to go previous menu (level 1) -->
+                                                    <button  class="__amegmen--back-cta">Back</button>
+                                                    <!-- Level 1 anchor's landing page url -->
+                                                    <a  href="#">Landing page: Tempor consectetur gravida Malesuada penatibus Purus</a>
+                                                </div>
+                                                <!-- Level 2 navigation -->
+                                                <nav>
+                                                    <!-- Level 2 navigation column -->
+                                                    <div  class="__amegmen--col">
+                                                        <!-- Level 2 UL/LI/A -->
+                                                        <ul>
+                                                            <li><a  href="#">Vivamus maecenas ex</a></li>
+                                                            <li><a  href="#">Amet vulputate malesuada</a></li>
+                                                            <li><a  href="#">Nulla maximus malesuada Magnis metus Etiam</a></li>
+                                                            <li><a  href="#">Eget velit elit</a></li>
+                                                            <li><a  href="#">Nullam molestie vestibulum In amet In</a></li>
+                                                            <li><a  href="#">Neque congue elit Ut</a></li>
+                                                            <li><a  href="#">Nisl et lorem Nullam</a></li>
+                                                            <li><a  href="#">Nullam fermentum malesuada Ut ac Quam</a></li>
+                                                            <li><a  href="#">Erat quam a In mattis</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </nav>
+                                            </section>
+                                        </li>
+                                        . . .
+                                    </ul>
+                                </div>
+                                <!-- Level 1 navigation column 1 -->
+                                <div  class="__amegmen--col">
+                                    <!-- Level 1 UL/LI -->
+                                    <ul>
+                                        <li>
+                                            <!-- Level 1 anchor -->
+                                            <a  href="#">Et elementum gravida Porttitor</a>
+                                            <!-- Level 1 Megamenu panel -->
+                                            <section  class="__amegmen--panel">
+                                                <!-- Container for Level 1 anchor's landing page url -->
+                                                <div  class="__amegmen--landing">
+                                                    <!-- Button (on mobile) to go previous menu (level 1) -->
+                                                    <button  class="__amegmen--back-cta">Back</button>
+                                                    <!-- Level 1 anchor's landing page url -->
+                                                    <a  href="#">Landing page: Magnis congue vehicula Aliquam turpis</a>
+                                                </div>
+                                                <!-- Level 2 navigation -->
+                                                <nav>
+                                                    <!-- Level 2 navigation column -->
+                                                    <div  class="__amegmen--col">
+                                                        <!-- Level 2 UL/LI/A -->
+                                                        <ul>
+                                                            <li><a  href="#">Pulvinar consectetur elementum Phasellus dolor</a></li>
+                                                            <li><a  href="#">Nullam vivamus turpis Ut</a></li>
+                                                            <li><a  href="#">Tempus et proin</a></li>
+                                                            <li><a  href="#">Maximus non nunc Porta in</a></li>
+                                                            . . .
+                                                        </ul>
+                                                    </div>
+                                                </nav>
+                                            </section>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Repeat Level 1 navigation columns -->
+                            </nav>
+                        </section>
+                    </li>
+                <!-- Repeat Repeat Level 0 LI -->
+            </ul>
+        </section>
+    </div>
 </nav>
 ```
 
 ### JavaScript
 
-```html
-<script src="path/to/amegmen.min.js"></script>
-```
-
 ```javascript
-var amegmen_instance = AMegMen.Root.getInstance();
-var amegmen_options = {};
+var  amegmen_instance = AMegMen.Root.getInstance();
+var  amegmen_options = {};
 amegmen_instance.init("#__amegmen_root", amegmen_options);
+
 /* You can destroy it as well */
 amegmen_instance.destroy("#__amegmen_root");
 ```
 
-### CSS
-
-```html
-<link href="path/to/amegmen.min.css" rel="stylesheet" />
-```
 
 ### Options
 
@@ -194,6 +189,8 @@ Associated with the root element and its children which get a subnav panel opene
 **actOnHover** - Boolean
 Default: `false`
 Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`
+
+  
 
 **actOnHoverAt** - Number
 Default: `1280`
@@ -291,7 +288,7 @@ Associated with the Root Element
 Default: `__amegmen--r-to-l`
 Associated with the Root Element, if `isRTL` is enabled
 
-**supportedCols** - Number 
+**supportedCols** - Number
 Default: `4`
 Maximum number of columns associated with Level 1 Subnav Panel
 
@@ -309,3 +306,7 @@ The Root element id or class to be passed to initialize the Megamenu. Example `#
 **destroy**
 Parameters: CSS Selector
 The Root element id or class to be passed to destroy the Megamenu. Example `#root`, `.root`
+
+
+### License
+MIT

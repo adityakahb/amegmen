@@ -5,15 +5,18 @@
   "private": false,
   "scripts": {
     "generatedata": "node ./scripts/generatedata.js && node ./scripts/generatedata-2.js",
-    "compile:sass": "node-sass --source-map true src/amegmen/sass/ -o dist/amegmen/styles && node-sass --source-map true src/amegmen-2/sass/ -o dist/amegmen-2/styles",
-    "compile:ts": "tsc",
-    "uglify:js": "uglifyjs dist/amegmen/scripts/amegmen.js -o dist/amegmen/scripts/amegmen.min.js -c -m",
-    "uglify:css": "uglifycss dist/amegmen/styles/amegmen.css --output dist/amegmen/styles/amegmen.min.css && uglifycss dist/amegmen-2/styles/amegmen.css --output dist/amegmen-2/styles/amegmen.min.css",
+    "compile:sass": "node-sass --source-map true src/sass-theme-1/ -o native/styles/theme-1 && node-sass --source-map true src/sass-theme-2/ -o native/styles/theme-2",
+    "tscompile:es3": "tsc --target ES3 --module none --outDir ./native/scripts --sourceMap true",
+    "tscompile:esnext": "tsc --target ESNEXT --module ESNEXT --outDir ./dist/scripts --declaration true --declarationMap true --sourceMap true",
+    "compile:ts": "npm run tscompile:es3 && npm run tscompile:esnext",
+    "uglify:js": "uglifyjs native/scripts/amegmen.js -o native/scripts/amegmen.min.js -c -m",
+    "uglify:css": "uglifycss native/styles/theme-1/amegmen.css --output native/styles/theme-1/amegmen.min.css && uglifycss native/styles/theme-2/amegmen.css --output native/styles/theme-2/amegmen.min.css",
     "build:dev": "npm run compile:ts && npm run compile:sass",
     "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css && npm run compile:sitesass",
-    "compile:sitesass": "node-sass --source-map true src/site/sass/ -o dist/site/styles && uglifycss dist/site/styles/index.css --output dist/site/styles/index.min.css",
+    "compile:sitesass": "node-sass --source-map false src/sass-site/ -o native/styles/site && uglifycss native/styles/site/index.css --output native/styles/site/index.min.css",
     "test": "karma start karma.conf.js"
   },
+  "main": "dist/scripts/amegmen.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adityakahb/amegmen.git"
@@ -30,23 +33,20 @@
     "javascript",
     "multi",
     "multilevel",
-    "css3"
+    "css3",
+    "es6",
+    "es3"
   ],
   "author": "https://github.com/adityakahb",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/adityakahb/amegmen/issues"
   },
   "homepage": "https://adityakahb.github.io/amegmen",
-  "dependencies": {
-    "bootstrap": "^4.5.3",
-    "node-sass": "^5.0.0",
-    "uglify-js": "^3.12.1",
-    "uglifycss": "0.0.29"
-  },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.10",
+    "bootstrap": "^4.5.3",
     "istanbul": "^0.4.5",
     "jasmine-core": "^3.6.0",
     "karma": "^5.2.3",
@@ -59,6 +59,9 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-spec-reporter": "0.0.32",
     "karma-viewport": "^1.0.7",
-    "typescript": "^4.1.2"
+    "node-sass": "^5.0.0",
+    "typescript": "^4.1.2",
+    "uglify-js": "^3.12.1",
+    "uglifycss": "0.0.29"
   }
 }
