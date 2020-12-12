@@ -15,8 +15,8 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'native/styles/amegmen.min.css',
-      'native/scripts/amegmen.js',
+      'dist/styles/theme-1/amegmen.min.css',
+      'dist/scripts/amegmen.js',
       'spec/amegmen.spec.js'
     ],
 
@@ -28,7 +28,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dist/amegmen/scripts/amegmen.js': ['coverage'],
+      'dist/scripts/amegmen.js': ['coverage'],
       'spec/amegmen.spec.js': ['babel']
     },
 

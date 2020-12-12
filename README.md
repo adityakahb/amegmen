@@ -20,14 +20,14 @@ AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framewo
 
 ## Development Points
 Since AMegMen supports 3 levels, following points are considered during the development:
-- Levels start from 0, just like and array.
-- Root -> Level 0 UL/LI -> Level 0 Anchor and Level 0 Subnav Panel
-- Level 0 Subnav Panel -> Level 0 Landing link and Level 1 Panel Columns
-- Level 1 Panel Columns -> Level 1 UL/LI -> Level 1 Anchor and Level 2 Subnav Panel
-- Level 2 Subnav Panel -> Level 1 Landing link and Level 2 a Single Panel Column
-- Level 2 Panel Column -> Level 2 UL/LI -> Level 2 Anchor
+- Levels start from 0, just like an array.
+- `Root` -> `Level 0 UL/LI` -> `Level 0 Anchor and Level 0 Subnav Panel`
+- `Level 0 Subnav Panel` -> `Level 0 Landing link and Level 1 Panel Columns`
+- `Level 1 Panel Columns` -> `Level 1 UL/LI -> Level 1 Anchor and Level 2 Subnav Panel`
+- `Level 2 Subnav Panel` -> `Level 1 Landing link and Level 2 a Single Panel Column`
+- `Level 2 Panel Column` -> `Level 2 UL/LI` -> `Level 2 Anchor`
 - All Subnav panels must have columns in them, to position the 3rd level accurately.
-- Mobile devices don't support Hover, so it is separated from the default behavior. If required, it can be enabled through an option.
+- Mobile devices don't support hover, so the hover behavior is implemented as an option, which if required, can be enabled by passing `actOnHover` as `true`.
 - Right to Left is based on just a CSS property `direction: rtl`, and it may not be supported on old browsers.
 - Actual code resides in Typescript, which is compiled to Javascript (ES3 and NO Module code generation) and is compressed through Uglify-JS.
 - Styles reside in SASS files with minimum configurations and changes mobile to desktop view at 768px. The styles are compressed through UglifyCSS.
@@ -39,14 +39,14 @@ Since AMegMen supports 3 levels, following points are considered during the deve
 ```bash
 npm install amegmen
 ```
-
+**THEN**
 ```html
-<link  href="node_modules/native/styles/theme-1/amegmen.css"/>
-<script  src="node_modules/native/scripts/amegmen.min.js"></script>
+<link href="node_modules/amegmen/dist/styles/theme-1/amegmen.min.css"/>
+<script src="node_modules/amegmen/dist/scripts/amegmen.min.js"></script>
 ```
 **OR**
 ```javascript
-import  AMegMen  from  'amegmen';
+import AMegMen from 'amegmen';
 ```
 ```sass
 @import '~amegmen\src\sass-theme-1\amegmen';
@@ -189,8 +189,6 @@ Associated with the root element and its children which get a subnav panel opene
 **actOnHover** - Boolean
 Default: `false`
 Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`
-
-  
 
 **actOnHoverAt** - Number
 Default: `1280`

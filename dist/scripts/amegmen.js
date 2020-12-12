@@ -11,13 +11,13 @@
  */
 var AMegMen;
 (function (AMegMen) {
-    let AllAMegMenInstances = {};
-    let active_amegmen = {};
-    const _EventList = ['amm_landingMouseenterFn', 'amm_landingMouseleaveFn', 'amm_landingFocusFn', 'amm_landingBlurFn', 'amm_toggleMainClickFn', 'amm_closeMainClickFn',
+    var AllAMegMenInstances = {};
+    var active_amegmen = {};
+    var _EventList = ['amm_landingMouseenterFn', 'amm_landingMouseleaveFn', 'amm_landingFocusFn', 'amm_landingBlurFn', 'amm_toggleMainClickFn', 'amm_closeMainClickFn',
         'amm_gotoMainClickFn', 'amm_l0ClickFn', 'amm_l0MouseenterFn', 'amm_l0MouseleaveFn', 'amm_l0FocusFn', 'amm_l0BlurFn', 'amm_panelMouseoverFn', 'amm_panelClickFn',
         'amm_l1ClickFn', 'amm_l1MouseenterFn', 'amm_l1MouseleaveFn', 'amm_l1FocusFn', 'amm_l1BlurFn', 'amm_l2MouseenterFn', 'amm_l2MouseleaveFn', 'amm_l2FocusFn',
         'amm_l2BlurFn', 'amm_docMouseoverFn', 'amm_docClickFn'];
-    const _Defaults = {
+    var _Defaults = {
         activeCls: 'active',
         actOnHoverAt: 1280,
         backBtnCls: '__amegmen--back-cta',
@@ -48,13 +48,13 @@ var AMegMen;
         shiftColumns: false,
         actOnHover: false,
         supportedCols: 4,
-        toggleBtnCls: '__amegmen--toggle-cta',
+        toggleBtnCls: '__amegmen--toggle-cta'
     };
     /**
      * Polyfill function for Object.assign
      *
      */
-    const _EnableAssign = () => {
+    var _EnableAssign = function () {
         if (typeof Object.assign !== 'function') {
             Object.defineProperty(Object, 'assign', {
                 value: function assign(target) {
@@ -63,9 +63,9 @@ var AMegMen;
                     if (target === null || target === undefined) {
                         throw new TypeError('Cannot convert undefined or null to object');
                     }
-                    let to = Object(target);
+                    var to = Object(target);
                     for (var index = 1; index < arguments.length; index++) {
-                        let nextSource = arguments[index];
+                        var nextSource = arguments[index];
                         if (nextSource !== null && nextSource !== undefined) {
                             for (var nextKey in nextSource) {
                                 if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
@@ -77,7 +77,7 @@ var AMegMen;
                     return to;
                 },
                 writable: true,
-                configurable: true,
+                configurable: true
             });
         }
     };
@@ -85,20 +85,20 @@ var AMegMen;
      * Polyfill function for `:scope` for `QuerySelector` and `QuerySelectorAll`
      *
      */
-    const _EnableQSQSAScope = () => {
+    var _EnableQSQSAScope = function () {
         try {
             window.document.querySelector(':scope body');
         }
         catch (err) {
-            const qsarr = ['querySelector', 'querySelectorAll'];
-            for (let i = 0; i < qsarr.length; i++) {
-                let nativ = Element.prototype[qsarr[i]];
-                Element.prototype[qsarr[i]] = function (selectors) {
+            var qsarr_1 = ['querySelector', 'querySelectorAll'];
+            var _loop_1 = function (i) {
+                var nativ = Element.prototype[qsarr_1[i]];
+                Element.prototype[qsarr_1[i]] = function (selectors) {
                     if (/(^|,)\s*:scope/.test(selectors)) {
-                        let id = this.id;
+                        var id = this.id;
                         this.id = 'ID_' + Date.now();
                         selectors = selectors.replace(/((^|,)\s*):scope/g, '$1#' + this.id);
-                        let result = window.document[qsarr[i]](selectors);
+                        var result = window.document[qsarr_1[i]](selectors);
                         this.id = id;
                         return result;
                     }
@@ -106,6 +106,9 @@ var AMegMen;
                         return nativ.call(this, selectors);
                     }
                 };
+            };
+            for (var i = 0; i < qsarr_1.length; i++) {
+                _loop_1(i);
             }
         }
     };
@@ -113,7 +116,7 @@ var AMegMen;
      * Polyfill function for `Element.closest`
      *
      */
-    const _EnableClosest = () => {
+    var _EnableClosest = function () {
         if (!Element.prototype.matches) {
             Element.prototype.matches =
                 Element.prototype.msMatchesSelector ||
@@ -125,9 +128,9 @@ var AMegMen;
                 do {
                     if (Element.prototype.matches.call(el, s))
                         return el;
-                    const parent = el.parentElement || el.parentNode;
-                    if (parent) {
-                        el = parent;
+                    var parent_1 = el.parentElement || el.parentNode;
+                    if (parent_1) {
+                        el = parent_1;
                     }
                 } while (el !== null && el.nodeType === 1);
                 return null;
@@ -142,7 +145,7 @@ var AMegMen;
      * @returns The trimmed string.
      *
      */
-    const _StringTrim = (str) => {
+    var _StringTrim = function (str) {
         return str.replace(/^\s+|\s+$/g, '');
     };
     /**
@@ -153,7 +156,7 @@ var AMegMen;
      * @returns A loopable Array.
      *
      */
-    const _ArrayCall = (arr) => {
+    var _ArrayCall = function (arr) {
         try {
             return Array.prototype.slice.call(arr);
         }
@@ -170,9 +173,9 @@ var AMegMen;
      * @returns `true` if the string exists in class attribute, otherwise `false`
      *
      */
-    const _HasClass = (element, cls) => {
+    var _HasClass = function (element, cls) {
         if (element) {
-            const clsarr = element.className.split(' ');
+            var clsarr = element.className.split(' ');
             return clsarr.indexOf(cls) > -1 ? true : false;
         }
         return false;
@@ -184,12 +187,12 @@ var AMegMen;
      * @param cls - A string
      *
      */
-    const _AddClass = (element, cls) => {
+    var _AddClass = function (element, cls) {
         if (element) {
-            let clsarr = cls.split(' ');
-            let clsarrLength = clsarr.length;
-            for (let i = 0; i < clsarrLength; i++) {
-                let thiscls = clsarr[i];
+            var clsarr = cls.split(' ');
+            var clsarrLength = clsarr.length;
+            for (var i = 0; i < clsarrLength; i++) {
+                var thiscls = clsarr[i];
                 if (!_HasClass(element, thiscls)) {
                     element.className += ' ' + thiscls;
                 }
@@ -204,13 +207,13 @@ var AMegMen;
      * @param cls - A string
      *
      */
-    const _RemoveClass = (element, cls) => {
+    var _RemoveClass = function (element, cls) {
         if (element) {
-            let clsarr = cls.split(' ');
-            let curclass = element.className.split(' ');
-            let curclassLength = curclass.length;
-            for (let i = 0; i < curclassLength; i++) {
-                let thiscls = curclass[i];
+            var clsarr = cls.split(' ');
+            var curclass = element.className.split(' ');
+            var curclassLength = curclass.length;
+            for (var i = 0; i < curclassLength; i++) {
+                var thiscls = curclass[i];
                 if (clsarr.indexOf(thiscls) > -1) {
                     curclass.splice(i, 1);
                     i--;
@@ -229,14 +232,14 @@ var AMegMen;
      * @param shouldAdd - If `true`, adds an id. Otherwise it is removed.
      *
      */
-    const _ToggleUniqueId = (element, settings, unique_number, shouldAddId) => {
+    var _ToggleUniqueId = function (element, settings, unique_number, shouldAddId) {
         if (settings.idPrefix) {
             if (shouldAddId && !element.getAttribute('id')) {
                 element.setAttribute('id', settings.idPrefix + '_' + new Date().getTime() + '_' + unique_number);
             }
             else if (!shouldAddId && element.getAttribute('id')) {
-                const thisid = element.getAttribute('id');
-                const regex = new RegExp(settings.idPrefix, 'gi');
+                var thisid = element.getAttribute('id');
+                var regex = new RegExp(settings.idPrefix, 'gi');
                 if (regex.test(thisid || '')) {
                     element.removeAttribute('id');
                 }
@@ -251,10 +254,10 @@ var AMegMen;
      * @param eventtype - Is `click` or `mouseover`
      *
      */
-    const amm_document_out = (overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_document_out = function (overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event && _StringTrim(active_amegmen.closestl0li || '').length > 0) {
-                const closest = event.target.closest('#' + active_amegmen.closestl0li);
+                var closest = event.target.closest('#' + active_amegmen.closestl0li);
                 if (!closest) {
                     amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
                 }
@@ -269,10 +272,10 @@ var AMegMen;
      * @param eventtype - Is `click` or `mouseover`
      *
      */
-    const amm_subnav_out = (overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_subnav_out = function (overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event && _StringTrim(active_amegmen.closestl1li || '').length > 0) {
-                const closest = event.target.closest('#' + active_amegmen.closestl1li);
+                var closest = event.target.closest('#' + active_amegmen.closestl1li);
                 if (!closest) {
                     amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
                 }
@@ -288,12 +291,12 @@ var AMegMen;
      * @param eventtype - Is `click` or `mouseover`
      *
      */
-    const amm_subnavclose = (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        for (let i in AllAMegMenInstances) {
-            const thiscore = AllAMegMenInstances[i];
-            const rootElem = thiscore.rootElem;
-            const offcanvas = thiscore.offcanvas;
-            let shouldExecute = false;
+    var amm_subnavclose = function (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        for (var i in AllAMegMenInstances) {
+            var thiscore = AllAMegMenInstances[i];
+            var rootElem = thiscore.rootElem;
+            var offcanvas = thiscore.offcanvas;
+            var shouldExecute = false;
             if (eventtype === 'mouseover' && (thiscore.settings || {}).actOnHover === true) {
                 shouldExecute = true;
             }
@@ -301,16 +304,16 @@ var AMegMen;
                 shouldExecute = true;
             }
             if (shouldExecute && _HasClass(rootElem, activeCls)) {
-                const mainElem = thiscore.mainElem;
-                const l0nav = thiscore.l0nav || [];
+                var mainElem = thiscore.mainElem;
+                var l0nav = thiscore.l0nav || [];
                 if (shouldCloseL0Panel) {
                     _RemoveClass(offcanvas, l1ActiveCls);
                     _RemoveClass(rootElem, activeCls);
                     _RemoveClass(mainElem, overflowHiddenCls);
                 }
                 _RemoveClass(offcanvas, l2ActiveCls);
-                for (let j = l0nav.length - 1; j >= 0; j--) {
-                    let thisl0 = l0nav[j] || {};
+                for (var j = l0nav.length - 1; j >= 0; j--) {
+                    var thisl0 = l0nav[j] || {};
                     if (shouldCloseL0Panel) {
                         if (thisl0.l0anchor) {
                             _RemoveClass(thisl0.l0anchor, activeCls);
@@ -325,10 +328,10 @@ var AMegMen;
                     if (thisl0.navelement) {
                         _RemoveClass(thisl0.navelement, overflowHiddenCls);
                     }
-                    const l1nav = thisl0.l1nav || [];
+                    var l1nav = thisl0.l1nav || [];
                     if (l1nav.length > 0) {
-                        for (let k = l1nav.length - 1; k >= 0; k--) {
-                            let thisl1 = l1nav[k] || {};
+                        for (var k = l1nav.length - 1; k >= 0; k--) {
+                            var thisl1 = l1nav[k] || {};
                             if (thisl1.l1anchor) {
                                 _RemoveClass(thisl1.l1anchor, activeCls);
                                 thisl1.l1anchor.setAttribute('aria-expanded', 'false');
@@ -351,8 +354,8 @@ var AMegMen;
      * @param hoverCls - CSS Class for hovered element
      *
      */
-    const amm_landingMouseenterFn = (landingElement, hoverCls) => {
-        return () => {
+    var amm_landingMouseenterFn = function (landingElement, hoverCls) {
+        return function () {
             _AddClass(landingElement, hoverCls);
         };
     };
@@ -363,8 +366,8 @@ var AMegMen;
      * @param hoverCls - CSS Class for hovered element
      *
      */
-    const amm_landingMouseleaveFn = (landingElement, hoverCls) => {
-        return () => {
+    var amm_landingMouseleaveFn = function (landingElement, hoverCls) {
+        return function () {
             _RemoveClass(landingElement, hoverCls);
         };
     };
@@ -375,8 +378,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_landingFocusFn = (landingElement, focusCls) => {
-        return () => {
+    var amm_landingFocusFn = function (landingElement, focusCls) {
+        return function () {
             _AddClass(landingElement, focusCls);
         };
     };
@@ -387,8 +390,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_landingBlurFn = (landingElement, focusCls) => {
-        return () => {
+    var amm_landingBlurFn = function (landingElement, focusCls) {
+        return function () {
             _RemoveClass(landingElement, focusCls);
         };
     };
@@ -399,8 +402,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l0FocusFn = (l0anchor, focusCls) => {
-        return () => {
+    var amm_l0FocusFn = function (l0anchor, focusCls) {
+        return function () {
             _AddClass(l0anchor, focusCls);
         };
     };
@@ -411,8 +414,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l0BlurFn = (l0anchor, focusCls) => {
-        return () => {
+    var amm_l0BlurFn = function (l0anchor, focusCls) {
+        return function () {
             _RemoveClass(l0anchor, focusCls);
         };
     };
@@ -423,8 +426,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l1FocusFn = (l1anchor, focusCls) => {
-        return () => {
+    var amm_l1FocusFn = function (l1anchor, focusCls) {
+        return function () {
             _AddClass(l1anchor, focusCls);
         };
     };
@@ -435,8 +438,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l1BlurFn = (l1anchor, focusCls) => {
-        return () => {
+    var amm_l1BlurFn = function (l1anchor, focusCls) {
+        return function () {
             _RemoveClass(l1anchor, focusCls);
         };
     };
@@ -447,8 +450,8 @@ var AMegMen;
      * @param hoverCls - CSS Class for hovered element
      *
      */
-    const amm_l2MouseenterFn = (l2anchor, hoverCls) => {
-        return () => {
+    var amm_l2MouseenterFn = function (l2anchor, hoverCls) {
+        return function () {
             _AddClass(l2anchor, hoverCls);
         };
     };
@@ -459,8 +462,8 @@ var AMegMen;
      * @param hoverCls - CSS Class for hovered element
      *
      */
-    const amm_l2MouseleaveFn = (l2anchor, hoverCls) => {
-        return () => {
+    var amm_l2MouseleaveFn = function (l2anchor, hoverCls) {
+        return function () {
             _RemoveClass(l2anchor, hoverCls);
         };
     };
@@ -471,8 +474,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l2FocusFn = (l2anchor, focusCls) => {
-        return () => {
+    var amm_l2FocusFn = function (l2anchor, focusCls) {
+        return function () {
             _AddClass(l2anchor, focusCls);
         };
     };
@@ -483,8 +486,8 @@ var AMegMen;
      * @param focusCls - CSS Class for focussed element
      *
      */
-    const amm_l2BlurFn = (l2anchor, focusCls) => {
-        return () => {
+    var amm_l2BlurFn = function (l2anchor, focusCls) {
+        return function () {
             _RemoveClass(l2anchor, focusCls);
         };
     };
@@ -500,8 +503,8 @@ var AMegMen;
      * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
      *
      */
-    const amm_l0ClickFn = (l0anchor, l0panel, parent, mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_l0ClickFn = function (l0anchor, l0panel, parent, mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event && l0panel) {
                 event.preventDefault();
             }
@@ -534,11 +537,11 @@ var AMegMen;
      * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
      *
      */
-    const amm_l0MouseenterFn = (l0anchor, hoverCls, actOnHover, actOnHoverAt) => {
-        return () => {
+    var amm_l0MouseenterFn = function (l0anchor, hoverCls, actOnHover, actOnHoverAt) {
+        return function () {
             _AddClass(l0anchor, hoverCls);
             if (actOnHover) {
-                const windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                var windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
                 if (windowwidth >= actOnHoverAt) {
                     l0anchor.click();
                 }
@@ -552,8 +555,8 @@ var AMegMen;
      * @param hoverCls - Class for hovered elements
      *
      */
-    const amm_l0MouseleaveFn = (l0anchor, hoverCls) => {
-        return () => {
+    var amm_l0MouseleaveFn = function (l0anchor, hoverCls) {
+        return function () {
             _RemoveClass(l0anchor, hoverCls);
         };
     };
@@ -568,8 +571,8 @@ var AMegMen;
      * @param eventtype - 'Click' or 'Mouseenter' for hoverable megamenues
      *
      */
-    const amm_l1ClickFn = (l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_l1ClickFn = function (l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event && l1panel) {
                 event.preventDefault();
             }
@@ -599,11 +602,11 @@ var AMegMen;
      * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
      *
      */
-    const amm_l1MouseenterFn = (l1anchor, hoverCls, actOnHover, actOnHoverAt) => {
-        return () => {
+    var amm_l1MouseenterFn = function (l1anchor, hoverCls, actOnHover, actOnHoverAt) {
+        return function () {
             _AddClass(l1anchor, hoverCls);
             if (actOnHover) {
-                const windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                var windowwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
                 if (windowwidth >= actOnHoverAt) {
                     l1anchor.click();
                 }
@@ -617,8 +620,8 @@ var AMegMen;
      * @param hoverCls - Class for hovered elements
      *
      */
-    const amm_l1MouseleaveFn = (l1anchor, hoverCls) => {
-        return () => {
+    var amm_l1MouseleaveFn = function (l1anchor, hoverCls) {
+        return function () {
             _RemoveClass(l1anchor, hoverCls);
         };
     };
@@ -631,8 +634,8 @@ var AMegMen;
      * @param eventtype - Is `click` or `mouseover`
      *
      */
-    const amm_gotoMain = (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_gotoMain = function (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event) {
                 event.preventDefault();
             }
@@ -647,8 +650,8 @@ var AMegMen;
      * @param activeCls - Class which activates the megamenu links and panels
      *
      */
-    const amm_closeMain = (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_closeMain = function (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event) {
                 event.preventDefault();
             }
@@ -665,8 +668,8 @@ var AMegMen;
      * @param activeCls - Class which activates the megamenu links and panels
      *
      */
-    const amm_toggleMain = (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) => {
-        return () => {
+    var amm_toggleMain = function (togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
+        return function () {
             if (event) {
                 event.preventDefault();
                 if (_HasClass(togglenav, activeCls)) {
@@ -690,7 +693,7 @@ var AMegMen;
      * @param fn - The Eventlistener function which is attached to the respective event
      *
      */
-    const amm_eventScheduler = (shouldAdd, element, eventtype, fn) => {
+    var amm_eventScheduler = function (shouldAdd, element, eventtype, fn) {
         shouldAdd ? element.addEventListener(eventtype, fn, false) : element.removeEventListener(eventtype, fn, false);
     };
     /**
@@ -700,26 +703,26 @@ var AMegMen;
      * @param settings - AMegMen instance settings object
      *
      */
-    const amm_toggleevents = (core, settings) => {
-        const togglenav = core.togglenav;
-        const closenav = core.closenav;
-        const offcanvas = core.offcanvas;
-        const tomain = _ArrayCall(core.tomain);
-        const toprevious = _ArrayCall(core.toprevious);
-        const overflowHiddenCls = settings.overflowHiddenCls ? settings.overflowHiddenCls : '';
-        const activeCls = settings.activeCls ? settings.activeCls : '';
-        const hoverCls = settings.hoverCls ? settings.hoverCls : '';
-        const focusCls = settings.focusCls ? settings.focusCls : '';
-        const l1ActiveCls = settings.l1ActiveCls ? settings.l1ActiveCls : '';
-        const l2ActiveCls = settings.l2ActiveCls ? settings.l2ActiveCls : '';
-        const hoverprops = {
+    var amm_toggleevents = function (core, settings) {
+        var togglenav = core.togglenav;
+        var closenav = core.closenav;
+        var offcanvas = core.offcanvas;
+        var tomain = _ArrayCall(core.tomain);
+        var toprevious = _ArrayCall(core.toprevious);
+        var overflowHiddenCls = settings.overflowHiddenCls ? settings.overflowHiddenCls : '';
+        var activeCls = settings.activeCls ? settings.activeCls : '';
+        var hoverCls = settings.hoverCls ? settings.hoverCls : '';
+        var focusCls = settings.focusCls ? settings.focusCls : '';
+        var l1ActiveCls = settings.l1ActiveCls ? settings.l1ActiveCls : '';
+        var l2ActiveCls = settings.l2ActiveCls ? settings.l2ActiveCls : '';
+        var hoverprops = {
             actOnHover: settings.actOnHover ? settings.actOnHover : false,
             actOnHoverAt: settings.actOnHoverAt ? settings.actOnHoverAt : 1280
         };
         if (settings.landingCtaCls) {
-            const landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
-            for (let i = landingElements.length - 1; i >= 0; i--) {
-                let thislandingelem = landingElements[i];
+            var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
+            for (var i = landingElements.length - 1; i >= 0; i--) {
+                var thislandingelem = landingElements[i];
                 if (!thislandingelem.amm_landingMouseenterFn) {
                     thislandingelem.amm_landingMouseenterFn = amm_landingMouseenterFn(thislandingelem, hoverCls);
                 }
@@ -751,8 +754,8 @@ var AMegMen;
             amm_eventScheduler(true, closenav, 'click', closenav.amm_closeMainClickFn);
         }
         if (tomain.length > 0) {
-            for (let i = tomain.length - 1; i >= 0; i--) {
-                let thismain = tomain[i];
+            for (var i = tomain.length - 1; i >= 0; i--) {
+                var thismain = tomain[i];
                 if (!thismain.amm_gotoMainClickFn) {
                     thismain.amm_gotoMainClickFn = amm_gotoMain(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
                 }
@@ -760,21 +763,21 @@ var AMegMen;
             }
         }
         if (toprevious.length > 0) {
-            for (let i = toprevious.length - 1; i >= 0; i--) {
-                let thisprevious = toprevious[i];
+            for (var i = toprevious.length - 1; i >= 0; i--) {
+                var thisprevious = toprevious[i];
                 if (!thisprevious.amm_gotoMainClickFn) {
                     thisprevious.amm_gotoMainClickFn = amm_gotoMain(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
                 }
                 amm_eventScheduler(true, thisprevious, 'click', thisprevious.amm_gotoMainClickFn);
             }
         }
-        const l0nav = core.l0nav || [];
-        for (let i = l0nav.length - 1; i >= 0; i--) {
-            let thisl0nav = l0nav[i];
-            const l0anchor = thisl0nav.l0anchor;
-            const l0panel = thisl0nav.l0panel;
-            const l0navelement = thisl0nav.navelement;
-            const l1nav = thisl0nav.l1nav || [];
+        var l0nav = core.l0nav || [];
+        for (var i = l0nav.length - 1; i >= 0; i--) {
+            var thisl0nav = l0nav[i];
+            var l0anchor = thisl0nav.l0anchor;
+            var l0panel = thisl0nav.l0panel;
+            var l0navelement = thisl0nav.navelement;
+            var l1nav = thisl0nav.l1nav || [];
             if (!l0anchor.amm_l0ClickFn) {
                 l0anchor.amm_l0ClickFn = amm_l0ClickFn(l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
             }
@@ -807,10 +810,10 @@ var AMegMen;
                     amm_eventScheduler(true, l0panel, 'mouseover', l0panel.amm_panelMouseoverFn);
                 }
             }
-            for (let j = l1nav.length - 1; j >= 0; j--) {
-                const l1anchor = l1nav[j].l1anchor;
-                const l1panel = l1nav[j].l1panel;
-                const l2nav = l1nav[j].l2nav || [];
+            for (var j = l1nav.length - 1; j >= 0; j--) {
+                var l1anchor = l1nav[j].l1anchor;
+                var l1panel = l1nav[j].l1panel;
+                var l2nav = l1nav[j].l2nav || [];
                 if (l1anchor) {
                     if (!l1anchor.amm_l1ClickFn) {
                         l1anchor.amm_l1ClickFn = amm_l1ClickFn(l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
@@ -833,8 +836,8 @@ var AMegMen;
                     amm_eventScheduler(true, l1anchor, 'focus', l1anchor.amm_l1FocusFn);
                     amm_eventScheduler(true, l1anchor, 'blur', l1anchor.amm_l1BlurFn);
                 }
-                for (let k = l2nav.length - 1; k >= 0; k--) {
-                    const l2anchor = l2nav[k];
+                for (var k = l2nav.length - 1; k >= 0; k--) {
+                    var l2anchor = l2nav[k];
                     if (!l2anchor.amm_l2MouseenterFn) {
                         l2anchor.amm_l2MouseenterFn = amm_l2MouseenterFn(l2anchor, hoverCls);
                     }
@@ -875,30 +878,30 @@ var AMegMen;
      * @returns The AMegMen instance core object after updating elements and events
      *
      */
-    const amm_init = (core, rootElem, settings) => {
+    var amm_init = function (core, rootElem, settings) {
         _AddClass(rootElem, settings.rootCls ? settings.rootCls : '');
         core.rootElem = rootElem;
         core.settings = settings;
-        core.mainElem = core.rootElem.querySelector(`.${settings.mainElementCls}`);
-        core.togglenav = core.rootElem.querySelector(`.${settings.toggleBtnCls}`);
-        core.closenav = core.rootElem.querySelector(`.${settings.closeBtnCls}`);
-        core.offcanvas = core.rootElem.querySelector(`.${settings.offcanvasCls}`);
-        core.tomain = core.rootElem.querySelectorAll(`.${settings.mainBtnCls}`);
-        core.toprevious = core.rootElem.querySelectorAll(`.${settings.backBtnCls}`);
+        core.mainElem = core.rootElem.querySelector("." + settings.mainElementCls);
+        core.togglenav = core.rootElem.querySelector("." + settings.toggleBtnCls);
+        core.closenav = core.rootElem.querySelector("." + settings.closeBtnCls);
+        core.offcanvas = core.rootElem.querySelector("." + settings.offcanvasCls);
+        core.tomain = core.rootElem.querySelectorAll("." + settings.mainBtnCls);
+        core.toprevious = core.rootElem.querySelectorAll("." + settings.backBtnCls);
         if (core.settings.isRTL) {
             _AddClass(core.rootElem, settings.rtl_Cls ? settings.rtl_Cls : '');
         }
         if (core.mainElem) {
             core.l0nav = [];
-            const l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
-            for (let i = l0li.length - 1; i >= 0; i--) {
-                let thisl0li = l0li[i];
+            var l0li = _ArrayCall(core.mainElem.querySelectorAll(':scope > ul > li'));
+            for (var i = l0li.length - 1; i >= 0; i--) {
+                var thisl0li = l0li[i];
                 _ToggleUniqueId(thisl0li, settings, i, true);
-                let nav0obj = {};
+                var nav0obj = {};
                 nav0obj.l0li = thisl0li;
                 nav0obj.l0anchor = thisl0li.querySelector(':scope > a');
                 _AddClass(nav0obj.l0anchor, settings.l0AnchorCls ? settings.l0AnchorCls : '');
-                const l0panel = thisl0li.querySelector(`:scope > .${settings.panelCls}`);
+                var l0panel = thisl0li.querySelector(":scope > ." + settings.panelCls);
                 if (l0panel) {
                     nav0obj.l0anchor.setAttribute('role', 'button');
                     nav0obj.l0anchor.setAttribute('aria-expanded', 'false');
@@ -907,32 +910,32 @@ var AMegMen;
                     l0panel.setAttribute('aria-hidden', 'true');
                     _AddClass(l0panel, settings.l0PanelCls ? settings.l0PanelCls : '');
                     nav0obj.l0panel = l0panel;
-                    nav0obj.l0tomain = l0panel.querySelector(`.${settings.mainBtnCls}`);
-                    const l1navelement = l0panel.querySelector(':scope > nav');
+                    nav0obj.l0tomain = l0panel.querySelector("." + settings.mainBtnCls);
+                    var l1navelement = l0panel.querySelector(':scope > nav');
                     if (l1navelement) {
                         nav0obj.navelement = l1navelement;
-                        const l1cols = _ArrayCall(l1navelement.querySelectorAll(`:scope > .${settings.colCls}`)) || [];
+                        var l1cols = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls)) || [];
                         nav0obj.l1cols = l1cols.length;
                         nav0obj.l1nav = [];
                         if (l1cols.length > 0) {
-                            const shiftnum = (settings.supportedCols || 0) - l1cols.length;
-                            const l1li = _ArrayCall(l1navelement.querySelectorAll(`:scope > .${settings.colCls} > ul > li`)) || [];
-                            const colnum = parseInt((settings.supportedCols || 0) + '');
-                            for (let j = l1cols.length - 1; j >= 0; j--) {
-                                let thisl1col = l1cols[j];
-                                _AddClass(thisl1col, `${settings.colCls}-${colnum > 0 ? colnum : 2}`);
+                            var shiftnum = (settings.supportedCols || 0) - l1cols.length;
+                            var l1li = _ArrayCall(l1navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li")) || [];
+                            var colnum = parseInt((settings.supportedCols || 0) + '');
+                            for (var j = l1cols.length - 1; j >= 0; j--) {
+                                var thisl1col = l1cols[j];
+                                _AddClass(thisl1col, settings.colCls + "-" + (colnum > 0 ? colnum : 2));
                                 if (j === colnum - 1 && j > 1) {
                                     _AddClass(thisl1col, settings.lastcolCls ? settings.lastcolCls : '');
                                 }
                             }
-                            for (let j = l1li.length - 1; j >= 0; j--) {
-                                let thisl1li = l1li[j];
+                            for (var j = l1li.length - 1; j >= 0; j--) {
+                                var thisl1li = l1li[j];
                                 _ToggleUniqueId(thisl1li, settings, j, true);
-                                let nav1obj = {};
+                                var nav1obj = {};
                                 nav1obj.l1li = thisl1li;
                                 nav1obj.l1anchor = thisl1li.querySelector(':scope > a');
                                 _AddClass(nav1obj.l1anchor, settings.l1AnchorCls ? settings.l1AnchorCls : '');
-                                const l1panel = thisl1li.querySelector(`:scope > .${settings.panelCls}`);
+                                var l1panel = thisl1li.querySelector(":scope > ." + settings.panelCls);
                                 if (l1panel) {
                                     nav1obj.l1anchor.setAttribute('role', 'button');
                                     nav1obj.l1anchor.setAttribute('aria-expanded', 'false');
@@ -941,25 +944,25 @@ var AMegMen;
                                     l1panel.setAttribute('aria-hidden', 'true');
                                     _AddClass(l1panel, settings.l1PanelCls ? settings.l1PanelCls : '');
                                     nav1obj.l1panel = l1panel;
-                                    nav1obj.l1toback = l1panel.querySelector(`.${settings.backBtnCls}`);
-                                    const l2navelement = l1panel.querySelector(':scope > nav');
+                                    nav1obj.l1toback = l1panel.querySelector("." + settings.backBtnCls);
+                                    var l2navelement = l1panel.querySelector(':scope > nav');
                                     if (l2navelement) {
                                         nav1obj.navelement = l2navelement;
-                                        const l2cols = _ArrayCall(l2navelement.querySelectorAll(`:scope > .${settings.colCls}`)) || [];
+                                        var l2cols = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls)) || [];
                                         if (l2cols.length > 0) {
                                             if (settings.shiftColumns) {
-                                                _AddClass(l1navelement, `${settings.colShiftCls ? settings.colShiftCls : ''}-${shiftnum}`);
+                                                _AddClass(l1navelement, (settings.colShiftCls ? settings.colShiftCls : '') + "-" + shiftnum);
                                             }
-                                            _AddClass(l1panel, `${settings.colWidthCls ? settings.colWidthCls : ''}-${shiftnum}`);
-                                            const l2a = _ArrayCall(l2navelement.querySelectorAll(`:scope > .${settings.colCls} > ul > li > a`)) || [];
-                                            for (let k = l2a.length - 1; k >= 0; k--) {
-                                                let thisl2anchor = l2a[k];
+                                            _AddClass(l1panel, (settings.colWidthCls ? settings.colWidthCls : '') + "-" + shiftnum);
+                                            var l2a = _ArrayCall(l2navelement.querySelectorAll(":scope > ." + settings.colCls + " > ul > li > a")) || [];
+                                            for (var k = l2a.length - 1; k >= 0; k--) {
+                                                var thisl2anchor = l2a[k];
                                                 _AddClass(thisl2anchor, settings.l2AnchorCls ? settings.l2AnchorCls : '');
                                             }
-                                            for (let k = l2cols.length - 1; k >= 0; k--) {
-                                                let thisl2col = l2cols[k];
+                                            for (var k = l2cols.length - 1; k >= 0; k--) {
+                                                var thisl2col = l2cols[k];
                                                 // _AddClass(l2cols[k], `__amegmen--col-${l2cols.length}`);
-                                                _AddClass(thisl2col, `${settings.colCls ? settings.colCls : ''}-1`);
+                                                _AddClass(thisl2col, (settings.colCls ? settings.colCls : '') + "-1");
                                             }
                                             nav1obj.l2nav = l2a;
                                         }
@@ -983,11 +986,11 @@ var AMegMen;
      * @param core - AMegMen instance core object
      *
      */
-    const amm_destroy = (thisid, core) => {
-        const rootElem = core.rootElem;
-        const settings = core.settings;
-        const allElems = _ArrayCall(rootElem.querySelectorAll('*'));
-        const cls = settings.rootCls + ' '
+    var amm_destroy = function (thisid, core) {
+        var rootElem = core.rootElem;
+        var settings = core.settings;
+        var allElems = _ArrayCall(rootElem.querySelectorAll('*'));
+        var cls = settings.rootCls + ' '
             + settings.l0AnchorCls + ' '
             + settings.l0PanelCls + ' '
             + settings.l1AnchorCls + ' '
@@ -1002,8 +1005,8 @@ var AMegMen;
             + settings.l1ActiveCls + ' '
             + settings.overflowHiddenCls;
         _RemoveClass(rootElem, cls);
-        for (let i = allElems.length - 1; i >= 0; i--) {
-            let thiselem = allElems[i];
+        for (var i = allElems.length - 1; i >= 0; i--) {
+            var thiselem = allElems[i];
             if ((_HasClass(thiselem, settings.l0AnchorCls) || _HasClass(thiselem, settings.l1AnchorCls)) && thiselem.getAttribute('role') === 'button') {
                 thiselem.removeAttribute('role');
                 thiselem.removeAttribute('aria-expanded');
@@ -1015,8 +1018,8 @@ var AMegMen;
             }
             _RemoveClass(thiselem, cls);
             _ToggleUniqueId(thiselem, settings, i, false);
-            for (let j = _EventList.length - 1; j >= 0; j--) {
-                let thisevent = _EventList[j];
+            for (var j = _EventList.length - 1; j >= 0; j--) {
+                var thisevent = _EventList[j];
                 if (thiselem[thisevent]) {
                     if (/focus/gi.test(thisevent)) {
                         amm_eventScheduler(false, thiselem, 'focus', thiselem[thisevent]);
@@ -1040,8 +1043,8 @@ var AMegMen;
                 }
             }
         }
-        let keycount = 0;
-        for (let i in AllAMegMenInstances) {
+        var keycount = 0;
+        for (var i in AllAMegMenInstances) {
             if (AllAMegMenInstances.hasOwnProperty(i)) {
                 keycount++;
             }
@@ -1068,16 +1071,18 @@ var AMegMen;
      * Class for every AMegMen instance.
      *
      */
-    class Core {
-        constructor(thisid, rootElem, options) {
+    var Core = /** @class */ (function () {
+        function Core(thisid, rootElem, options) {
+            var _this = this;
             this.core = {};
-            this.destroy = (thisid) => {
-                amm_destroy(thisid, this.core);
+            this.destroy = function (thisid) {
+                amm_destroy(thisid, _this.core);
             };
             this.core = amm_init(this.core, rootElem, Object.assign({}, _Defaults, options));
             AllAMegMenInstances[thisid] = this.core;
         }
-    }
+        return Core;
+    }());
     /**
      * ██████   ██████   ██████  ████████
      * ██   ██ ██    ██ ██    ██    ██
@@ -1088,12 +1093,13 @@ var AMegMen;
      * Exposed Singleton Class for global usage.
      *
      */
-    class Root {
+    var Root = /** @class */ (function () {
         /**
          * Constructor to initiate polyfills
          *
          */
-        constructor() {
+        function Root() {
+            var _this = this;
             this.instances = {};
             /**
              * Function to initialize the AMegMen plugin for provided query strings.
@@ -1102,22 +1108,22 @@ var AMegMen;
              * @param options - The optional object to customize every AMegMen instance.
              *
              */
-            this.init = (query, options) => {
-                const roots = _ArrayCall(document.querySelectorAll(query));
-                const rootsLen = roots.length;
-                let instancelen = 0;
-                for (let i in this.instances) {
-                    if (this.instances.hasOwnProperty(i)) {
+            this.init = function (query, options) {
+                var roots = _ArrayCall(document.querySelectorAll(query));
+                var rootsLen = roots.length;
+                var instancelen = 0;
+                for (var i in _this.instances) {
+                    if (_this.instances.hasOwnProperty(i)) {
                         instancelen++;
                     }
                 }
                 if (rootsLen > 0) {
-                    for (let i = 0; i < rootsLen; i++) {
-                        const id = roots[i].getAttribute('id');
-                        let iselempresent = false;
+                    for (var i = 0; i < rootsLen; i++) {
+                        var id = roots[i].getAttribute('id');
+                        var iselempresent = false;
                         if (id) {
-                            for (let j = 0; j < instancelen; j++) {
-                                if (this.instances[id]) {
+                            for (var j = 0; j < instancelen; j++) {
+                                if (_this.instances[id]) {
                                     iselempresent = true;
                                     break;
                                 }
@@ -1125,12 +1131,12 @@ var AMegMen;
                         }
                         if (!iselempresent) {
                             if (id) {
-                                this.instances[id] = new Core(id, roots[i], options);
+                                _this.instances[id] = new Core(id, roots[i], options);
                             }
                             else {
-                                const thisid = id ? id : Object.assign({}, _Defaults, options).idPrefix + '_' + new Date().getTime() + '_root_' + (i + 1);
+                                var thisid = id ? id : Object.assign({}, _Defaults, options).idPrefix + '_' + new Date().getTime() + '_root_' + (i + 1);
                                 roots[i].setAttribute('id', thisid);
-                                this.instances[thisid] = new Core(thisid, roots[i], options);
+                                _this.instances[thisid] = new Core(thisid, roots[i], options);
                             }
                         }
                     }
@@ -1145,15 +1151,15 @@ var AMegMen;
              * @param query - The CSS selector for which the AMegMen needs to be initialized.
              *
              */
-            this.destroy = (query) => {
-                const roots = _ArrayCall(document.querySelectorAll(query));
-                const rootsLen = roots.length;
+            this.destroy = function (query) {
+                var roots = _ArrayCall(document.querySelectorAll(query));
+                var rootsLen = roots.length;
                 if (rootsLen > 0) {
-                    for (let i = 0; i < rootsLen; i++) {
-                        const id = roots[i].getAttribute('id');
-                        if (id && this.instances[id]) {
-                            this.instances[id].destroy(id);
-                            delete this.instances[id];
+                    for (var i = 0; i < rootsLen; i++) {
+                        var id = roots[i].getAttribute('id');
+                        if (id && _this.instances[id]) {
+                            _this.instances[id].destroy(id);
+                            delete _this.instances[id];
                         }
                     }
                 }
@@ -1171,14 +1177,15 @@ var AMegMen;
          * @returns Single AMegMen Instance
          *
          */
-        static getInstance() {
+        Root.getInstance = function () {
             if (!Root.instance) {
                 Root.instance = new Root();
             }
             return Root.instance;
-        }
-    }
-    Root.instance = null;
+        };
+        Root.instance = null;
+        return Root;
+    }());
     AMegMen.Root = Root;
 })(AMegMen || (AMegMen = {}));
 if (typeof exports === 'object' && typeof module !== 'undefined') {
