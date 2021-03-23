@@ -1,4 +1,3 @@
-"use strict";
 /**
  *  █████  ███    ███ ███████  ██████  ███    ███ ███████ ███    ██
  * ██   ██ ████  ████ ██      ██       ████  ████ ██      ████   ██
@@ -11,6 +10,7 @@
  */
 var AMegMen;
 (function (AMegMen) {
+    "use strict";
     var AllAMegMenInstances = {};
     var active_amegmen = {};
     var _EventList = ['amm_landingMouseenterFn', 'amm_landingMouseleaveFn', 'amm_landingFocusFn', 'amm_landingBlurFn', 'amm_toggleMainClickFn', 'amm_closeMainClickFn',
@@ -18,15 +18,15 @@ var AMegMen;
         'amm_l1ClickFn', 'amm_l1MouseenterFn', 'amm_l1MouseleaveFn', 'amm_l1FocusFn', 'amm_l1BlurFn', 'amm_l2MouseenterFn', 'amm_l2MouseleaveFn', 'amm_l2FocusFn',
         'amm_l2BlurFn', 'amm_docMouseoverFn', 'amm_docClickFn'];
     var _Defaults = {
-        activeCls: 'active',
+        activeCls: '__amegmen-active',
         actOnHoverAt: 1280,
         backBtnCls: '__amegmen--back-cta',
         closeBtnCls: '__amegmen--close-cta',
         colCls: '__amegmen--col',
         colShiftCls: '__amegmen-shift',
         colWidthCls: '__amegmen-width',
-        focusCls: 'focus',
-        hoverCls: 'hover',
+        focusCls: '__amegmen-focus',
+        hoverCls: '__amegmen-hover',
         idPrefix: '__amegmen_id',
         isRTL: false,
         l0AnchorCls: '__amegmen--anchor-l0',

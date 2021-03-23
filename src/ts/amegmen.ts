@@ -9,6 +9,7 @@
  *
  */
 namespace AMegMen {
+  "use strict";
   let AllAMegMenInstances: any = {};
   let active_amegmen: any = {};
 
@@ -55,15 +56,15 @@ namespace AMegMen {
     'amm_l2BlurFn', 'amm_docMouseoverFn', 'amm_docClickFn'];
 
   const _Defaults = {
-    activeCls: 'active',
+    activeCls: '__amegmen-active',
     actOnHoverAt: 1280,
     backBtnCls: '__amegmen--back-cta',
     closeBtnCls: '__amegmen--close-cta',
     colCls: '__amegmen--col',
     colShiftCls: '__amegmen-shift',
     colWidthCls: '__amegmen-width',
-    focusCls: 'focus',
-    hoverCls: 'hover',
+    focusCls: '__amegmen-focus',
+    hoverCls: '__amegmen-hover',
     idPrefix: '__amegmen_id',
     isRTL: false,
     l0AnchorCls: '__amegmen--anchor-l0',

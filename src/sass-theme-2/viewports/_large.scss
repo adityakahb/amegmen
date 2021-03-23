@@ -1,7 +1,7 @@
 .__amegmen-2 {
   position: relative;
   z-index: 1;
-  &.active {
+  &.__amegmen-active {
     z-index: 1030;
   }
   header, .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
@@ -41,7 +41,7 @@
     // @include amegmen-animation('opacity');
     transform: translate(0, 0);
     top: $amegmen_common_height;
-    &.active {
+    &.__amegmen-active {
       @include amegmen-animation();
     }
   }
@@ -62,7 +62,7 @@
         overflow: visible;
       }
 
-      &.active {
+      &.__amegmen-active {
         overflow: visible;
       }
     }

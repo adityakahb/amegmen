@@ -39,7 +39,7 @@
     width: 100%;
     z-index: 1040;
 
-    &.active {
+    &.__amegmen-active {
       transform: translate(0, 0);
     }
   }
@@ -93,13 +93,13 @@
     &:visited {
       color: $anchorVisited;
     }
-    &:hover, &.hover {
+    &:hover, &.__amegmen-hover {
       color: $anchorHover;
     }
     &:active {
       color: $anchorActive;
     }
-    &:focus, &.focus {
+    &:focus, &.__amegmen-focus {
       color: $anchorFocus;
     }
   }
@@ -110,7 +110,7 @@
     font-size: 17px;
     padding: 13px;
 
-    &:hover, &.active, &:focus, &.focus {
+    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
       background-color: $amegmen_nav_l1;
     }
   }
@@ -121,7 +121,7 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover, &.active, &:focus, &.focus {
+    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
       background-color: $amegmen_nav_l2;
     }
   }
@@ -131,7 +131,7 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover, &.active, &:focus, &.focus {
+    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
       background-color: $amegmen_nav_l3;
     }
   }
@@ -160,7 +160,7 @@
     visibility: hidden;
     width: 100%;
 
-    &.active {
+    &.__amegmen-active {
       opacity: 1;
       transform: translate(0, 0);
       visibility: visible;
@@ -238,7 +238,7 @@
       &:visited {
         color: $anchorVisited;
       }
-      &:hover, &.hover {
+      &:hover, &.__amegmen-hover {
         color: $anchorHover;
       }
       &:active {

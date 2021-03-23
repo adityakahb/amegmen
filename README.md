@@ -17,6 +17,7 @@ AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framewo
 - Compiled through Typescript
 - Styled through SASS (Mobile first and with one breakpoint) - Source included for customization
 - Tested through Karma and Jasmine
+- Polyfills for `Object.assign`, `querySelector:scope`, `querySelectorAll:scope` and `Element.closest` included, no other polyfill required.
 
 ## Development Points
 Since AMegMen supports 3 levels, following points are considered during the development:
