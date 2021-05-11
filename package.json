@@ -10,6 +10,7 @@
     "uglify:js": "uglifyjs dist/scripts/amegmen.js -o dist/scripts/amegmen.min.js -c -m",
     "uglify:css": "uglifycss dist/styles/theme-1/amegmen.css --output dist/styles/theme-1/amegmen.min.css && uglifycss dist/styles/theme-2/amegmen.css --output dist/styles/theme-2/amegmen.min.css",
     "only:js": "npm run compile:ts && npm run uglify:js",
+    "only:css": "npm run compile:sass && npm run uglify:css",
     "build:dev": "npm run compile:ts && npm run compile:sass",
     "build:prod": "npm run build:dev && npm run uglify:js && npm run uglify:css && npm run compile:sitesass",
     "compile:sitesass": "node-sass src/sass-site/ -o dist/styles/site && uglifycss dist/styles/site/index.css --output dist/styles/site/index.min.css",
