@@ -87,7 +87,7 @@
         <div class="d-inline-block w-auto">
           <form>
             <label class="sr-only" for="demo_select">Select a Demo</label> 
-            <select id="demo_select" class="form-control form-control-lg">
+            <select id="demo_select" class="form-select form-select-lg">
               <option value="default">Default</option>
               <option value="hover">With Hover</option>
               <option value="rtl">Right To Left</option>
@@ -7258,19 +7258,19 @@
       var value = e.target.value;
       if (e.target.value !== defaultselect) {
         mm_instance1.destroy('#__amegmen_1');
-        // defaultselect = e.target.value;
-        // if (value === 'default') {
-        //   mm_instance1.init('#__amegmen_1');
-        // }
-        // if (value === 'hover') {
-        //   mm_instance1.init('#__amegmen_1', {actOnHover: true});
-        // }
-        // if (value === 'rtl') {
-        //   mm_instance1.init('#__amegmen_1', {isRTL: true});
-        // }
-        // if (value === 'stylish') {
-        //   mm_instance1.init('#__amegmen_1', {rootCls: '__amegmen-2'});
-        // }
+        defaultselect = e.target.value;
+        if (value === 'default') {
+          mm_instance1.init('#__amegmen_1');
+        }
+        if (value === 'hover') {
+          mm_instance1.init('#__amegmen_1', {actOnHover: true});
+        }
+        if (value === 'rtl') {
+          mm_instance1.init('#__amegmen_1', {isRTL: true});
+        }
+        if (value === 'stylish') {
+          mm_instance1.init('#__amegmen_1', {rootCls: '__amegmen-2'});
+        }
       }
     };
     var destory_dd = document.getElementById('destory_dd');

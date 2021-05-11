@@ -3516,45 +3516,44 @@ describe("AMegMen", function () {
 
   it('Should open offcanvas on mobile using main toggle', function () {
     viewport.set(375, 850);
-    console.log('======offcanvas', offcanvas, '====toggleBtn', toggleBtn);
     toggleBtn.click();
     expect(offcanvas).toHaveClass('__amegmen-active');
   });
 
-  // it('Should close offcanvas on mobile main toggle', function () {
-  //   viewport.set(375, 850);
-  //   toggleBtn.click();
-  //   expect(offcanvas).not.toHaveClass('__amegmen-active');
-  // });
+  it('Should close offcanvas on mobile main toggle', function () {
+    viewport.set(375, 850);
+    toggleBtn.click();
+    expect(offcanvas).not.toHaveClass('__amegmen-active');
+  });
 
-  // it('Should open Level 1 on mobile', function () {
-  //   viewport.set(375, 850);
-  //   toggleBtn.click();
-  //   l0anchor.click();
-  //   expect(l0panel).toHaveClass('__amegmen-active');
-  // });
+  it('Should open Level 1 on mobile', function () {
+    viewport.set(375, 850);
+    toggleBtn.click();
+    l0anchor.click();
+    expect(l0panel).toHaveClass('__amegmen-active');
+  });
 
-  // it('Should open Level 2 on mobile', function () {
-  //   viewport.set(375, 850);
-  //   l1anchor.click();
-  //   expect(l1panel).toHaveClass('__amegmen-active');
-  // });
+  it('Should open Level 2 on mobile', function () {
+    viewport.set(375, 850);
+    l1anchor.click();
+    expect(l1panel).toHaveClass('__amegmen-active');
+  });
 
-  // it('Should close Level 2 on mobile', function () {
-  //   viewport.set(375, 850);
-  //   backBtn.click();
-  //   expect(l1panel).not.toHaveClass('__amegmen-active');
-  // });
+  it('Should close Level 2 on mobile', function () {
+    viewport.set(375, 850);
+    backBtn.click();
+    expect(l1panel).not.toHaveClass('__amegmen-active');
+  });
 
-  // it('Should close Level 1 on mobile', function () {
-  //   viewport.set(375, 850);
-  //   mainBtn.click();
-  //   expect(l0panel).not.toHaveClass('__amegmen-active');
-  // });
+  it('Should close Level 1 on mobile', function () {
+    viewport.set(375, 850);
+    mainBtn.click();
+    expect(l0panel).not.toHaveClass('__amegmen-active');
+  });
 
-  // it('Should close offcanvas on mobile', function () {
-  //   viewport.set(375, 850);
-  //   closeBtn.click();
-  //   expect(offcanvas).not.toHaveClass('__amegmen-active');
-  // });
+  it('Should close offcanvas on mobile', function () {
+    viewport.set(375, 850);
+    closeBtn.click();
+    expect(offcanvas).not.toHaveClass('__amegmen-active');
+  });
 });

@@ -245,6 +245,7 @@ var AMegMen;
     /**
      * Function to close the Level 1 and Level 2 Megamenues if click or hover happens on document or window
      *
+     * @param event - `click` or `mouseover` event to close the megamenu
      * @param overflowHiddenCls - Class which disables scrollbars on mobile
      * @param activeCls - Class which activates the megamenu links and panels
      * @param eventtype - Is `click` or `mouseover`
@@ -261,6 +262,7 @@ var AMegMen;
     /**
      * Function to close the Level 2 Megamenu if click or hover happens on Level 1 Megamenu Panel
      *
+     * @param event - `click` or `mouseover` event to close the megamenu
      * @param overflowHiddenCls - Class which disables scrollbars on mobile
      * @param activeCls - Class which activates the megamenu links and panels
      * @param eventtype - Is `click` or `mouseover`
@@ -462,6 +464,7 @@ var AMegMen;
     /**
      * Click event for Level 0 link
      *
+     * @param event - `click` event to prevent the default action when subnav panel is present
      * @param l0anchor - An HTML Anchor element at Level 0 Navigation
      * @param l0panel - Adjecent Panel to the l0anchor
      * @param parent - Parent LI element
@@ -525,6 +528,7 @@ var AMegMen;
     /**
      * Click event for Level 1 link
      *
+     * @param event - `click` event to prevent the default action when subnav panel is present
      * @param l1anchor - An HTML Anchor element at Level 1 Navigation
      * @param l1panel - Adjecent Panel to the l1anchor
      * @param l0navelement - Parent `nav` element of l1anchor
@@ -539,24 +543,18 @@ var AMegMen;
         }
         if (_HasClass(l1anchor, activeCls)) {
             active_amegmen.closestl1li = '';
-            setTimeout(function () {
-                amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            }, 0);
+            amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         }
         else {
             active_amegmen.closestl1li = l1anchor.closest('li').getAttribute('id');
-            setTimeout(function () {
-                amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            }, 0);
+            amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
             l1anchor.setAttribute('aria-expanded', 'true');
             l1panel.setAttribute('aria-expanded', 'true');
             l1panel.setAttribute('aria-hidden', 'false');
-            setTimeout(function () {
-                _AddClass(offcanvas, l2ActiveCls);
-                _AddClass(l1anchor, activeCls);
-                _AddClass(l1panel, activeCls);
-                _AddClass(l0navelement, overflowHiddenCls);
-            }, 0);
+            _AddClass(offcanvas, l2ActiveCls);
+            _AddClass(l1anchor, activeCls);
+            _AddClass(l1panel, activeCls);
+            _AddClass(l0navelement, overflowHiddenCls);
         }
     };
     /**
@@ -590,6 +588,7 @@ var AMegMen;
     /**
      * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
      *
+     * @param event - `click` event to prevent the default action
      * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
      * @param overflowHiddenCls - Class which disables scrollbars on mobile
      * @param activeCls - Class which activates the megamenu links and panels
@@ -600,13 +599,12 @@ var AMegMen;
         if (event) {
             event.preventDefault();
         }
-        setTimeout(function () {
-            amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        }, 0);
+        amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
     };
     /**
      * Click event for closing megamenu on mobile
      *
+     * @param event - `click` event to prevent the default action
      * @param togglenav - Button element to close Offcanvas on mobile
      * @param offcanvas - Offcanvas element containing megamenu
      * @param activeCls - Class which activates the megamenu links and panels
@@ -616,15 +614,14 @@ var AMegMen;
         if (event) {
             event.preventDefault();
         }
-        setTimeout(function () {
-            amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            _RemoveClass(togglenav, activeCls);
-            _RemoveClass(offcanvas, activeCls);
-        }, 0);
+        amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
+        _RemoveClass(togglenav, activeCls);
+        _RemoveClass(offcanvas, activeCls);
     };
     /**
      * Click event for opening/closing megamenu on mobile
      *
+     * @param event - `click` event to prevent the default action
      * @param togglenav - Button element to close Offcanvas on mobile
      * @param offcanvas - Offcanvas element containing megamenu
      * @param activeCls - Class which activates the megamenu links and panels
@@ -635,17 +632,11 @@ var AMegMen;
             event.preventDefault();
         }
         if (_HasClass(togglenav, activeCls)) {
-            setTimeout(function () {
-                // _RemoveClass(togglenav, activeCls);
-                // _RemoveClass(offcanvas, activeCls);
-                amm_closeMain(event, togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            }, 0);
+            amm_closeMain(event, togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
         }
         else {
-            setTimeout(function () {
-                _AddClass(togglenav, activeCls);
-                _AddClass(offcanvas, activeCls);
-            }, 0);
+            _AddClass(togglenav, activeCls);
+            _AddClass(offcanvas, activeCls);
         }
     };
     /**
@@ -927,16 +918,7 @@ var AMegMen;
     var amm_destroy = function (thisid, core) {
         var rootElem = core.rootElem;
         var settings = core.settings;
-        console.log('.' + settings.landingCtaCls +
-            ',.' + settings.toggleBtnCls +
-            ',.' + settings.closeBtnCls +
-            ',.' + settings.mainBtnCls +
-            ',.' + settings.backBtnCls +
-            ',.' + settings.l0AnchorCls +
-            ',.' + settings.l0PanelCls +
-            ',.' + settings.l1AnchorCls +
-            ',.' + settings.l2AnchorCls);
-        var allElems = _ArrayCall(rootElem.querySelectorAll('.' + settings.landingCtaCls +
+        var allElems = _ArrayCall(rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a' +
             ',.' + settings.toggleBtnCls +
             ',.' + settings.closeBtnCls +
             ',.' + settings.mainBtnCls +
@@ -959,7 +941,6 @@ var AMegMen;
             + settings.l2ActiveCls + ' '
             + settings.l1ActiveCls + ' '
             + settings.overflowHiddenCls;
-        console.log('============allElems', allElems.length);
         for (var i = allElems.length - 1; i >= 0; i--) {
             var thiselem = allElems[i];
             if ((_HasClass(thiselem, settings.l0AnchorCls) || _HasClass(thiselem, settings.l1AnchorCls)) && thiselem.getAttribute('role') === 'button') {
@@ -973,7 +954,6 @@ var AMegMen;
             }
             _RemoveClass(thiselem, cls);
             _ToggleUniqueId(thiselem, settings, i, false);
-            console.log('============thiselem.clickClosure', thiselem.clickClosure);
             if (thiselem.clickClosure) {
                 thiselem.removeEventListener('click', thiselem.clickClosure, false);
                 delete thiselem.clickClosure;
@@ -1015,12 +995,8 @@ var AMegMen;
                 delete window.mouseoverClosure;
             }
         }
-        setTimeout(function () {
-            _RemoveClass(rootElem, cls);
-        }, 0);
-        setTimeout(function () {
-            delete AllAMegMenInstances[thisid];
-        }, 0);
+        _RemoveClass(rootElem, cls);
+        delete AllAMegMenInstances[thisid];
     };
     /**
      *  ██████  ██████  ██████  ███████

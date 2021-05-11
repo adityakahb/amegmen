@@ -87,8 +87,8 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    //browsers: ['Chrome', 'Firefox', 'IE'],
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'Firefox', 'IE'],
+    
     client: {
       clearContext: false,
       jasmine: {
