@@ -749,13 +749,13 @@ namespace AMegMen {
     }
 
     if (togglenav && offcanvas) {
-      (togglenav as HTMLElement).addEventListener('click', togglenav.clickClosure = function amm_toggleMainClickClosure(event: any) {
+      (togglenav as HTMLElement).addEventListener('click', togglenav.clickClosure = function amm_toggleMainClickClosure(event: Event) {
         amm_toggleMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }, false);
     }
 
     if (closenav && offcanvas) {
-      (closenav as HTMLElement).addEventListener('click', closenav.clickClosure = function amm_closeMainClickClosure(event: any) {
+      (closenav as HTMLElement).addEventListener('click', closenav.clickClosure = function amm_closeMainClickClosure(event: Event) {
         amm_closeMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }, false);      
     }
@@ -763,7 +763,7 @@ namespace AMegMen {
     if (tomain.length > 0) {
       for (let i = tomain.length - 1; i >= 0 ; i--) {
         let thismain = tomain[i];
-        (thismain as HTMLElement).addEventListener('click', thismain.clickClosure = function amm_gotoMainClickClosure(event: any) {
+        (thismain as HTMLElement).addEventListener('click', thismain.clickClosure = function amm_gotoMainClickClosure(event: Event) {
           amm_gotoMain(event, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }, false);
       }
@@ -772,7 +772,7 @@ namespace AMegMen {
     if (toprevious.length > 0) {
       for (let i = toprevious.length - 1; i >= 0 ; i--) {
         let thisprevious = toprevious[i];
-        (thisprevious as HTMLElement).addEventListener('click', thisprevious.clickClosure = function amm_gotoMainClickClosure(event: any) {
+        (thisprevious as HTMLElement).addEventListener('click', thisprevious.clickClosure = function amm_gotoMainClickClosure(event: Event) {
           amm_gotoMain(event, false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }, false);
       }
@@ -786,7 +786,7 @@ namespace AMegMen {
       const l0navelement = thisl0nav.navelement;
       const l1nav = thisl0nav.l1nav || [];
 
-      l0anchor.addEventListener('click', l0anchor.clickClosure = function amm_l0ClickClosure(event: any) {
+      l0anchor.addEventListener('click', l0anchor.clickClosure = function amm_l0ClickClosure(event: Event) {
         amm_l0ClickFn(event, l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
       }, false);
       l0anchor.addEventListener('mouseenter', l0anchor.mouseenterClosure = function amm_l0MouseenterClosure() {
@@ -803,11 +803,11 @@ namespace AMegMen {
       }, false);
 
       if (l0panel) {
-        l0panel.addEventListener('click', l0panel.clickClosure = function ammSubnavOutClickClosure(event:any) {
+        l0panel.addEventListener('click', l0panel.clickClosure = function ammSubnavOutClickClosure(event: Event) {
           amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
         }, false);
         if (hoverprops.actOnHover) {
-          l0panel.addEventListener('mouseover', l0panel.mouseoverClosure = function ammSubnavOutMouseoverClosure(event:any) {
+          l0panel.addEventListener('mouseover', l0panel.mouseoverClosure = function ammSubnavOutMouseoverClosure(event: Event) {
             amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
           }, false);
         }
@@ -819,7 +819,7 @@ namespace AMegMen {
         const l2nav = l1nav[j].l2nav || [];
         
         if (l1anchor) {
-          l1anchor.addEventListener('click', l1anchor.clickClosure = function amm_l1ClickClosure(event: any) {
+          l1anchor.addEventListener('click', l1anchor.clickClosure = function amm_l1ClickClosure(event: Event) {
             amm_l1ClickFn(event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
           }, false);  
           l1anchor.addEventListener('mouseenter', l1anchor.mouseenterClosure = function amm_l1MouseenterClosure() {
@@ -854,11 +854,11 @@ namespace AMegMen {
       }
     }
 
-    (document as any).addEventListener('click', (document as any).clickClosure = function amm_docClickClosure(event: any) {
+    document.addEventListener('click', (document as any).clickClosure = function amm_docClickClosure(event: Event) {
       amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
     }, false);
     if (hoverprops.actOnHover) {
-      (window as any).addEventListener('mouseover', (window as any).mouseoverClosure = function amm_winMouseoverClosure(event: any) {
+      window.addEventListener('mouseover', (window as any).mouseoverClosure = function amm_winMouseoverClosure(event: Event) {
         amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
       }, false); 
     }
@@ -1073,11 +1073,11 @@ namespace AMegMen {
 
     if (keycount === 1) {
       if ((document as any).clickClosure) {
-        (document as any).removeEventListener('click', (document as any).clickClosure, false);
+        document.removeEventListener('click', (document as any).clickClosure, false);
         delete (document as any).clickClosure;
       }
       if ((window as any).mouseoverClosure) {
-        (window as any).removeEventListener('mouseover', (window as any).mouseoverClosure, false);
+        window.removeEventListener('mouseover', (window as any).mouseoverClosure, false);
         delete (window as any).mouseoverClosure;
       }
     }
