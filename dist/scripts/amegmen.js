@@ -13,6 +13,8 @@ var AMegMen;
     "use strict";
     var AllAMegMenInstances = {};
     var active_amegmen = {};
+    ;
+    var _useCapture = false;
     var _Defaults = {
         activeCls: '__amegmen-active',
         actOnHover: false,
@@ -241,6 +243,44 @@ var AMegMen;
                 }
             }
         }
+    };
+    /**
+     * Function to remove all local events assigned to the navigation elements.
+     *
+     * @param core - AMegMen instance core object
+     * @param element - An HTML Element from which the events need to be removed
+     *
+     */
+    var amm_removeEventListeners = function (core, element) {
+        if ((core.eventHandlers || []).length > 0) {
+            var j = core.eventHandlers.length;
+            while (j--) {
+                if (core.eventHandlers[j].currentElement.isEqualNode && core.eventHandlers[j].currentElement.isEqualNode(element)) {
+                    core.eventHandlers[j].removeEvent();
+                    core.eventHandlers.splice(j, 1);
+                }
+            }
+        }
+    };
+    /**
+     * Function to remove all local events assigned to the navigation elements.
+     *
+     * @param element - An HTML Element which needs to be assigned an event
+     * @param type - Event type
+     * @param listener - The Event handler function
+     *
+     * @returns The event handler object
+     *
+     */
+    var amm_eventHandler = function (element, type, listener) {
+        var eventHandler = {
+            currentElement: element,
+            removeEvent: function () {
+                element.removeEventListener(type, listener, _useCapture);
+            }
+        };
+        element.addEventListener(type, listener, _useCapture);
+        return eventHandler;
     };
     /**
      * Function to close the Level 1 and Level 2 Megamenues if click or hover happens on document or window
@@ -684,29 +724,29 @@ var AMegMen;
             }
         }
         if (togglenav && offcanvas) {
-            togglenav.addEventListener('click', togglenav.clickClosure = function amm_toggleMainClickClosure(event) {
+            core.eventHandlers.push(amm_eventHandler(togglenav, 'click', function (event) {
                 amm_toggleMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-            }, false);
+            }));
         }
         if (closenav && offcanvas) {
-            closenav.addEventListener('click', closenav.clickClosure = function amm_closeMainClickClosure(event) {
+            core.eventHandlers.push(amm_eventHandler(closenav, 'click', function (event) {
                 amm_closeMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-            }, false);
+            }));
         }
         if (tomain.length > 0) {
             for (var i = tomain.length - 1; i >= 0; i--) {
                 var thismain = tomain[i];
-                thismain.addEventListener('click', thismain.clickClosure = function amm_gotoMainClickClosure(event) {
+                core.eventHandlers.push(amm_eventHandler(thismain, 'click', function (event) {
                     amm_gotoMain(event, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-                }, false);
+                }));
             }
         }
         if (toprevious.length > 0) {
             for (var i = toprevious.length - 1; i >= 0; i--) {
                 var thisprevious = toprevious[i];
-                thisprevious.addEventListener('click', thisprevious.clickClosure = function amm_gotoMainClickClosure(event) {
+                core.eventHandlers.push(amm_eventHandler(thisprevious, 'click', function (event) {
                     amm_gotoMain(event, false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-                }, false);
+                }));
             }
         }
         var l0nav = core.l0nav || [];
@@ -716,29 +756,29 @@ var AMegMen;
             var l0panel = thisl0nav.l0panel;
             var l0navelement = thisl0nav.navelement;
             var l1nav = thisl0nav.l1nav || [];
-            l0anchor.addEventListener('click', l0anchor.clickClosure = function amm_l0ClickClosure(event) {
+            core.eventHandlers.push(amm_eventHandler(l0anchor, 'click', function (event) {
                 amm_l0ClickFn(event, l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-            }, false);
-            l0anchor.addEventListener('mouseenter', l0anchor.mouseenterClosure = function amm_l0MouseenterClosure() {
+            }));
+            core.eventHandlers.push(amm_eventHandler(l0anchor, 'mouseenter', function () {
                 amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-            }, false);
-            l0anchor.addEventListener('mouseleave', l0anchor.mouseleaveClosure = function amm_l0MouseleaveClosure() {
+            }));
+            core.eventHandlers.push(amm_eventHandler(l0anchor, 'mouseleave', function () {
                 amm_l0MouseleaveFn(l0anchor, hoverCls);
-            }, false);
-            l0anchor.addEventListener('focus', l0anchor.focusClosure = function amm_l0FocusClosure() {
+            }));
+            core.eventHandlers.push(amm_eventHandler(l0anchor, 'focus', function () {
                 amm_l0FocusFn(l0anchor, focusCls);
-            }, false);
-            l0anchor.addEventListener('blur', l0anchor.blurClosure = function amm_l0BlurClosure() {
+            }));
+            core.eventHandlers.push(amm_eventHandler(l0anchor, 'blur', function () {
                 amm_l0BlurFn(l0anchor, focusCls);
-            }, false);
+            }));
             if (l0panel) {
-                l0panel.addEventListener('click', l0panel.clickClosure = function ammSubnavOutClickClosure(event) {
+                core.eventHandlers.push(amm_eventHandler(l0panel, 'click', function (event) {
                     amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-                }, false);
+                }));
                 if (hoverprops.actOnHover) {
-                    l0panel.addEventListener('mouseover', l0panel.mouseoverClosure = function ammSubnavOutMouseoverClosure(event) {
+                    core.eventHandlers.push(amm_eventHandler(l0panel, 'mouseover', function (event) {
                         amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
-                    }, false);
+                    }));
                 }
             }
             var _loop_4 = function (j) {
@@ -746,36 +786,36 @@ var AMegMen;
                 var l1panel = l1nav[j].l1panel;
                 var l2nav = l1nav[j].l2nav || [];
                 if (l1anchor) {
-                    l1anchor.addEventListener('click', l1anchor.clickClosure = function amm_l1ClickClosure(event) {
+                    core.eventHandlers.push(amm_eventHandler(l1anchor, 'click', function (event) {
                         amm_l1ClickFn(event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-                    }, false);
-                    l1anchor.addEventListener('mouseenter', l1anchor.mouseenterClosure = function amm_l1MouseenterClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l1anchor, 'mouseenter', function () {
                         amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-                    }, false);
-                    l1anchor.addEventListener('mouseleave', l1anchor.mouseleaveClosure = function amm_l1MouseleaveClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l1anchor, 'mouseleave', function () {
                         amm_l1MouseleaveFn(l1anchor, hoverCls);
-                    }, false);
-                    l1anchor.addEventListener('focus', l1anchor.focusClosure = function amm_l1FocusClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l1anchor, 'focus', function () {
                         amm_l1FocusFn(l1anchor, focusCls);
-                    }, false);
-                    l1anchor.addEventListener('blur', l1anchor.blurClosure = function amm_l1BlurClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l1anchor, 'blur', function () {
                         amm_l1BlurFn(l1anchor, focusCls);
-                    }, false);
+                    }));
                 }
                 var _loop_5 = function (k) {
                     var l2anchor = l2nav[k];
-                    l2anchor.addEventListener('mouseenter', l2anchor.mouseenterClosure = function amm_l2MouseenterClosure() {
+                    core.eventHandlers.push(amm_eventHandler(l2anchor, 'mouseenter', function () {
                         amm_l2MouseenterFn(l2anchor, hoverCls);
-                    }, false);
-                    l2anchor.addEventListener('mouseleave', l2anchor.mouseleaveClosure = function amm_l2MouseleaveClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l2anchor, 'mouseleave', function () {
                         amm_l2MouseleaveFn(l2anchor, hoverCls);
-                    }, false);
-                    l2anchor.addEventListener('focus', l2anchor.focusClosure = function amm_l2FocusClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l2anchor, 'focus', function () {
                         amm_l2FocusFn(l2anchor, focusCls);
-                    }, false);
-                    l2anchor.addEventListener('blur', l2anchor.blurClosure = function amm_l2BlurClosure() {
+                    }));
+                    core.eventHandlers.push(amm_eventHandler(l2anchor, 'blur', function () {
                         amm_l2BlurFn(l2anchor, focusCls);
-                    }, false);
+                    }));
                 };
                 for (var k = l2nav.length - 1; k >= 0; k--) {
                     _loop_5(k);
@@ -788,13 +828,13 @@ var AMegMen;
         for (var i = l0nav.length - 1; i >= 0; i--) {
             _loop_3(i);
         }
-        document.addEventListener('click', document.clickClosure = function amm_docClickClosure(event) {
+        core.eventHandlers.push(amm_eventHandler(document, 'click', function (event) {
             amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-        }, false);
+        }));
         if (hoverprops.actOnHover) {
-            window.addEventListener('mouseover', window.mouseoverClosure = function amm_winMouseoverClosure(event) {
+            core.eventHandlers.push(amm_eventHandler(window, 'mouseover', function (event) {
                 amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
-            }, false);
+            }));
         }
     };
     /**
@@ -817,6 +857,7 @@ var AMegMen;
         core.offcanvas = core.rootElem.querySelector("." + settings.offcanvasCls);
         core.tomain = core.rootElem.querySelectorAll("." + settings.mainBtnCls);
         core.toprevious = core.rootElem.querySelectorAll("." + settings.backBtnCls);
+        core.eventHandlers = [];
         if (core.settings.isRTL) {
             _AddClass(core.rootElem, settings.rtl_Cls ? settings.rtl_Cls : '');
         }
@@ -943,6 +984,7 @@ var AMegMen;
             + settings.overflowHiddenCls;
         for (var i = allElems.length - 1; i >= 0; i--) {
             var thiselem = allElems[i];
+            amm_removeEventListeners(core, thiselem);
             if ((_HasClass(thiselem, settings.l0AnchorCls) || _HasClass(thiselem, settings.l1AnchorCls)) && thiselem.getAttribute('role') === 'button') {
                 thiselem.removeAttribute('role');
                 thiselem.removeAttribute('aria-expanded');
@@ -954,30 +996,6 @@ var AMegMen;
             }
             _RemoveClass(thiselem, cls);
             _ToggleUniqueId(thiselem, settings, i, false);
-            if (thiselem.clickClosure) {
-                thiselem.removeEventListener('click', thiselem.clickClosure, false);
-                delete thiselem.clickClosure;
-            }
-            if (thiselem.mouseenterClosure) {
-                thiselem.removeEventListener('mouseenter', thiselem.mouseenterClosure, false);
-                delete thiselem.mouseenterClosure;
-            }
-            if (thiselem.mouseleaveClosure) {
-                thiselem.removeEventListener('mouseleave', thiselem.mouseleaveClosure, false);
-                delete thiselem.mouseleaveClosure;
-            }
-            if (thiselem.mouseoverClosure) {
-                thiselem.removeEventListener('mouseover', thiselem.mouseoverClosure, false);
-                delete thiselem.mouseoverClosure;
-            }
-            if (thiselem.focusClosure) {
-                thiselem.removeEventListener('focus', thiselem.focusClosure, false);
-                delete thiselem.focusClosure;
-            }
-            if (thiselem.blurClosure) {
-                thiselem.removeEventListener('blur', thiselem.blurClosure, false);
-                delete thiselem.blurClosure;
-            }
         }
         var keycount = 0;
         for (var i in AllAMegMenInstances) {
@@ -986,13 +1004,9 @@ var AMegMen;
             }
         }
         if (keycount === 1) {
-            if (document.clickClosure) {
-                document.removeEventListener('click', document.clickClosure, false);
-                delete document.clickClosure;
-            }
-            if (window.mouseoverClosure) {
-                window.removeEventListener('mouseover', window.mouseoverClosure, false);
-                delete window.mouseoverClosure;
+            amm_removeEventListeners(core, document);
+            if (settings.actOnHover) {
+                amm_removeEventListeners(core, window);
             }
         }
         _RemoveClass(rootElem, cls);

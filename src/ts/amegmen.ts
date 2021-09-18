@@ -49,7 +49,11 @@ namespace AMegMen {
     supportedCols?: number;
     toggleBtnCls?: string;
   }
-
+  interface IEventHandler {
+    currentElement: Element;
+    removeEvent?: Function;
+  };
+  const _useCapture = false;
   const _Defaults = {
     activeCls: '__amegmen-active',
     actOnHover: false,
@@ -285,6 +289,46 @@ namespace AMegMen {
         }
       }
     }
+  };
+
+  /**
+   * Function to remove all local events assigned to the navigation elements.
+   * 
+   * @param core - AMegMen instance core object
+   * @param element - An HTML Element from which the events need to be removed
+   *
+   */
+  const amm_removeEventListeners = (core: any, element: Element) => {
+    if ((core.eventHandlers || []).length > 0) {
+      let j = core.eventHandlers.length;
+      while (j--) {
+        if(core.eventHandlers[j].currentElement.isEqualNode && core.eventHandlers[j].currentElement.isEqualNode(element)) {
+          core.eventHandlers[j].removeEvent();
+          core.eventHandlers.splice(j, 1);
+        }
+      }
+    }
+  };
+
+  /**
+   * Function to remove all local events assigned to the navigation elements.
+   * 
+   * @param element - An HTML Element which needs to be assigned an event
+   * @param type - Event type
+   * @param listener - The Event handler function
+   * 
+   * @returns The event handler object
+   *
+   */
+  const amm_eventHandler = (element: Element, type: string, listener: EventListenerOrEventListenerObject) => {
+    const eventHandler:IEventHandler = {
+      currentElement: element,
+      removeEvent: () => {
+        element.removeEventListener(type, listener, _useCapture);
+      }
+    };
+    element.addEventListener(type, listener, _useCapture);
+    return eventHandler;
   };
 
   /**
@@ -749,32 +793,36 @@ namespace AMegMen {
     }
 
     if (togglenav && offcanvas) {
-      (togglenav as HTMLElement).addEventListener('click', togglenav.clickClosure = function amm_toggleMainClickClosure(event: Event) {
-        amm_toggleMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-      }, false);
+      core.eventHandlers.push(amm_eventHandler(togglenav, 'click', (event: Event) => {
+          amm_toggleMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+        }
+      ));
     }
 
     if (closenav && offcanvas) {
-      (closenav as HTMLElement).addEventListener('click', closenav.clickClosure = function amm_closeMainClickClosure(event: Event) {
-        amm_closeMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-      }, false);      
+      core.eventHandlers.push(amm_eventHandler(closenav, 'click', (event: Event) => {
+          amm_closeMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+        }
+      ));
     }
 
     if (tomain.length > 0) {
       for (let i = tomain.length - 1; i >= 0 ; i--) {
         let thismain = tomain[i];
-        (thismain as HTMLElement).addEventListener('click', thismain.clickClosure = function amm_gotoMainClickClosure(event: Event) {
-          amm_gotoMain(event, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-        }, false);
+        core.eventHandlers.push(amm_eventHandler(thismain, 'click', (event: Event) => {
+            amm_gotoMain(event, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+          }
+        ));
       }
     }
 
     if (toprevious.length > 0) {
       for (let i = toprevious.length - 1; i >= 0 ; i--) {
         let thisprevious = toprevious[i];
-        (thisprevious as HTMLElement).addEventListener('click', thisprevious.clickClosure = function amm_gotoMainClickClosure(event: Event) {
-          amm_gotoMain(event, false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-        }, false);
+        core.eventHandlers.push(amm_eventHandler(thisprevious, 'click', (event: Event) => {
+            amm_gotoMain(event, false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+          }
+        ));
       }
     }
 
@@ -786,30 +834,37 @@ namespace AMegMen {
       const l0navelement = thisl0nav.navelement;
       const l1nav = thisl0nav.l1nav || [];
 
-      l0anchor.addEventListener('click', l0anchor.clickClosure = function amm_l0ClickClosure(event: Event) {
-        amm_l0ClickFn(event, l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-      }, false);
-      l0anchor.addEventListener('mouseenter', l0anchor.mouseenterClosure = function amm_l0MouseenterClosure() {
-        amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-      }, false);
-      l0anchor.addEventListener('mouseleave', l0anchor.mouseleaveClosure = function amm_l0MouseleaveClosure() {
-        amm_l0MouseleaveFn(l0anchor, hoverCls);
-      }, false);
-      l0anchor.addEventListener('focus', l0anchor.focusClosure = function amm_l0FocusClosure() {
-        amm_l0FocusFn(l0anchor, focusCls);
-      }, false);
-      l0anchor.addEventListener('blur', l0anchor.blurClosure = function amm_l0BlurClosure() {
-        amm_l0BlurFn(l0anchor, focusCls);
-      }, false);
+      core.eventHandlers.push(amm_eventHandler(l0anchor, 'click', (event: Event) => {
+          amm_l0ClickFn(event, l0anchor, l0panel, core.rootElem, core.mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+        }
+      ));
+      core.eventHandlers.push(amm_eventHandler(l0anchor, 'mouseenter', () => {
+          amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
+        }
+      ));
+      core.eventHandlers.push(amm_eventHandler(l0anchor, 'mouseleave', () => {
+          amm_l0MouseleaveFn(l0anchor, hoverCls);
+        }
+      ));
+      core.eventHandlers.push(amm_eventHandler(l0anchor, 'focus', () => {
+          amm_l0FocusFn(l0anchor, focusCls);
+        }
+      ));
+      core.eventHandlers.push(amm_eventHandler(l0anchor, 'blur', () => {
+          amm_l0BlurFn(l0anchor, focusCls);
+        }
+      ));
 
       if (l0panel) {
-        l0panel.addEventListener('click', l0panel.clickClosure = function ammSubnavOutClickClosure(event: Event) {
-          amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-        }, false);
+        core.eventHandlers.push(amm_eventHandler(l0panel, 'click', (event: Event) => {
+            amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+          }
+        ));
         if (hoverprops.actOnHover) {
-          l0panel.addEventListener('mouseover', l0panel.mouseoverClosure = function ammSubnavOutMouseoverClosure(event: Event) {
-            amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
-          }, false);
+          core.eventHandlers.push(amm_eventHandler(l0panel, 'mouseover', (event: Event) => {
+              amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
+            }
+          ));
         }
       }
 
@@ -819,48 +874,59 @@ namespace AMegMen {
         const l2nav = l1nav[j].l2nav || [];
         
         if (l1anchor) {
-          l1anchor.addEventListener('click', l1anchor.clickClosure = function amm_l1ClickClosure(event: Event) {
-            amm_l1ClickFn(event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-          }, false);  
-          l1anchor.addEventListener('mouseenter', l1anchor.mouseenterClosure = function amm_l1MouseenterClosure() {
-            amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-          }, false);
-          l1anchor.addEventListener('mouseleave', l1anchor.mouseleaveClosure = function amm_l1MouseleaveClosure() {
-            amm_l1MouseleaveFn(l1anchor, hoverCls);
-          }, false);
-          l1anchor.addEventListener('focus', l1anchor.focusClosure = function amm_l1FocusClosure() {
-            amm_l1FocusFn(l1anchor, focusCls);
-          }, false);
-          l1anchor.addEventListener('blur', l1anchor.blurClosure = function amm_l1BlurClosure() {
-            amm_l1BlurFn(l1anchor, focusCls);
-          }, false);
+          core.eventHandlers.push(amm_eventHandler(l1anchor, 'click', (event: Event) => {
+              amm_l1ClickFn(event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l1anchor, 'mouseenter', () => {
+              amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l1anchor, 'mouseleave', () => {
+              amm_l1MouseleaveFn(l1anchor, hoverCls);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l1anchor, 'focus', () => {
+              amm_l1FocusFn(l1anchor, focusCls);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l1anchor, 'blur', () => {
+              amm_l1BlurFn(l1anchor, focusCls);
+            }
+          ));
         }
 
         for (let k = l2nav.length - 1; k >= 0; k--) {
           const l2anchor = l2nav[k];
-          (l2anchor as HTMLElement).addEventListener('mouseenter', l2anchor.mouseenterClosure = function amm_l2MouseenterClosure() {
-            amm_l2MouseenterFn(l2anchor, hoverCls);
-          }, false);
-          (l2anchor as HTMLElement).addEventListener('mouseleave', l2anchor.mouseleaveClosure = function amm_l2MouseleaveClosure() {
-            amm_l2MouseleaveFn(l2anchor, hoverCls);
-          }, false);
-          (l2anchor as HTMLElement).addEventListener('focus', l2anchor.focusClosure = function amm_l2FocusClosure() {
-            amm_l2FocusFn(l2anchor, focusCls);
-          }, false);
-          (l2anchor as HTMLElement).addEventListener('blur', l2anchor.blurClosure = function amm_l2BlurClosure() {
-            amm_l2BlurFn(l2anchor, focusCls);
-          }, false);
+          core.eventHandlers.push(amm_eventHandler(l2anchor, 'mouseenter', () => {
+              amm_l2MouseenterFn(l2anchor, hoverCls);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l2anchor, 'mouseleave', () => {
+              amm_l2MouseleaveFn(l2anchor, hoverCls);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l2anchor, 'focus', () => {
+              amm_l2FocusFn(l2anchor, focusCls);
+            }
+          ));
+          core.eventHandlers.push(amm_eventHandler(l2anchor, 'blur', () => {
+              amm_l2BlurFn(l2anchor, focusCls);
+            }
+          ));
         }
       }
     }
 
-    document.addEventListener('click', (document as any).clickClosure = function amm_docClickClosure(event: Event) {
-      amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
-    }, false);
+    core.eventHandlers.push(amm_eventHandler(document as any, 'click', (event: Event) => {
+        amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'click');
+      }
+    ));
     if (hoverprops.actOnHover) {
-      window.addEventListener('mouseover', (window as any).mouseoverClosure = function amm_winMouseoverClosure(event: Event) {
-        amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
-      }, false); 
+      core.eventHandlers.push(amm_eventHandler(window as any, 'mouseover', (event: Event) => {
+          amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, 'mouseover');
+        }
+      ));
     }
   };
 
@@ -884,6 +950,7 @@ namespace AMegMen {
     core.offcanvas = core.rootElem.querySelector(`.${settings.offcanvasCls}`);
     core.tomain = core.rootElem.querySelectorAll(`.${settings.mainBtnCls}`);
     core.toprevious = core.rootElem.querySelectorAll(`.${settings.backBtnCls}`);
+    core.eventHandlers = [];
 
     if (core.settings.isRTL) {
       _AddClass(core.rootElem as HTMLElement, settings.rtl_Cls ? settings.rtl_Cls : '');
@@ -1025,6 +1092,8 @@ namespace AMegMen {
 
     for (let i = allElems.length - 1; i >= 0; i--) {
       let thiselem = allElems[i];
+      amm_removeEventListeners(core, thiselem);
+
       if ((_HasClass(thiselem, settings.l0AnchorCls) || _HasClass(thiselem, settings.l1AnchorCls)) && thiselem.getAttribute('role') === 'button') {
         thiselem.removeAttribute('role');
         thiselem.removeAttribute('aria-expanded');
@@ -1037,31 +1106,6 @@ namespace AMegMen {
 
       _RemoveClass(thiselem, cls);
       _ToggleUniqueId(thiselem, settings, i, false);
-
-      if (thiselem.clickClosure) {
-        thiselem.removeEventListener('click', thiselem.clickClosure, false);
-        delete thiselem.clickClosure;
-      }
-      if (thiselem.mouseenterClosure) {
-        thiselem.removeEventListener('mouseenter', thiselem.mouseenterClosure, false);
-        delete thiselem.mouseenterClosure;
-      }
-      if (thiselem.mouseleaveClosure) {
-        thiselem.removeEventListener('mouseleave', thiselem.mouseleaveClosure, false);
-        delete thiselem.mouseleaveClosure;
-      }
-      if (thiselem.mouseoverClosure) {
-        thiselem.removeEventListener('mouseover', thiselem.mouseoverClosure, false);
-        delete thiselem.mouseoverClosure;
-      }
-      if (thiselem.focusClosure) {
-        thiselem.removeEventListener('focus', thiselem.focusClosure, false);
-        delete thiselem.focusClosure;
-      }
-      if (thiselem.blurClosure) {
-        thiselem.removeEventListener('blur', thiselem.blurClosure, false);
-        delete thiselem.blurClosure;
-      }
     }
 
     let keycount = 0;
@@ -1072,13 +1116,9 @@ namespace AMegMen {
     }
 
     if (keycount === 1) {
-      if ((document as any).clickClosure) {
-        document.removeEventListener('click', (document as any).clickClosure, false);
-        delete (document as any).clickClosure;
-      }
-      if ((window as any).mouseoverClosure) {
-        window.removeEventListener('mouseover', (window as any).mouseoverClosure, false);
-        delete (window as any).mouseoverClosure;
+      amm_removeEventListeners(core, document as any);
+      if (settings.actOnHover) {
+        amm_removeEventListeners(core, window as any);
       }
     }
 
