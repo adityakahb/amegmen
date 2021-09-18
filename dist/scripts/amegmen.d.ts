@@ -74,14 +74,14 @@ declare namespace AMegMen {
          * @param options - The optional object to customize every AMegMen instance.
          *
          */
-        init: (query: string, options?: IAMegMenSettings | undefined) => void;
+        protected init: (query: string, options?: IAMegMenSettings | undefined) => void;
         /**
          * Function to destroy the AMegMen plugin for provided query strings.
          *
          * @param query - The CSS selector for which the AMegMen needs to be initialized.
          *
          */
-        destroy: (query: string) => void;
+        protected destroy: (query: string) => void;
     }
     export {};
 }

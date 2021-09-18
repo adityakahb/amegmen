@@ -1194,7 +1194,7 @@ namespace AMegMen {
      * @param options - The optional object to customize every AMegMen instance.
      *
      */
-    public init = (query: string, options?: IAMegMenSettings) => {
+    protected init = (query: string, options?: IAMegMenSettings) => {
       const roots = _ArrayCall(document.querySelectorAll(query));
       const rootsLen = roots.length;
       let instancelen = 0;
@@ -1237,7 +1237,7 @@ namespace AMegMen {
      * @param query - The CSS selector for which the AMegMen needs to be initialized.
      *
      */
-    public destroy = (query: string) => {
+    protected destroy = (query: string) => {
       const roots = _ArrayCall(document.querySelectorAll(query));
       const rootsLen = roots.length;
       if (rootsLen > 0) {
