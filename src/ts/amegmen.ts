@@ -52,7 +52,7 @@ namespace AMegMen {
   interface IEventHandler {
     currentElement: Element;
     removeEvent?: Function;
-  };
+  }
   const _useCapture = false;
   const _Defaults = {
     activeCls: '__amegmen-active',
@@ -777,18 +777,22 @@ namespace AMegMen {
       const landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
       for (let i = landingElements.length - 1; i >= 0; i--) {
         let thislandingelem = landingElements[i];
-        (thislandingelem as HTMLElement).addEventListener('mouseenter', thislandingelem.mouseenterClosure = function amm_landingMouseenterClosure() {
-          amm_landingMouseenterFn(thislandingelem, hoverCls);
-        }, false);
-        (thislandingelem as HTMLElement).addEventListener('mouseleave', thislandingelem.mouseleaveClosure = function amm_landingMouseleaveClosure() {
-          amm_landingMouseleaveFn(thislandingelem, hoverCls);
-        }, false);
-        (thislandingelem as HTMLElement).addEventListener('focus', thislandingelem.focusClosure = function amm_landingFocusClosure() {
-          amm_landingFocusFn(thislandingelem, focusCls);
-        }, false);
-        (thislandingelem as HTMLElement).addEventListener('blur', thislandingelem.blurClosure = function amm_landingBlurClosure() {
-          amm_landingBlurFn(thislandingelem, focusCls);
-        }, false);
+        core.eventHandlers.push(amm_eventHandler(thislandingelem, 'mouseenter', () => {
+            amm_landingMouseenterFn(thislandingelem, hoverCls);
+          }
+        ));
+        core.eventHandlers.push(amm_eventHandler(thislandingelem, 'mouseleave', () => {
+            amm_landingMouseleaveFn(thislandingelem, hoverCls);
+          }
+        ));
+        core.eventHandlers.push(amm_eventHandler(thislandingelem, 'focus', () => {
+            amm_landingFocusFn(thislandingelem, focusCls);
+          }
+        ));
+        core.eventHandlers.push(amm_eventHandler(thislandingelem, 'blur', () => {
+            amm_landingBlurFn(thislandingelem, focusCls);
+          }
+        ));
       }
     }
 

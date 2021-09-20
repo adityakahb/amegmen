@@ -13,7 +13,6 @@ var AMegMen;
     "use strict";
     var AllAMegMenInstances = {};
     var active_amegmen = {};
-    ;
     var _useCapture = false;
     var _Defaults = {
         activeCls: '__amegmen-active',
@@ -706,18 +705,18 @@ var AMegMen;
             var landingElements = _ArrayCall(core.rootElem.querySelectorAll('.' + settings.landingCtaCls + ' > a'));
             var _loop_2 = function (i) {
                 var thislandingelem = landingElements[i];
-                thislandingelem.addEventListener('mouseenter', thislandingelem.mouseenterClosure = function amm_landingMouseenterClosure() {
+                core.eventHandlers.push(amm_eventHandler(thislandingelem, 'mouseenter', function () {
                     amm_landingMouseenterFn(thislandingelem, hoverCls);
-                }, false);
-                thislandingelem.addEventListener('mouseleave', thislandingelem.mouseleaveClosure = function amm_landingMouseleaveClosure() {
+                }));
+                core.eventHandlers.push(amm_eventHandler(thislandingelem, 'mouseleave', function () {
                     amm_landingMouseleaveFn(thislandingelem, hoverCls);
-                }, false);
-                thislandingelem.addEventListener('focus', thislandingelem.focusClosure = function amm_landingFocusClosure() {
+                }));
+                core.eventHandlers.push(amm_eventHandler(thislandingelem, 'focus', function () {
                     amm_landingFocusFn(thislandingelem, focusCls);
-                }, false);
-                thislandingelem.addEventListener('blur', thislandingelem.blurClosure = function amm_landingBlurClosure() {
+                }));
+                core.eventHandlers.push(amm_eventHandler(thislandingelem, 'blur', function () {
                     amm_landingBlurFn(thislandingelem, focusCls);
-                }, false);
+                }));
             };
             for (var i = landingElements.length - 1; i >= 0; i--) {
                 _loop_2(i);
