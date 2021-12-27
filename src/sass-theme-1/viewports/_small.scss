@@ -1,8 +1,12 @@
 .__amegmen {
-  &, * {
+  &,
+  * {
     box-sizing: border-box;
   }
-  .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
+  .__amegmen--toggle-cta,
+  .__amegmen--close-cta,
+  .__amegmen--main-cta,
+  .__amegmen--back-cta {
     border-radius: 100%;
     border: 1px solid $amegmen_link_border;
     color: $anchorLink;
@@ -61,7 +65,7 @@
     top: 0;
     width: 100%;
     z-index: 8;
-    
+
     &.__amegmen--nooverflow {
       overflow: hidden;
     }
@@ -81,7 +85,9 @@
     }
   }
 
-  .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+  .__amegmen--anchor-l0,
+  .__amegmen--anchor-l1,
+  .__amegmen--anchor-l2 {
     @include amegmen-animation();
     border: 1px solid transparent;
     display: block;
@@ -93,13 +99,15 @@
     &:visited {
       color: $anchorVisited;
     }
-    &:hover, &.__amegmen-hover {
+    &:hover,
+    &.__amegmen-hover {
       color: $anchorHover;
     }
     &:active {
       color: $anchorActive;
     }
-    &:focus, &.__amegmen-focus {
+    &:focus,
+    &.__amegmen-focus {
       color: $anchorFocus;
     }
   }
@@ -110,7 +118,10 @@
     font-size: 17px;
     padding: 13px;
 
-    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
+    &:hover,
+    &.__amegmen-active,
+    &:focus,
+    &.__amegmen-focus {
       background-color: $amegmen_nav_l1;
     }
   }
@@ -121,7 +132,10 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
+    &:hover,
+    &.__amegmen-active,
+    &:focus,
+    &.__amegmen-focus {
       background-color: $amegmen_nav_l2;
     }
   }
@@ -131,14 +145,18 @@
     font-size: 15px;
     padding: 13px;
 
-    &:hover, &.__amegmen-active, &:focus, &.__amegmen-focus {
+    &:hover,
+    &.__amegmen-active,
+    &:focus,
+    &.__amegmen-focus {
       background-color: $amegmen_nav_l3;
     }
   }
 
   .__amegmen--col {
     & > ul {
-      &, & > li {
+      &,
+      & > li {
         display: block;
         list-style: none;
         margin: 0;
@@ -148,7 +166,7 @@
   }
 
   .__amegmen--panel {
-    @include amegmen-animation(); 
+    @include amegmen-animation();
     border: 1px solid $amegmen_nav_border;
     height: 100%;
     left: 0;
@@ -238,22 +256,28 @@
       &:visited {
         color: $anchorVisited;
       }
-      &:hover, &.__amegmen-hover {
+      &:hover,
+      &.__amegmen-hover {
         color: $anchorHover;
       }
       &:active {
         color: $anchorActive;
       }
-      &:focus, &.focus {
+      &:focus,
+      &.focus {
         color: $anchorFocus;
       }
     }
   }
   &.__amegmen--r-to-l {
-    .__amegmen--main, .__amegmen--panel-l0 > nav, .__amegmen--panel-l1 > nav {
+    .__amegmen--main,
+    .__amegmen--panel-l0 > nav,
+    .__amegmen--panel-l1 > nav {
       direction: rtl;
     }
-    .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+    .__amegmen--anchor-l0,
+    .__amegmen--anchor-l1,
+    .__amegmen--anchor-l2 {
       text-align: right;
     }
     .__amegmen--landing {

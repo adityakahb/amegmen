@@ -5,12 +5,16 @@
 @import './config/typography';
 
 .__amegmen {
-  .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2, .__amegmen--landing a {
+  .__amegmen--anchor-l0,
+  .__amegmen--anchor-l1,
+  .__amegmen--anchor-l2,
+  .__amegmen--landing a {
     .icon {
       display: none;
     }
   }
-  .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+  .__amegmen--anchor-l1,
+  .__amegmen--anchor-l2 {
     .icon {
       display: none;
     }

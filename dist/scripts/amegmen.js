@@ -24,12 +24,6 @@ var AMegMen;
     "use strict";
     var AllAMegMenInstances = {};
     var active_amegmen = {};
-    // interface IL2 {
-    //   l2li: HTMLElement | null;
-    //   l2anchor: HTMLElement | null;
-    //   l2panel: HTMLElement | null;
-    //   l1toback: HTMLElement | null;
-    // }
     var _useCapture = false;
     var _Defaults = {
         activeCls: "__amegmen-active",
@@ -52,14 +46,14 @@ var AMegMen;
         l2ActiveCls: "__amegmen--l2-active",
         l2AnchorCls: "__amegmen--anchor-l2",
         landingCtaCls: "__amegmen--landing",
-        lastcolCls: "__amegmen--col-last",
+        lastColCls: "__amegmen--col-last",
         mainBtnCls: "__amegmen--main-cta",
         mainElementCls: "__amegmen--main",
         offcanvasCls: "__amegmen--canvas",
         overflowHiddenCls: "__amegmen--nooverflow",
         panelCls: "__amegmen--panel",
         rootCls: "__amegmen",
-        rtl_Cls: "__amegmen--r-to-l",
+        rtlCls: "__amegmen--r-to-l",
         shiftColumns: false,
         supportedCols: 4,
         toggleBtnCls: "__amegmen--toggle-cta"
@@ -835,7 +829,7 @@ var AMegMen;
     var amm_init = function (core, rootElem, settings) {
         _AddClass(rootElem, settings.rootCls ? settings.rootCls : "");
         core.root = rootElem;
-        core.settings = settings;
+        core.opts = settings;
         core.mainEl = core.root.querySelector(".".concat(settings.mainElementCls));
         core.togglenav = core.root.querySelector(".".concat(settings.toggleBtnCls));
         core.closenav = core.root.querySelector(".".concat(settings.closeBtnCls));
@@ -843,8 +837,8 @@ var AMegMen;
         core.tomain = core.root.querySelectorAll(".".concat(settings.mainBtnCls));
         core.toprev = core.root.querySelectorAll(".".concat(settings.backBtnCls));
         core.eHandlers = [];
-        if (core.settings.isRTL) {
-            _AddClass(core.root, settings.rtl_Cls);
+        if (core.opts.isRTL) {
+            _AddClass(core.root, settings.rtlCls);
         }
         if (core.mainEl) {
             core.l0nav = [];
@@ -881,7 +875,7 @@ var AMegMen;
                                     var thisl1col = l1cols[j];
                                     _AddClass(thisl1col, "".concat(settings.colCls, "-").concat(colnum > 0 ? colnum : 2));
                                     if (j === colnum - 1 && j > 1) {
-                                        _AddClass(thisl1col, settings.lastcolCls);
+                                        _AddClass(thisl1col, settings.lastColCls);
                                     }
                                 }
                                 for (var j = l1li.length - 1; j >= 0; j--) {
@@ -945,72 +939,9 @@ var AMegMen;
      */
     var amm_destroy = function (thisid, core) {
         if (core.root) {
-            var settings = core.settings;
-            console.log("." +
-                settings.landingCtaCls +
-                " > a" +
-                ",." +
-                settings.toggleBtnCls +
-                ",." +
-                settings.closeBtnCls +
-                ",." +
-                settings.mainBtnCls +
-                ",." +
-                settings.backBtnCls +
-                ",." +
-                settings.l0AnchorCls +
-                ",." +
-                settings.l0PanelCls +
-                ",." +
-                settings.l1AnchorCls +
-                ",." +
-                settings.l2AnchorCls);
-            var allElems = core.root.querySelectorAll("." +
-                settings.landingCtaCls +
-                " > a" +
-                ",." +
-                settings.toggleBtnCls +
-                ",." +
-                settings.closeBtnCls +
-                ",." +
-                settings.mainBtnCls +
-                ",." +
-                settings.backBtnCls +
-                ",." +
-                settings.l0AnchorCls +
-                ",." +
-                settings.l0PanelCls +
-                ",." +
-                settings.l1AnchorCls +
-                ",." +
-                settings.l2AnchorCls);
-            var cls = settings.rootCls +
-                " " +
-                settings.l0AnchorCls +
-                " " +
-                settings.l0PanelCls +
-                " " +
-                settings.l1AnchorCls +
-                " " +
-                settings.l1PanelCls +
-                " " +
-                settings.l2AnchorCls +
-                " " +
-                settings.lastcolCls +
-                " " +
-                settings.activeCls +
-                " " +
-                settings.focusCls +
-                " " +
-                settings.hoverCls +
-                " " +
-                settings.rtl_Cls +
-                " " +
-                settings.l2ActiveCls +
-                " " +
-                settings.l1ActiveCls +
-                " " +
-                settings.overflowHiddenCls;
+            var settings = core.opts;
+            var allElems = core.root.querySelectorAll(".".concat(settings.landingCtaCls, " > a, .").concat(settings.toggleBtnCls, ", .").concat(settings.closeBtnCls, ", .").concat(settings.mainBtnCls, ", .").concat(settings.backBtnCls, ", .").concat(settings.l0AnchorCls, ", .").concat(settings.l0PanelCls, ", .").concat(settings.l1AnchorCls, ", .").concat(settings.l2AnchorCls));
+            var cls = "".concat(settings.rootCls, " ").concat(settings.l0AnchorCls, " ").concat(settings.l0PanelCls, " ").concat(settings.l1AnchorCls, " ").concat(settings.l1PanelCls, " ").concat(settings.l2AnchorCls, " ").concat(settings.lastColCls, " ").concat(settings.activeCls, " ").concat(settings.focusCls, " ").concat(settings.hoverCls, " ").concat(settings.rtlCls, " ").concat(settings.l2ActiveCls, " ").concat(settings.l1ActiveCls, " ").concat(settings.overflowHiddenCls);
             for (var i = allElems.length - 1; i >= 0; i--) {
                 var thiselem = allElems[i];
                 amm_removeEventListeners(core, thiselem);
@@ -1144,10 +1075,8 @@ var AMegMen;
                 if (rootsLen > 0) {
                     for (var i = 0; i < rootsLen; i++) {
                         var id = roots[i].getAttribute("id");
-                        console.log("========id", id);
                         if (id && _this.instances[id]) {
-                            console.log("=========this.instances[id]", _this.instances[id].root);
-                            amm_destroy(id, _this.instances[id]);
+                            amm_destroy(id, _this.instances[id].core);
                             delete _this.instances[id];
                         }
                     }

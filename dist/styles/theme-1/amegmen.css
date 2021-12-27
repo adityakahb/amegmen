@@ -1,7 +1,11 @@
-.__amegmen, .__amegmen * {
+.__amegmen,
+.__amegmen * {
   box-sizing: border-box; }
 
-.__amegmen .__amegmen--toggle-cta, .__amegmen .__amegmen--close-cta, .__amegmen .__amegmen--main-cta, .__amegmen .__amegmen--back-cta {
+.__amegmen .__amegmen--toggle-cta,
+.__amegmen .__amegmen--close-cta,
+.__amegmen .__amegmen--main-cta,
+.__amegmen .__amegmen--back-cta {
   border-radius: 100%;
   border: 1px solid #444;
   color: #000;
@@ -68,21 +72,37 @@
       margin: 0;
       padding: 0; }
 
-.__amegmen .__amegmen--anchor-l0, .__amegmen .__amegmen--anchor-l1, .__amegmen .__amegmen--anchor-l2 {
+.__amegmen .__amegmen--anchor-l0,
+.__amegmen .__amegmen--anchor-l1,
+.__amegmen .__amegmen--anchor-l2 {
   transition: all 500ms ease;
   border: 1px solid transparent;
   display: block;
   text-align: left;
   text-decoration: none; }
-  .__amegmen .__amegmen--anchor-l0:link, .__amegmen .__amegmen--anchor-l1:link, .__amegmen .__amegmen--anchor-l2:link {
+  .__amegmen .__amegmen--anchor-l0:link,
+  .__amegmen .__amegmen--anchor-l1:link,
+  .__amegmen .__amegmen--anchor-l2:link {
     color: #000; }
-  .__amegmen .__amegmen--anchor-l0:visited, .__amegmen .__amegmen--anchor-l1:visited, .__amegmen .__amegmen--anchor-l2:visited {
+  .__amegmen .__amegmen--anchor-l0:visited,
+  .__amegmen .__amegmen--anchor-l1:visited,
+  .__amegmen .__amegmen--anchor-l2:visited {
     color: #000; }
-  .__amegmen .__amegmen--anchor-l0:hover, .__amegmen .__amegmen--anchor-l0.__amegmen-hover, .__amegmen .__amegmen--anchor-l1:hover, .__amegmen .__amegmen--anchor-l1.__amegmen-hover, .__amegmen .__amegmen--anchor-l2:hover, .__amegmen .__amegmen--anchor-l2.__amegmen-hover {
+  .__amegmen .__amegmen--anchor-l0:hover, .__amegmen .__amegmen--anchor-l0.__amegmen-hover,
+  .__amegmen .__amegmen--anchor-l1:hover,
+  .__amegmen .__amegmen--anchor-l1.__amegmen-hover,
+  .__amegmen .__amegmen--anchor-l2:hover,
+  .__amegmen .__amegmen--anchor-l2.__amegmen-hover {
     color: #444; }
-  .__amegmen .__amegmen--anchor-l0:active, .__amegmen .__amegmen--anchor-l1:active, .__amegmen .__amegmen--anchor-l2:active {
+  .__amegmen .__amegmen--anchor-l0:active,
+  .__amegmen .__amegmen--anchor-l1:active,
+  .__amegmen .__amegmen--anchor-l2:active {
     color: #000; }
-  .__amegmen .__amegmen--anchor-l0:focus, .__amegmen .__amegmen--anchor-l0.__amegmen-focus, .__amegmen .__amegmen--anchor-l1:focus, .__amegmen .__amegmen--anchor-l1.__amegmen-focus, .__amegmen .__amegmen--anchor-l2:focus, .__amegmen .__amegmen--anchor-l2.__amegmen-focus {
+  .__amegmen .__amegmen--anchor-l0:focus, .__amegmen .__amegmen--anchor-l0.__amegmen-focus,
+  .__amegmen .__amegmen--anchor-l1:focus,
+  .__amegmen .__amegmen--anchor-l1.__amegmen-focus,
+  .__amegmen .__amegmen--anchor-l2:focus,
+  .__amegmen .__amegmen--anchor-l2.__amegmen-focus {
     color: #444; }
 
 .__amegmen .__amegmen--anchor-l0 {
@@ -108,7 +128,8 @@
   .__amegmen .__amegmen--anchor-l2:hover, .__amegmen .__amegmen--anchor-l2.__amegmen-active, .__amegmen .__amegmen--anchor-l2:focus, .__amegmen .__amegmen--anchor-l2.__amegmen-focus {
     background-color: #b5b5b5; }
 
-.__amegmen .__amegmen--col > ul, .__amegmen .__amegmen--col > ul > li {
+.__amegmen .__amegmen--col > ul,
+.__amegmen .__amegmen--col > ul > li {
   display: block;
   list-style: none;
   margin: 0;
@@ -193,10 +214,14 @@
     .__amegmen .__amegmen--landing a:focus, .__amegmen .__amegmen--landing a.focus {
       color: #444; }
 
-.__amegmen.__amegmen--r-to-l .__amegmen--main, .__amegmen.__amegmen--r-to-l .__amegmen--panel-l0 > nav, .__amegmen.__amegmen--r-to-l .__amegmen--panel-l1 > nav {
+.__amegmen.__amegmen--r-to-l .__amegmen--main,
+.__amegmen.__amegmen--r-to-l .__amegmen--panel-l0 > nav,
+.__amegmen.__amegmen--r-to-l .__amegmen--panel-l1 > nav {
   direction: rtl; }
 
-.__amegmen.__amegmen--r-to-l .__amegmen--anchor-l0, .__amegmen.__amegmen--r-to-l .__amegmen--anchor-l1, .__amegmen.__amegmen--r-to-l .__amegmen--anchor-l2 {
+.__amegmen.__amegmen--r-to-l .__amegmen--anchor-l0,
+.__amegmen.__amegmen--r-to-l .__amegmen--anchor-l1,
+.__amegmen.__amegmen--r-to-l .__amegmen--anchor-l2 {
   text-align: right; }
 
 .__amegmen.__amegmen--r-to-l .__amegmen--landing {
@@ -211,7 +236,11 @@
     z-index: 1; }
     .__amegmen.__amegmen-active {
       z-index: 1030; }
-    .__amegmen header, .__amegmen .__amegmen--toggle-cta, .__amegmen .__amegmen--close-cta, .__amegmen .__amegmen--main-cta, .__amegmen .__amegmen--back-cta {
+    .__amegmen header,
+    .__amegmen .__amegmen--toggle-cta,
+    .__amegmen .__amegmen--close-cta,
+    .__amegmen .__amegmen--main-cta,
+    .__amegmen .__amegmen--back-cta {
       display: none; }
     .__amegmen .__amegmen--canvas {
       height: auto;
@@ -244,7 +273,9 @@
         transition: all 500ms ease; }
     .__amegmen .__amegmen--panel-l0 {
       height: auto;
-      overflow: visible; }
+      overflow: visible;
+      width: calc(100% + 2px);
+      left: -1px; }
       .__amegmen .__amegmen--panel-l0 .__amegmen--landing {
         width: auto; }
       .__amegmen .__amegmen--panel-l0 > nav {

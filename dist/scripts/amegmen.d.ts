@@ -30,14 +30,14 @@ declare namespace AMegMen {
         l2ActiveCls: string;
         l2AnchorCls: string;
         landingCtaCls: string;
-        lastcolCls: string;
+        lastColCls: string;
         mainBtnCls: string;
         mainElementCls: string;
         offcanvasCls: string;
         overflowHiddenCls: string;
         panelCls: string;
         rootCls: string;
-        rtl_Cls: string;
+        rtlCls: string;
         shiftColumns?: boolean;
         supportedCols?: number;
         toggleBtnCls: string;

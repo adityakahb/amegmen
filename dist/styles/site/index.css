@@ -8375,61 +8375,84 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6,
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out; } }
 
-html, body {
+html,
+body {
   font-size: 16px; }
   @media screen and (min-width: 300px) {
-    html, body {
-      font-size: calc(16px + 2 * ((100vw - 300px) / 1300)); } }
+    html,
+    body {
+      font-size: calc( 16px + 2 * ((100vw - 300px) / 1300)); } }
   @media screen and (min-width: 1600px) {
-    html, body {
+    html,
+    body {
       font-size: 18px; } }
 
-h1, .h1, .h1 {
+h1, .h1,
+.h1 {
   font-size: 1.4641rem; }
-  h1, .h1, .h1 {
+  h1, .h1,
+  .h1 {
     font-size: 21.296px; }
     @media screen and (min-width: 300px) {
-      h1, .h1, .h1 {
-        font-size: calc(21.296px + 75.17275 * ((100vw - 300px) / 1300)); } }
+      h1, .h1,
+      .h1 {
+        font-size: calc( 21.296px + 75.17275 * ((100vw - 300px) / 1300)); } }
     @media screen and (min-width: 1600px) {
-      h1, .h1, .h1 {
+      h1, .h1,
+      .h1 {
         font-size: 96.46875px; } }
 
-h2, .h2, .h2 {
+h2, .h2,
+.h2 {
   font-size: 1.331rem; }
-  h2, .h2, .h2 {
+  h2, .h2,
+  .h2 {
     font-size: 19.36px; }
     @media screen and (min-width: 300px) {
-      h2, .h2, .h2 {
-        font-size: calc(19.36px + 35.765 * ((100vw - 300px) / 1300)); } }
+      h2, .h2,
+      .h2 {
+        font-size: calc( 19.36px + 35.765 * ((100vw - 300px) / 1300)); } }
     @media screen and (min-width: 1600px) {
-      h2, .h2, .h2 {
+      h2, .h2,
+      .h2 {
         font-size: 55.125px; } }
 
-h3, .h3, .h3 {
+h3, .h3,
+.h3 {
   font-size: 1.21rem; }
-  h3, .h3, .h3 {
+  h3, .h3,
+  .h3 {
     font-size: 17.6px; }
     @media screen and (min-width: 300px) {
-      h3, .h3, .h3 {
-        font-size: calc(17.6px + 13.9 * ((100vw - 300px) / 1300)); } }
+      h3, .h3,
+      .h3 {
+        font-size: calc( 17.6px + 13.9 * ((100vw - 300px) / 1300)); } }
     @media screen and (min-width: 1600px) {
-      h3, .h3, .h3 {
+      h3, .h3,
+      .h3 {
         font-size: 31.5px; } }
 
-h4, .h4, .h4 {
+h4, .h4,
+.h4 {
   font-size: 1.1rem; }
-  h4, .h4, .h4 {
+  h4, .h4,
+  .h4 {
     font-size: 16px; }
     @media screen and (min-width: 300px) {
-      h4, .h4, .h4 {
-        font-size: calc(16px + 2 * ((100vw - 300px) / 1300)); } }
+      h4, .h4,
+      .h4 {
+        font-size: calc( 16px + 2 * ((100vw - 300px) / 1300)); } }
     @media screen and (min-width: 1600px) {
-      h4, .h4, .h4 {
+      h4, .h4,
+      .h4 {
         font-size: 18px; } }
 
-.__amegmen .__amegmen--anchor-l0 .icon, .__amegmen .__amegmen--anchor-l1 .icon, .__amegmen .__amegmen--anchor-l2 .icon, .__amegmen .__amegmen--landing a .icon {
+.__amegmen .__amegmen--anchor-l0 .icon,
+.__amegmen .__amegmen--anchor-l1 .icon,
+.__amegmen .__amegmen--anchor-l2 .icon,
+.__amegmen .__amegmen--landing a .icon {
   display: none; }
 
-.__amegmen .__amegmen--anchor-l1 .icon, .__amegmen .__amegmen--anchor-l2 .icon {
+.__amegmen .__amegmen--anchor-l1 .icon,
+.__amegmen .__amegmen--anchor-l2 .icon {
   display: none; }

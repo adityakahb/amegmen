@@ -4,7 +4,11 @@
   &.__amegmen-active {
     z-index: 1030;
   }
-  header, .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
+  header,
+  .__amegmen--toggle-cta,
+  .__amegmen--close-cta,
+  .__amegmen--main-cta,
+  .__amegmen--back-cta {
     display: none;
   }
   .__amegmen--canvas {
@@ -48,6 +52,8 @@
   .__amegmen--panel-l0 {
     height: auto;
     overflow: visible;
+    width: calc(100% + 2px);
+    left: -1px;
     .__amegmen--landing {
       width: auto;
     }

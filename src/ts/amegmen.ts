@@ -13,7 +13,7 @@ namespace AMegMen {
   let AllAMegMenInstances: any = {};
   let active_amegmen: any = {};
 
-  interface IRoot {
+  interface IAMegMenRoot {
     [key: string]: any;
   }
   interface IAMegMenSettings {
@@ -37,44 +37,44 @@ namespace AMegMen {
     l2ActiveCls: string;
     l2AnchorCls: string;
     landingCtaCls: string;
-    lastcolCls: string;
+    lastColCls: string;
     mainBtnCls: string;
     mainElementCls: string;
     offcanvasCls: string;
     overflowHiddenCls: string;
     panelCls: string;
     rootCls: string;
-    rtl_Cls: string;
+    rtlCls: string;
     shiftColumns?: boolean;
     supportedCols?: number;
     toggleBtnCls: string;
   }
-  interface ICore {
+  interface IAMegMenCore {
     closenav: HTMLElement | null;
     eHandlers: any[];
-    l0nav: IL0[];
+    l0nav: IAMegMenL0[];
     mainEl: HTMLElement | null;
     offcanvas: HTMLElement | null;
     root: HTMLElement | null;
-    settings: IAMegMenSettings;
+    opts: IAMegMenSettings;
     togglenav: HTMLElement | null;
     tomain: NodeListOf<Element>;
     toprev: NodeListOf<Element>;
   }
-  interface IEventHandler {
+  interface IAMegMenEventHandler {
     currentElement: HTMLElement | null;
     removeEvent?: Function;
   }
-  interface IL0 {
+  interface IAMegMenL0 {
     l0li: HTMLElement | null;
     l0anchor: HTMLElement | null;
     l0panel: HTMLElement | null;
     l0tomain: HTMLElement | null;
     navelement: HTMLElement | null;
     l1cols: number;
-    l1nav: IL1[];
+    l1nav: IAMegMenL1[];
   }
-  interface IL1 {
+  interface IAMegMenL1 {
     l1li: HTMLElement | null;
     l1anchor: HTMLElement | null;
     l1panel: HTMLElement | null;
@@ -84,12 +84,6 @@ namespace AMegMen {
     l2cols: number;
     l2nav: NodeListOf<Element>;
   }
-  // interface IL2 {
-  //   l2li: HTMLElement | null;
-  //   l2anchor: HTMLElement | null;
-  //   l2panel: HTMLElement | null;
-  //   l1toback: HTMLElement | null;
-  // }
   const _useCapture = false;
   const _Defaults = {
     activeCls: `__amegmen-active`,
@@ -112,14 +106,14 @@ namespace AMegMen {
     l2ActiveCls: `__amegmen--l2-active`,
     l2AnchorCls: `__amegmen--anchor-l2`,
     landingCtaCls: `__amegmen--landing`,
-    lastcolCls: `__amegmen--col-last`,
+    lastColCls: `__amegmen--col-last`,
     mainBtnCls: `__amegmen--main-cta`,
     mainElementCls: `__amegmen--main`,
     offcanvasCls: `__amegmen--canvas`,
     overflowHiddenCls: `__amegmen--nooverflow`,
     panelCls: `__amegmen--panel`,
     rootCls: `__amegmen`,
-    rtl_Cls: `__amegmen--r-to-l`,
+    rtlCls: `__amegmen--r-to-l`,
     shiftColumns: false,
     supportedCols: 4,
     toggleBtnCls: `__amegmen--toggle-cta`,
@@ -292,7 +286,7 @@ namespace AMegMen {
    * @param element - An HTML Element from which the events need to be removed
    *
    */
-  const amm_removeEventListeners = (core: ICore, element: Element) => {
+  const amm_removeEventListeners = (core: IAMegMenCore, element: Element) => {
     if ((core.eHandlers || []).length > 0) {
       let j = core.eHandlers.length;
       while (j--) {
@@ -322,7 +316,7 @@ namespace AMegMen {
     type: string,
     listener: EventListenerOrEventListenerObject
   ) => {
-    const eventHandler: IEventHandler = {
+    const eventHandler: IAMegMenEventHandler = {
       currentElement: element,
       removeEvent: () => {
         element.removeEventListener(type, listener, _useCapture);
@@ -935,7 +929,7 @@ namespace AMegMen {
    * @param settings - AMegMen instance settings object
    *
    */
-  const amm_toggleevents = (core: ICore, settings: IAMegMenSettings) => {
+  const amm_toggleevents = (core: IAMegMenCore, settings: IAMegMenSettings) => {
     const togglenav = core.togglenav;
     const closenav = core.closenav;
     const offcanvas = core.offcanvas;
@@ -1255,13 +1249,13 @@ namespace AMegMen {
    *
    */
   const amm_init = (
-    core: ICore,
+    core: IAMegMenCore,
     rootElem: HTMLElement,
     settings: IAMegMenSettings
   ) => {
     _AddClass(rootElem, settings.rootCls ? settings.rootCls : ``);
     core.root = rootElem;
-    core.settings = settings;
+    core.opts = settings;
     core.mainEl = core.root.querySelector(`.${settings.mainElementCls}`);
     core.togglenav = core.root.querySelector(`.${settings.toggleBtnCls}`);
     core.closenav = core.root.querySelector(`.${settings.closeBtnCls}`);
@@ -1270,19 +1264,19 @@ namespace AMegMen {
     core.toprev = core.root.querySelectorAll(`.${settings.backBtnCls}`);
     core.eHandlers = [];
 
-    if (core.settings.isRTL) {
-      _AddClass(core.root as HTMLElement, settings.rtl_Cls);
+    if (core.opts.isRTL) {
+      _AddClass(core.root as HTMLElement, settings.rtlCls);
     }
 
     if (core.mainEl) {
-      core.l0nav = <IL0[]>[];
+      core.l0nav = <IAMegMenL0[]>[];
       const l0li = core.mainEl.querySelectorAll(`:scope > ul > li`);
 
       for (let i = l0li.length - 1; i >= 0; i--) {
         let thisl0li = l0li[i] as HTMLElement;
         _ToggleUniqueId(thisl0li, settings, i, true);
 
-        let nav0obj: IL0 = <IL0>{};
+        let nav0obj = <IAMegMenL0>{};
         nav0obj.l0li = thisl0li;
         nav0obj.l0anchor = thisl0li.querySelector(`:scope > a`);
         if (nav0obj.l0anchor) {
@@ -1307,7 +1301,7 @@ namespace AMegMen {
                 `:scope > .${settings.colCls}`
               );
               nav0obj.l1cols = l1cols.length;
-              nav0obj.l1nav = <IL1[]>[];
+              nav0obj.l1nav = <IAMegMenL1[]>[];
 
               if (l1cols.length > 0) {
                 const shiftnum = (settings.supportedCols || 0) - l1cols.length;
@@ -1322,13 +1316,13 @@ namespace AMegMen {
                     `${settings.colCls}-${colnum > 0 ? colnum : 2}`
                   );
                   if (j === colnum - 1 && j > 1) {
-                    _AddClass(thisl1col as HTMLElement, settings.lastcolCls);
+                    _AddClass(thisl1col as HTMLElement, settings.lastColCls);
                   }
                 }
                 for (let j = l1li.length - 1; j >= 0; j--) {
                   let thisl1li = l1li[j];
                   _ToggleUniqueId(thisl1li as HTMLElement, settings, j, true);
-                  let nav1obj = <IL1>{};
+                  let nav1obj = <IAMegMenL1>{};
                   nav1obj.l1li = thisl1li as HTMLElement;
                   nav1obj.l1anchor = thisl1li.querySelector(`:scope > a`);
                   _AddClass(
@@ -1410,79 +1404,13 @@ namespace AMegMen {
    * @param core - AMegMen instance core object
    *
    */
-  const amm_destroy = (thisid: string, core: ICore) => {
+  const amm_destroy = (thisid: string, core: IAMegMenCore) => {
     if (core.root) {
-      const settings = core.settings;
-      console.log(
-        `.` +
-          settings.landingCtaCls +
-          ` > a` +
-          `,.` +
-          settings.toggleBtnCls +
-          `,.` +
-          settings.closeBtnCls +
-          `,.` +
-          settings.mainBtnCls +
-          `,.` +
-          settings.backBtnCls +
-          `,.` +
-          settings.l0AnchorCls +
-          `,.` +
-          settings.l0PanelCls +
-          `,.` +
-          settings.l1AnchorCls +
-          `,.` +
-          settings.l2AnchorCls
-      );
+      const settings = core.opts;
       const allElems = core.root.querySelectorAll(
-        `.` +
-          settings.landingCtaCls +
-          ` > a` +
-          `,.` +
-          settings.toggleBtnCls +
-          `,.` +
-          settings.closeBtnCls +
-          `,.` +
-          settings.mainBtnCls +
-          `,.` +
-          settings.backBtnCls +
-          `,.` +
-          settings.l0AnchorCls +
-          `,.` +
-          settings.l0PanelCls +
-          `,.` +
-          settings.l1AnchorCls +
-          `,.` +
-          settings.l2AnchorCls
+        `.${settings.landingCtaCls} > a, .${settings.toggleBtnCls}, .${settings.closeBtnCls}, .${settings.mainBtnCls}, .${settings.backBtnCls}, .${settings.l0AnchorCls}, .${settings.l0PanelCls}, .${settings.l1AnchorCls}, .${settings.l2AnchorCls}`
       );
-      const cls =
-        settings.rootCls +
-        ` ` +
-        settings.l0AnchorCls +
-        ` ` +
-        settings.l0PanelCls +
-        ` ` +
-        settings.l1AnchorCls +
-        ` ` +
-        settings.l1PanelCls +
-        ` ` +
-        settings.l2AnchorCls +
-        ` ` +
-        settings.lastcolCls +
-        ` ` +
-        settings.activeCls +
-        ` ` +
-        settings.focusCls +
-        ` ` +
-        settings.hoverCls +
-        ` ` +
-        settings.rtl_Cls +
-        ` ` +
-        settings.l2ActiveCls +
-        ` ` +
-        settings.l1ActiveCls +
-        ` ` +
-        settings.overflowHiddenCls;
+      const cls = `${settings.rootCls} ${settings.l0AnchorCls} ${settings.l0PanelCls} ${settings.l1AnchorCls} ${settings.l1PanelCls} ${settings.l2AnchorCls} ${settings.lastColCls} ${settings.activeCls} ${settings.focusCls} ${settings.hoverCls} ${settings.rtlCls} ${settings.l2ActiveCls} ${settings.l1ActiveCls} ${settings.overflowHiddenCls}`;
 
       for (let i = allElems.length - 1; i >= 0; i--) {
         let thiselem = allElems[i] as HTMLElement;
@@ -1541,7 +1469,7 @@ namespace AMegMen {
    */
 
   class Core {
-    private core: ICore = <ICore>{};
+    private core = <IAMegMenCore>{};
 
     constructor(
       thisid: string,
@@ -1565,7 +1493,7 @@ namespace AMegMen {
    */
 
   export class Root {
-    private instances: IRoot = {};
+    private instances: IAMegMenRoot = {};
     protected static instance: Root | null = null;
 
     /**
@@ -1661,10 +1589,8 @@ namespace AMegMen {
       if (rootsLen > 0) {
         for (let i = 0; i < rootsLen; i++) {
           const id = (roots[i] as HTMLElement).getAttribute(`id`);
-          console.log(`========id`, id);
           if (id && this.instances[id]) {
-            console.log(`=========this.instances[id]`, this.instances[id].root);
-            amm_destroy(id, this.instances[id]);
+            amm_destroy(id, this.instances[id].core);
             delete this.instances[id];
           }
         }

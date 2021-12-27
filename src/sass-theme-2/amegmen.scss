@@ -6,10 +6,16 @@
 }
 
 .__amegmen-2 {
-  .__amegmen--toggle-cta, .__amegmen--close-cta, .__amegmen--main-cta, .__amegmen--back-cta {
+  .__amegmen--toggle-cta,
+  .__amegmen--close-cta,
+  .__amegmen--main-cta,
+  .__amegmen--back-cta {
     font-size: 24px;
   }
-  .__amegmen--anchor-l0, .__amegmen--anchor-l1, .__amegmen--anchor-l2, .__amegmen--landing a {
+  .__amegmen--anchor-l0,
+  .__amegmen--anchor-l1,
+  .__amegmen--anchor-l2,
+  .__amegmen--landing a {
     padding-right: 40px;
     position: relative;
     .icon {
@@ -23,7 +29,8 @@
       width: 40px;
     }
   }
-  .__amegmen--anchor-l1, .__amegmen--anchor-l2 {
+  .__amegmen--anchor-l1,
+  .__amegmen--anchor-l2 {
     .icon {
       height: 48px;
     }
