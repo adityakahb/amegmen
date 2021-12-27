@@ -10,37 +10,37 @@
  */
 declare namespace AMegMen {
     interface IAMegMenSettings {
-        activeCls?: string;
+        activeCls: string;
         actOnHover?: boolean;
         actOnHoverAt?: number;
-        backBtnCls?: string;
-        closeBtnCls?: string;
-        colCls?: string;
-        colShiftCls?: string;
-        colWidthCls?: string;
-        focusCls?: string;
-        hoverCls?: string;
+        backBtnCls: string;
+        closeBtnCls: string;
+        colCls: string;
+        colShiftCls: string;
+        colWidthCls: string;
+        focusCls: string;
+        hoverCls: string;
         idPrefix?: string;
         isRTL?: boolean;
-        l0AnchorCls?: string;
-        l0PanelCls?: string;
-        l1ActiveCls?: string;
-        l1AnchorCls?: string;
-        l1PanelCls?: string;
-        l2ActiveCls?: string;
-        l2AnchorCls?: string;
-        landingCtaCls?: string;
-        lastcolCls?: string;
-        mainBtnCls?: string;
-        mainElementCls?: string;
-        offcanvasCls?: string;
-        overflowHiddenCls?: string;
-        panelCls?: string;
-        rootCls?: string;
-        rtl_Cls?: string;
+        l0AnchorCls: string;
+        l0PanelCls: string;
+        l1ActiveCls: string;
+        l1AnchorCls: string;
+        l1PanelCls: string;
+        l2ActiveCls: string;
+        l2AnchorCls: string;
+        landingCtaCls: string;
+        lastcolCls: string;
+        mainBtnCls: string;
+        mainElementCls: string;
+        offcanvasCls: string;
+        overflowHiddenCls: string;
+        panelCls: string;
+        rootCls: string;
+        rtl_Cls: string;
         shiftColumns?: boolean;
         supportedCols?: number;
-        toggleBtnCls?: string;
+        toggleBtnCls: string;
     }
     /**
      * ██████   ██████   ██████  ████████
