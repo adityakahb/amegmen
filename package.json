@@ -23,14 +23,15 @@
     "url": "git+https://github.com/adityakahb/amegmen.git"
   },
   "keywords": [
-    "amegmen",
     "accessible",
     "mega",
     "menu",
+    "plugin",
     "navigation",
     "responsive",
     "vanilla",
     "native",
+    "typescript",
     "javascript",
     "multi",
     "multilevel",
