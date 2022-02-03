@@ -9,38 +9,18 @@
  *
  */
 declare namespace AMegMen {
-    interface IAMegMenSettings {
-        activeCls: string;
-        actOnHover?: boolean;
-        actOnHoverAt?: number;
-        backBtnCls: string;
-        closeBtnCls: string;
-        colCls: string;
-        colShiftCls: string;
-        colWidthCls: string;
-        focusCls: string;
-        hoverCls: string;
-        idPrefix?: string;
-        isRTL?: boolean;
-        l0AnchorCls: string;
-        l0PanelCls: string;
-        l1ActiveCls: string;
-        l1AnchorCls: string;
-        l1PanelCls: string;
-        l2ActiveCls: string;
-        l2AnchorCls: string;
-        landingCtaCls: string;
-        lastColCls: string;
-        mainBtnCls: string;
-        mainElementCls: string;
-        offcanvasCls: string;
-        overflowHiddenCls: string;
-        panelCls: string;
-        rootCls: string;
-        rtlCls: string;
-        shiftColumns?: boolean;
-        supportedCols?: number;
-        toggleBtnCls: string;
+    interface ISettings {
+        activeClass: string;
+        actOnHover: boolean;
+        afterInitFn?: Function;
+        animationSpeed: number;
+        appendUrlHash: boolean;
+        beforeInitFn?: Function;
+        disabledClass: string;
+        editModeClass: string;
+        hiddenClass: string;
+        idPrefix: string;
+        isRtl: boolean;
     }
     /**
      * ██████   ██████   ██████  ████████
@@ -53,7 +33,6 @@ declare namespace AMegMen {
      *
      */
     export class Root {
-        private instances;
         protected static instance: Root | null;
         /**
          * Constructor to initiate polyfills
@@ -63,25 +42,25 @@ declare namespace AMegMen {
         /**
          * Function to return single instance
          *
-         * @returns Single AMegMen Instance
+         * @returns Single Carouzel Instance
          *
          */
         static getInstance(): Root;
         /**
-         * Function to initialize the AMegMen plugin for provided query strings.
+         * Function to return count of all available carouzel objects
          *
-         * @param query - The CSS selector for which the AMegMen needs to be initialized.
-         * @param options - The optional object to customize every AMegMen instance.
+         * @returns count of all available carouzel objects
          *
          */
-        protected init: (query: string, options?: IAMegMenSettings | undefined) => void;
+        protected getLength: () => void;
         /**
-         * Function to destroy the AMegMen plugin for provided query strings.
+         * Function to initialize the Carouzel plugin for provided query strings.
          *
-         * @param query - The CSS selector for which the AMegMen needs to be initialized.
+         * @param query - The CSS selector for which the Carouzel needs to be initialized.
+         * @param options - The optional object to customize every Carouzel instance.
          *
          */
-        protected destroy: (query: string) => void;
+        init: (query: string, options?: ISettings | undefined) => void;
     }
     export {};
 }

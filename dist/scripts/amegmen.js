@@ -22,98 +22,43 @@ var __assign = (this && this.__assign) || function () {
 var AMegMen;
 (function (AMegMen) {
     "use strict";
-    var AllAMegMenInstances = {};
-    var active_amegmen = {};
+    var _rootSelectorTypeError = "Element(s) with the provided query do(es) not exist";
+    var _optionsParseTypeError = "Unable to parse the options string";
     var _useCapture = false;
+    var _Selectors = {
+        canvas: "[data-amegmen-canvas]",
+        cCta: "[data-amegmen-closecta]",
+        l0ul: "[data-amegmen-navl0]",
+        l1H: "[data-amegmen-navllheader]",
+        l1ul: "[data-amegmen-navl1]",
+        l1W: "[data-amegmen-navl1wrap]",
+        l2H: "[data-amegmen-navl2header]",
+        l2ul: "[data-amegmen-navl2]",
+        l2W: "[data-amegmen-navl2wrap]",
+        l3H: "[data-amegmen-navl3header]",
+        l3ul: "[data-amegmen-navl3]",
+        l3W: "[data-amegmen-navl3wrap]",
+        l4H: "[data-amegmen-navl4header]",
+        l4W: "[data-amegmen-navl4wrap]",
+        oCta: "[data-amegmen-opencta]",
+        root: "[data-amegmen]",
+        rootAuto: "[data-amegmen-auto]",
+        rtl: "[data-amegmen-rtl]"
+    };
     var _Defaults = {
-        activeCls: "__amegmen-active",
+        activeClass: "__amegmen-active",
         actOnHover: false,
-        actOnHoverAt: 1280,
-        backBtnCls: "__amegmen--back-cta",
-        closeBtnCls: "__amegmen--close-cta",
-        colCls: "__amegmen--col",
-        colShiftCls: "__amegmen-shift",
-        colWidthCls: "__amegmen-width",
-        focusCls: "__amegmen-focus",
-        hoverCls: "__amegmen-hover",
-        idPrefix: "__amegmen_id",
-        isRTL: false,
-        l0AnchorCls: "__amegmen--anchor-l0",
-        l0PanelCls: "__amegmen--panel-l0",
-        l1ActiveCls: "__amegmen--l1-active",
-        l1AnchorCls: "__amegmen--anchor-l1",
-        l1PanelCls: "__amegmen--panel-l1",
-        l2ActiveCls: "__amegmen--l2-active",
-        l2AnchorCls: "__amegmen--anchor-l2",
-        landingCtaCls: "__amegmen--landing",
-        lastColCls: "__amegmen--col-last",
-        mainBtnCls: "__amegmen--main-cta",
-        mainElementCls: "__amegmen--main",
-        offcanvasCls: "__amegmen--canvas",
-        overflowHiddenCls: "__amegmen--nooverflow",
-        panelCls: "__amegmen--panel",
-        rootCls: "__amegmen",
-        rtlCls: "__amegmen--r-to-l",
-        shiftColumns: false,
-        supportedCols: 4,
-        toggleBtnCls: "__amegmen--toggle-cta"
+        animationSpeed: 500,
+        appendUrlHash: false,
+        disabledClass: "__amegmen-disabled",
+        editModeClass: "__amegmen-editmode",
+        hiddenClass: "__amegmen-hidden",
+        idPrefix: "__amegmen",
+        isRtl: false
     };
-    /**
-     * Polyfill function for `:scope` for `QuerySelector` and `QuerySelectorAll`
-     *
-     */
-    var _EnableQSQSAScope = function () {
-        try {
-            window.document.querySelector(":scope body");
-        }
-        catch (err) {
-            var qsarr_1 = ["querySelector", "querySelectorAll"];
-            var _loop_1 = function (i) {
-                var nativ = Element.prototype[qsarr_1[i]];
-                Element.prototype[qsarr_1[i]] = function (selectors) {
-                    if (/(^|,)\s*:scope/.test(selectors)) {
-                        var id = this.id;
-                        this.id = "ID_" + Date.now();
-                        selectors = selectors.replace(/((^|,)\s*):scope/g, "$1#" + this.id);
-                        var result = window.document[qsarr_1[i]](selectors);
-                        this.id = id;
-                        return result;
-                    }
-                    else {
-                        return nativ.call(this, selectors);
-                    }
-                };
-            };
-            for (var i = 0; i < qsarr_1.length; i++) {
-                _loop_1(i);
-            }
-        }
-    };
-    /**
-     * Polyfill function for `Element.closest`
-     *
-     */
-    var _EnableClosest = function () {
-        if (!Element.prototype.matches) {
-            Element.prototype.matches =
-                Element.prototype.msMatchesSelector ||
-                    Element.prototype.webkitMatchesSelector;
-        }
-        if (!Element.prototype.closest) {
-            Element.prototype.closest = function (s) {
-                var el = this;
-                do {
-                    if (Element.prototype.matches.call(el, s))
-                        return el;
-                    var parent_1 = el.parentElement || el.parentNode;
-                    if (parent_1) {
-                        el = parent_1;
-                    }
-                } while (el !== null && el.nodeType === 1);
-                return null;
-            };
-        }
-    };
+    var allLocalInstances = {};
+    var isWindowEventAttached = false;
+    var windowResizeAny;
     /**
      * Function to trim whitespaces from a string
      *
@@ -122,8 +67,8 @@ var AMegMen;
      * @returns The trimmed string.
      *
      */
-    var _StringTrim = function (str) {
-        return str.replace(/^\s+|\s+$/g, "");
+    var stringTrim = function (str) {
+        return str.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
     };
     /**
      * Function to check wheather an element has a string in its class attribute
@@ -134,7 +79,7 @@ var AMegMen;
      * @returns `true` if the string exists in class attribute, otherwise `false`
      *
      */
-    var _HasClass = function (element, cls) {
+    var hasClass = function (element, cls) {
         if (element && typeof element.className === "string") {
             var clsarr = element.className.split(" ");
             return clsarr.indexOf(cls) > -1 ? true : false;
@@ -148,17 +93,17 @@ var AMegMen;
      * @param cls - A string
      *
      */
-    var _AddClass = function (element, cls) {
+    var addClass = function (element, cls) {
         if (element && typeof element.className === "string") {
             var clsarr = cls.split(" ");
             var clsarrLength = clsarr.length;
             for (var i = 0; i < clsarrLength; i++) {
                 var thiscls = clsarr[i];
-                if (!_HasClass(element, thiscls)) {
+                if (!hasClass(element, thiscls)) {
                     element.className += " " + thiscls;
                 }
             }
-            element.className = _StringTrim(element.className);
+            element.className = stringTrim(element.className);
         }
     };
     /**
@@ -168,61 +113,63 @@ var AMegMen;
      * @param cls - A string
      *
      */
-    var _RemoveClass = function (element, cls) {
+    var removeClass = function (element, cls) {
         if (element && typeof element.className === "string") {
             var clsarr = cls.split(" ");
             var curclass = element.className.split(" ");
-            var curclassLength = curclass.length;
-            for (var i = 0; i < curclassLength; i++) {
+            var curclassLen = curclass.length;
+            for (var i = 0; i < curclassLen; i++) {
                 var thiscls = curclass[i];
                 if (clsarr.indexOf(thiscls) > -1) {
                     curclass.splice(i, 1);
                     i--;
                 }
             }
-            element.className = _StringTrim(curclass.join(" "));
+            element.className = stringTrim(curclass.join(" "));
         }
     };
     /**
-     * Function to add a unique id attribute if it is not present already.
-     * This is required to monitor the outside click and hover behavior
+     * Function to fix the decimal places to 4
      *
-     * @param element - An HTML Element
-     * @param settings - Options specific to individual AMegMen instance
-     * @param unique_number - A unique number as additional identification
-     * @param shouldAdd - If `true`, adds an id. Otherwise it is removed.
+     * @param num - A number
+     *
+     * @returns A string converted by applying toFixed function with decimal places 4
      *
      */
-    var _ToggleUniqueId = function (element, settings, unique_number, shouldAddId) {
-        if (settings.idPrefix) {
-            if (shouldAddId && !element.getAttribute("id")) {
-                element.setAttribute("id", "".concat(settings.idPrefix, "_").concat(new Date().getTime(), "_").concat(unique_number));
-            }
-            else if (!shouldAddId && element.getAttribute("id")) {
-                var thisid = element.getAttribute("id");
-                var regex = new RegExp(settings.idPrefix, "gi");
-                if (regex.test(thisid || "")) {
-                    element.removeAttribute("id");
-                }
-            }
+    var toFixed4 = function (num) {
+        return num.toFixed(4);
+    };
+    /**
+     * Function to apply the settings to all the instances w.r.t. applicable breakpoint
+     *
+     */
+    var winResizeFn = function () {
+        if (typeof windowResizeAny !== "undefined") {
+            clearTimeout(windowResizeAny);
         }
+        windowResizeAny = setTimeout(function () { }, 0);
+    };
+    /**
+     * Function to return the number of Instances created
+     *
+     */
+    var getCoreInstancesLength = function () {
+        return Object.keys(allLocalInstances).length;
     };
     /**
      * Function to remove all local events assigned to the navigation elements.
      *
-     * @param core - AMegMen instance core object
+     * @param core - Carouzel instance core object
      * @param element - An HTML Element from which the events need to be removed
      *
      */
-    var amm_removeEventListeners = function (core, element) {
-        if ((core.eHandlers || []).length > 0) {
-            var j = core.eHandlers.length;
-            while (j--) {
-                if (core.eHandlers[j].currentElement.isEqualNode &&
-                    core.eHandlers[j].currentElement.isEqualNode(element)) {
-                    core.eHandlers[j].removeEvent();
-                    core.eHandlers.splice(j, 1);
-                }
+    var removeEventListeners = function (core, element) {
+        var j = core.eHandlers.length;
+        while (j--) {
+            if (core.eHandlers[j].element.isEqualNode &&
+                core.eHandlers[j].element.isEqualNode(element)) {
+                core.eHandlers[j].remove();
+                core.eHandlers.splice(j, 1);
             }
         }
     };
@@ -236,747 +183,94 @@ var AMegMen;
      * @returns The event handler object
      *
      */
-    var amm_eventHandler = function (element, type, listener) {
+    var eventHandler = function (element, type, listener) {
         var eventHandler = {
-            currentElement: element,
-            removeEvent: function () {
+            element: element,
+            remove: function () {
                 element.removeEventListener(type, listener, _useCapture);
             }
         };
         element.addEventListener(type, listener, _useCapture);
         return eventHandler;
     };
-    /**
-     * Function to close the Level 1 and Level 2 Megamenues if click or hover happens on document or window
-     *
-     * @param event - `click` or `mouseover` event to close the megamenu
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class which activates the megamenu links and panels
-     * @param eventtype - Is `click` or `mouseover`
-     *
-     */
-    var amm_document_out = function (event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event && _StringTrim(active_amegmen.closestl0li || "").length > 0) {
-            var closest = event.target.closest("#".concat(active_amegmen.closestl0li));
-            if (!closest) {
-                amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            }
-        }
-    };
-    /**
-     * Function to close the Level 2 Megamenu if click or hover happens on Level 1 Megamenu Panel
-     *
-     * @param event - `click` or `mouseover` event to close the megamenu
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class which activates the megamenu links and panels
-     * @param eventtype - Is `click` or `mouseover`
-     *
-     */
-    var amm_subnav_out = function (event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event && _StringTrim(active_amegmen.closestl1li || "").length > 0) {
-            var closest = event.target.closest("#".concat(active_amegmen.closestl1li));
-            if (!closest) {
-                amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-            }
-        }
-    };
-    /**
-     * Function to close the Megamenu Panel
-     *
-     * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class which activates the megamenu links and panels
-     * @param eventtype - Is `click` or `mouseover`
-     *
-     */
-    var amm_subnavclose = function (shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        for (var i in AllAMegMenInstances) {
-            var thiscore = AllAMegMenInstances[i];
-            var rootElem = thiscore.root;
-            var offcanvas = thiscore.offcanvas;
-            var shouldExecute = false;
-            if (eventtype === "mouseover" &&
-                (thiscore.settings || {}).actOnHover === true) {
-                shouldExecute = true;
-            }
-            if (eventtype === "click") {
-                shouldExecute = true;
-            }
-            if (shouldExecute && _HasClass(rootElem, activeCls)) {
-                var mainElem = thiscore.mainEl;
-                var l0nav = thiscore.l0nav || [];
-                if (shouldCloseL0Panel) {
-                    _RemoveClass(offcanvas, l1ActiveCls);
-                    _RemoveClass(rootElem, activeCls);
-                    _RemoveClass(mainElem, overflowHiddenCls);
+    var toggleEvents = function (core) {
+        if (core.oCta && core.canvas && core.root) {
+            core.eHandlers.push(eventHandler(core.oCta, "click", function (event) {
+                event.preventDefault();
+                if (hasClass(core.oCta, core.opts.activeCls)) {
+                    removeClass(core.root, core.opts.activeCls);
+                    removeClass(core.canvas, core.opts.activeCls);
+                    removeClass(core.oCta, core.opts.activeCls);
                 }
-                _RemoveClass(offcanvas, l2ActiveCls);
-                for (var j = l0nav.length - 1; j >= 0; j--) {
-                    var thisl0 = l0nav[j] || {};
-                    if (shouldCloseL0Panel) {
-                        if (thisl0.l0anchor) {
-                            _RemoveClass(thisl0.l0anchor, activeCls);
-                            thisl0.l0anchor.setAttribute("aria-expanded", "false");
-                        }
-                        if (thisl0.l0panel) {
-                            _RemoveClass(thisl0.l0panel, activeCls);
-                            thisl0.l0panel.setAttribute("aria-expanded", "false");
-                            thisl0.l0panel.setAttribute("aria-hidden", "true");
-                        }
-                    }
-                    if (thisl0.navelement) {
-                        _RemoveClass(thisl0.navelement, overflowHiddenCls);
-                    }
-                    var l1nav = thisl0.l1nav || [];
-                    if (l1nav.length > 0) {
-                        for (var k = l1nav.length - 1; k >= 0; k--) {
-                            var thisl1 = l1nav[k] || {};
-                            if (thisl1.l1anchor) {
-                                _RemoveClass(thisl1.l1anchor, activeCls);
-                                thisl1.l1anchor.setAttribute("aria-expanded", "false");
-                            }
-                            if (thisl1.l1panel) {
-                                _RemoveClass(thisl1.l1panel, activeCls);
-                                thisl1.l1panel.setAttribute("aria-expanded", "false");
-                                thisl1.l1panel.setAttribute("aria-hidden", "true");
-                            }
-                        }
-                    }
+                else {
+                    addClass(core.root, core.opts.activeCls);
+                    addClass(core.canvas, core.opts.activeCls);
+                    addClass(core.oCta, core.opts.activeCls);
                 }
+            }));
+        }
+        if (core.cCta && core.canvas && core.root) {
+            core.eHandlers.push(eventHandler(core.cCta, "click", function (event) {
+                event.preventDefault();
+                removeClass(core.root, core.opts.activeCls);
+                removeClass(core.canvas, core.opts.activeCls);
+                removeClass(core.oCta, core.opts.activeCls);
+            }));
+        }
+        for (var i = 0; i < core.l0a.length; i++) {
+            var parent_1 = core.l0a[i].closest('li');
+            if (parent_1 && parent_1.querySelector(_Selectors.l1W)) {
+                core.eHandlers.push(eventHandler(core.l0a[i], "click", function (event) {
+                    event.preventDefault();
+                }));
             }
         }
     };
     /**
-     * Mouseenter event for Landing link on the panels
+     * Function to map default and custom settings to Core settings with shorter names
      *
-     * @param landingElement - An HTML Element
-     * @param hoverCls - CSS Class for hovered element
-     *
-     */
-    var amm_landingMouseenterFn = function (landingElement, hoverCls) {
-        _AddClass(landingElement, hoverCls);
-    };
-    /**
-     * Mouseleave event for Landing link on the panels
-     *
-     * @param landingElement - An HTML Element
-     * @param hoverCls - CSS Class for hovered element
+     * @param settings - Settings object containing merge of default and custom settings
      *
      */
-    var amm_landingMouseleaveFn = function (landingElement, hoverCls) {
-        _RemoveClass(landingElement, hoverCls);
-    };
-    /**
-     * Focus event for Landing link on the panels
-     *
-     * @param landingElement - An HTML Element
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_landingFocusFn = function (landingElement, focusCls) {
-        _AddClass(landingElement, focusCls);
-    };
-    /**
-     * Blur event for Landing link on the panels
-     *
-     * @param landingElement - An HTML Element
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_landingBlurFn = function (landingElement, focusCls) {
-        _RemoveClass(landingElement, focusCls);
-    };
-    /**
-     * Focus event for Level 0 link
-     *
-     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l0FocusFn = function (l0anchor, focusCls) {
-        _AddClass(l0anchor, focusCls);
-    };
-    /**
-     * Blur event for Level 0 link
-     *
-     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l0BlurFn = function (l0anchor, focusCls) {
-        _RemoveClass(l0anchor, focusCls);
-    };
-    /**
-     * Focus event for Level 1 link
-     *
-     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l1FocusFn = function (l1anchor, focusCls) {
-        _AddClass(l1anchor, focusCls);
-    };
-    /**
-     * Blur event for Level 1 link
-     *
-     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l1BlurFn = function (l1anchor, focusCls) {
-        _RemoveClass(l1anchor, focusCls);
-    };
-    /**
-     * Mouseenter event for Level 2 link
-     *
-     * @param l2anchor - An HTML Anchor element at Level 2 Navigation
-     * @param hoverCls - CSS Class for hovered element
-     *
-     */
-    var amm_l2MouseenterFn = function (l2anchor, hoverCls) {
-        _AddClass(l2anchor, hoverCls);
-    };
-    /**
-     * Mouseleave event for Level 2 link
-     *
-     * @param l2anchor - An HTML Anchor element at Level 2 Navigation
-     * @param hoverCls - CSS Class for hovered element
-     *
-     */
-    var amm_l2MouseleaveFn = function (l2anchor, hoverCls) {
-        _RemoveClass(l2anchor, hoverCls);
-    };
-    /**
-     * Focus event for Level 2 link
-     *
-     * @param l2anchor - An HTML Anchor element at Level 2 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l2FocusFn = function (l2anchor, focusCls) {
-        _AddClass(l2anchor, focusCls);
-    };
-    /**
-     * Blur event for Level 2 link
-     *
-     * @param l2anchor - An HTML Anchor element at Level 2 Navigation
-     * @param focusCls - CSS Class for focussed element
-     *
-     */
-    var amm_l2BlurFn = function (l2anchor, focusCls) {
-        _RemoveClass(l2anchor, focusCls);
-    };
-    /**
-     * Click event for Level 0 link
-     *
-     * @param event - `click` event to prevent the default action when subnav panel is present
-     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
-     * @param l0panel - Adjecent Panel to the l0anchor
-     * @param parent - Parent LI element
-     * @param mainElem - Main Wrapper which contains the navigation elements
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class for active elements
-     * @param eventtype - `Click` or `Mouseenter` for hoverable megamenues
-     *
-     */
-    var amm_l0ClickFn = function (event, l0anchor, l0panel, parent, mainElem, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event && l0panel) {
-            event.preventDefault();
-        }
-        if (l0anchor && _HasClass(l0anchor, activeCls)) {
-            active_amegmen.elem = null;
-            active_amegmen.closestl0li = "";
-            amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        }
-        else {
-            if (l0anchor && l0panel && parent && offcanvas && mainElem) {
-                amm_subnavclose(true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-                active_amegmen.elem = parent;
-                active_amegmen.closestl0li = l0anchor.closest("li").getAttribute("id");
-                l0anchor.setAttribute("aria-expanded", "true");
-                l0panel.setAttribute("aria-expanded", "true");
-                l0panel.setAttribute("aria-hidden", "false");
-                _AddClass(parent, activeCls);
-                _AddClass(offcanvas, l1ActiveCls);
-                _AddClass(l0anchor, activeCls);
-                _AddClass(l0panel, activeCls);
-                _AddClass(mainElem, overflowHiddenCls);
-            }
-        }
-    };
-    /**
-     * Mouseenter event for Level 0 link
-     *
-     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
-     * @param hoverCls - Class for hovered elements
-     * @param actOnHover - If `true`, megamenu activates on hover
-     * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
-     *
-     */
-    var amm_l0MouseenterFn = function (l0anchor, hoverCls, actOnHover, actOnHoverAt) {
-        _AddClass(l0anchor, hoverCls);
-        if (actOnHover) {
-            var windowwidth = window.innerWidth ||
-                document.documentElement.clientWidth ||
-                document.body.clientWidth;
-            if (windowwidth >= actOnHoverAt) {
-                l0anchor.click();
-            }
-        }
-    };
-    /**
-     * Mouseleave event for Level 0 link
-     *
-     * @param l0anchor - An HTML Anchor element at Level 0 Navigation
-     * @param hoverCls - Class for hovered elements
-     *
-     */
-    var amm_l0MouseleaveFn = function (l0anchor, hoverCls) {
-        _RemoveClass(l0anchor, hoverCls);
-    };
-    /**
-     * Click event for Level 1 link
-     *
-     * @param event - `click` event to prevent the default action when subnav panel is present
-     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
-     * @param l1panel - Adjecent Panel to the l1anchor
-     * @param l0navelement - Parent `nav` element of l1anchor
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class for active elements
-     * @param eventtype - `Click` or `Mouseenter` for hoverable megamenues
-     *
-     */
-    var amm_l1ClickFn = function (event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event && l1panel) {
-            event.preventDefault();
-        }
-        if (l1anchor && _HasClass(l1anchor, activeCls)) {
-            active_amegmen.closestl1li = "";
-            amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        }
-        else {
-            if (l1anchor && l1panel && offcanvas && l0navelement) {
-                active_amegmen.closestl1li = l1anchor.closest("li").getAttribute("id");
-                amm_subnavclose(false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-                l1anchor.setAttribute("aria-expanded", "true");
-                l1panel.setAttribute("aria-expanded", "true");
-                l1panel.setAttribute("aria-hidden", "false");
-                _AddClass(offcanvas, l2ActiveCls);
-                _AddClass(l1anchor, activeCls);
-                _AddClass(l1panel, activeCls);
-                _AddClass(l0navelement, overflowHiddenCls);
-            }
-        }
-    };
-    /**
-     * Mouseenter event for Level 1 link
-     *
-     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
-     * @param hoverCls - Class for hovered elements
-     * @param actOnHover - If `true`, megamenu activates on hover
-     * @param actOnHoverAt - The minimum breakpoint at or after which the hover will work
-     *
-     */
-    var amm_l1MouseenterFn = function (l1anchor, hoverCls, actOnHover, actOnHoverAt) {
-        _AddClass(l1anchor, hoverCls);
-        if (actOnHover) {
-            var windowwidth = window.innerWidth ||
-                document.documentElement.clientWidth ||
-                document.body.clientWidth;
-            if (windowwidth >= actOnHoverAt) {
-                l1anchor.click();
-            }
-        }
-    };
-    /**
-     * Mouseleave event for Level 1 link
-     *
-     * @param l1anchor - An HTML Anchor element at Level 1 Navigation
-     * @param hoverCls - Class for hovered elements
-     *
-     */
-    var amm_l1MouseleaveFn = function (l1anchor, hoverCls) {
-        _RemoveClass(l1anchor, hoverCls);
-    };
-    /**
-     * Function to navigate the megamenu to Level 0 from Level 1 and Level 1
-     *
-     * @param event - `click` event to prevent the default action
-     * @param shouldCloseL0Panel - If `true`, loses Level 0 and Level 1 Panels. Otherwise closes Level 1 panels only
-     * @param overflowHiddenCls - Class which disables scrollbars on mobile
-     * @param activeCls - Class which activates the megamenu links and panels
-     * @param eventtype - Is `click` or `mouseover`
-     *
-     */
-    var amm_gotoMain = function (event, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event) {
-            event.preventDefault();
-        }
-        amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-    };
-    /**
-     * Click event for closing megamenu on mobile
-     *
-     * @param event - `click` event to prevent the default action
-     * @param togglenav - Button element to close Offcanvas on mobile
-     * @param offcanvas - Offcanvas element containing megamenu
-     * @param activeCls - Class which activates the megamenu links and panels
-     *
-     */
-    var amm_closeMain = function (event, togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event) {
-            event.preventDefault();
-        }
-        amm_subnavclose(shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        _RemoveClass(togglenav, activeCls);
-        _RemoveClass(offcanvas, activeCls);
-    };
-    /**
-     * Click event for opening/closing megamenu on mobile
-     *
-     * @param event - `click` event to prevent the default action
-     * @param togglenav - Button element to close Offcanvas on mobile
-     * @param offcanvas - Offcanvas element containing megamenu
-     * @param activeCls - Class which activates the megamenu links and panels
-     *
-     */
-    var amm_toggleMain = function (event, togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype) {
-        if (event) {
-            event.preventDefault();
-        }
-        if (_HasClass(togglenav, activeCls)) {
-            amm_closeMain(event, togglenav, offcanvas, shouldCloseL0Panel, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, eventtype);
-        }
-        else {
-            _AddClass(togglenav, activeCls);
-            _AddClass(offcanvas, activeCls);
-        }
-    };
-    /**
-     * Function to toggle events to AMegMen instance elements
-     *
-     * @param core - AMegMen instance core object
-     * @param settings - AMegMen instance settings object
-     *
-     */
-    var amm_toggleevents = function (core, settings) {
-        var togglenav = core.togglenav;
-        var closenav = core.closenav;
-        var offcanvas = core.offcanvas;
-        var tomain = core.tomain;
-        var toprevious = core.toprev;
-        var overflowHiddenCls = settings.overflowHiddenCls
-            ? settings.overflowHiddenCls
-            : "";
-        var activeCls = settings.activeCls;
-        var hoverCls = settings.hoverCls;
-        var focusCls = settings.focusCls;
-        var l1ActiveCls = settings.l1ActiveCls;
-        var l2ActiveCls = settings.l2ActiveCls;
-        var hoverprops = {
-            actOnHover: settings.actOnHover ? settings.actOnHover : false,
-            actOnHoverAt: settings.actOnHoverAt ? settings.actOnHoverAt : 1280
+    var mapSettings = function (settings) {
+        var settingsobj = {
+            activeCls: settings.activeClass,
+            disableCls: settings.disabledClass,
+            editCls: settings.editModeClass,
+            hidCls: settings.hiddenClass
         };
-        if (settings.landingCtaCls && core.root) {
-            var landingElements = core.root.querySelectorAll(".".concat(settings.landingCtaCls, " > a"));
-            var _loop_2 = function (i) {
-                var thislandingelem = landingElements[i];
-                if (thislandingelem) {
-                    core.eHandlers.push(amm_eventHandler(thislandingelem, "mouseenter", function () {
-                        amm_landingMouseenterFn(thislandingelem, hoverCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(thislandingelem, "mouseleave", function () {
-                        amm_landingMouseleaveFn(thislandingelem, hoverCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(thislandingelem, "focus", function () {
-                        amm_landingFocusFn(thislandingelem, focusCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(thislandingelem, "blur", function () {
-                        amm_landingBlurFn(thislandingelem, focusCls);
-                    }));
-                }
-            };
-            for (var i = landingElements.length - 1; i >= 0; i--) {
-                _loop_2(i);
-            }
-        }
-        if (togglenav && offcanvas) {
-            core.eHandlers.push(amm_eventHandler(togglenav, "click", function (event) {
-                amm_toggleMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-            }));
-        }
-        if (togglenav && closenav && offcanvas) {
-            core.eHandlers.push(amm_eventHandler(closenav, "click", function (event) {
-                amm_closeMain(event, togglenav, offcanvas, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-            }));
-        }
-        if (tomain.length > 0) {
-            for (var i = tomain.length - 1; i >= 0; i--) {
-                var thismain = tomain[i];
-                core.eHandlers.push(amm_eventHandler(thismain, "click", function (event) {
-                    amm_gotoMain(event, true, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-                }));
-            }
-        }
-        if (toprevious.length > 0) {
-            for (var i = toprevious.length - 1; i >= 0; i--) {
-                var thisprevious = toprevious[i];
-                core.eHandlers.push(amm_eventHandler(thisprevious, "click", function (event) {
-                    amm_gotoMain(event, false, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-                }));
-            }
-        }
-        var l0nav = core.l0nav || [];
-        var _loop_3 = function (i) {
-            var thisl0nav = l0nav[i];
-            var l0anchor = thisl0nav.l0anchor;
-            var l0panel = thisl0nav.l0panel;
-            var l0navelement = thisl0nav.navelement;
-            var l1nav = thisl0nav.l1nav || [];
-            if (l0anchor) {
-                core.eHandlers.push(amm_eventHandler(l0anchor, "click", function (event) {
-                    amm_l0ClickFn(event, l0anchor, l0panel, core.root, core.mainEl, offcanvas, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-                }));
-                core.eHandlers.push(amm_eventHandler(l0anchor, "mouseenter", function () {
-                    amm_l0MouseenterFn(l0anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-                }));
-                core.eHandlers.push(amm_eventHandler(l0anchor, "mouseleave", function () {
-                    amm_l0MouseleaveFn(l0anchor, hoverCls);
-                }));
-                core.eHandlers.push(amm_eventHandler(l0anchor, "focus", function () {
-                    amm_l0FocusFn(l0anchor, focusCls);
-                }));
-                core.eHandlers.push(amm_eventHandler(l0anchor, "blur", function () {
-                    amm_l0BlurFn(l0anchor, focusCls);
-                }));
-            }
-            if (l0panel) {
-                core.eHandlers.push(amm_eventHandler(l0panel, "click", function (event) {
-                    amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-                }));
-                if (hoverprops.actOnHover) {
-                    core.eHandlers.push(amm_eventHandler(l0panel, "mouseover", function (event) {
-                        amm_subnav_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "mouseover");
-                    }));
-                }
-            }
-            var _loop_4 = function (j) {
-                var l1anchor = l1nav[j].l1anchor;
-                var l1panel = l1nav[j].l1panel;
-                var l2nav = l1nav[j].l2nav || [];
-                if (l1anchor) {
-                    core.eHandlers.push(amm_eventHandler(l1anchor, "click", function (event) {
-                        amm_l1ClickFn(event, l1anchor, l1panel, offcanvas, l0navelement, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l1anchor, "mouseenter", function () {
-                        amm_l1MouseenterFn(l1anchor, hoverCls, hoverprops.actOnHover, hoverprops.actOnHoverAt);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l1anchor, "mouseleave", function () {
-                        amm_l1MouseleaveFn(l1anchor, hoverCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l1anchor, "focus", function () {
-                        amm_l1FocusFn(l1anchor, focusCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l1anchor, "blur", function () {
-                        amm_l1BlurFn(l1anchor, focusCls);
-                    }));
-                }
-                var _loop_5 = function (k) {
-                    var l2anchor = l2nav[k];
-                    core.eHandlers.push(amm_eventHandler(l2anchor, "mouseenter", function () {
-                        amm_l2MouseenterFn(l2anchor, hoverCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l2anchor, "mouseleave", function () {
-                        amm_l2MouseleaveFn(l2anchor, hoverCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l2anchor, "focus", function () {
-                        amm_l2FocusFn(l2anchor, focusCls);
-                    }));
-                    core.eHandlers.push(amm_eventHandler(l2anchor, "blur", function () {
-                        amm_l2BlurFn(l2anchor, focusCls);
-                    }));
-                };
-                for (var k = l2nav.length - 1; k >= 0; k--) {
-                    _loop_5(k);
-                }
-            };
-            for (var j = l1nav.length - 1; j >= 0; j--) {
-                _loop_4(j);
-            }
-        };
-        for (var i = l0nav.length - 1; i >= 0; i--) {
-            _loop_3(i);
-        }
-        core.eHandlers.push(amm_eventHandler(document, "click", function (event) {
-            amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "click");
-        }));
-        if (hoverprops.actOnHover) {
-            core.eHandlers.push(amm_eventHandler(window, "mouseover", function (event) {
-                amm_document_out(event, overflowHiddenCls, activeCls, l1ActiveCls, l2ActiveCls, "mouseover");
-            }));
-        }
+        return settingsobj;
     };
     /**
-     * Function to initialize AMegMen instance
+     * Function to initialize the carouzel core object and assign respective events
      *
-     * @param core - AMegMen instance core object
-     * @param rootElem - Parent `nav` element
-     * @param settings - AMegMen instance settings object
-     *
-     * @returns The AMegMen instance core object after updating elements and events
+     * @param core - Carouzel instance core object
      *
      */
-    var amm_init = function (core, rootElem, settings) {
-        _AddClass(rootElem, settings.rootCls ? settings.rootCls : "");
-        core.root = rootElem;
-        core.opts = settings;
-        core.mainEl = core.root.querySelector(".".concat(settings.mainElementCls));
-        core.togglenav = core.root.querySelector(".".concat(settings.toggleBtnCls));
-        core.closenav = core.root.querySelector(".".concat(settings.closeBtnCls));
-        core.offcanvas = core.root.querySelector(".".concat(settings.offcanvasCls));
-        core.tomain = core.root.querySelectorAll(".".concat(settings.mainBtnCls));
-        core.toprev = core.root.querySelectorAll(".".concat(settings.backBtnCls));
-        core.eHandlers = [];
-        if (core.opts.isRTL) {
-            _AddClass(core.root, settings.rtlCls);
+    var init = function (root, settings) {
+        if (typeof settings.beforeInitFn === "function") {
+            settings.beforeInitFn();
         }
-        if (core.mainEl) {
-            core.l0nav = [];
-            var l0li = core.mainEl.querySelectorAll(":scope > ul > li");
-            for (var i = l0li.length - 1; i >= 0; i--) {
-                var thisl0li = l0li[i];
-                _ToggleUniqueId(thisl0li, settings, i, true);
-                var nav0obj = {};
-                nav0obj.l0li = thisl0li;
-                nav0obj.l0anchor = thisl0li.querySelector(":scope > a");
-                if (nav0obj.l0anchor) {
-                    _AddClass(nav0obj.l0anchor, settings.l0AnchorCls);
-                    var l0panel = thisl0li.querySelector(":scope > .".concat(settings.panelCls));
-                    if (l0panel) {
-                        nav0obj.l0anchor.setAttribute("role", "button");
-                        nav0obj.l0anchor.setAttribute("aria-expanded", "false");
-                        l0panel.setAttribute("role", "region");
-                        l0panel.setAttribute("aria-expanded", "false");
-                        l0panel.setAttribute("aria-hidden", "true");
-                        _AddClass(l0panel, settings.l0PanelCls);
-                        nav0obj.l0panel = l0panel;
-                        nav0obj.l0tomain = l0panel.querySelector(".".concat(settings.mainBtnCls));
-                        var l1navelement = l0panel.querySelector(":scope > nav");
-                        if (l1navelement) {
-                            nav0obj.navelement = l1navelement;
-                            var l1cols = l1navelement.querySelectorAll(":scope > .".concat(settings.colCls));
-                            nav0obj.l1cols = l1cols.length;
-                            nav0obj.l1nav = [];
-                            if (l1cols.length > 0) {
-                                var shiftnum = (settings.supportedCols || 0) - l1cols.length;
-                                var l1li = l1navelement.querySelectorAll(":scope > .".concat(settings.colCls, " > ul > li"));
-                                var colnum = parseInt((settings.supportedCols || 0) + "");
-                                for (var j = l1cols.length - 1; j >= 0; j--) {
-                                    var thisl1col = l1cols[j];
-                                    _AddClass(thisl1col, "".concat(settings.colCls, "-").concat(colnum > 0 ? colnum : 2));
-                                    if (j === colnum - 1 && j > 1) {
-                                        _AddClass(thisl1col, settings.lastColCls);
-                                    }
-                                }
-                                for (var j = l1li.length - 1; j >= 0; j--) {
-                                    var thisl1li = l1li[j];
-                                    _ToggleUniqueId(thisl1li, settings, j, true);
-                                    var nav1obj = {};
-                                    nav1obj.l1li = thisl1li;
-                                    nav1obj.l1anchor = thisl1li.querySelector(":scope > a");
-                                    _AddClass(nav1obj.l1anchor, settings.l1AnchorCls ? settings.l1AnchorCls : "");
-                                    var l1panel = thisl1li.querySelector(":scope > .".concat(settings.panelCls));
-                                    if (l1panel && nav1obj.l1anchor) {
-                                        nav1obj.l1anchor.setAttribute("role", "button");
-                                        nav1obj.l1anchor.setAttribute("aria-expanded", "false");
-                                        l1panel.setAttribute("role", "region");
-                                        l1panel.setAttribute("aria-expanded", "false");
-                                        l1panel.setAttribute("aria-hidden", "true");
-                                        _AddClass(l1panel, settings.l1PanelCls);
-                                        nav1obj.l1panel = l1panel;
-                                        nav1obj.l1toback = l1panel.querySelector(".".concat(settings.backBtnCls));
-                                        var l2navelement = l1panel.querySelector(":scope > nav");
-                                        if (l2navelement) {
-                                            nav1obj.navelement = l2navelement;
-                                            var l2cols = l2navelement.querySelectorAll(":scope > .".concat(settings.colCls));
-                                            if (l2cols.length > 0) {
-                                                if (settings.shiftColumns) {
-                                                    _AddClass(l1navelement, "".concat(settings.colShiftCls, "-").concat(shiftnum));
-                                                }
-                                                _AddClass(l1panel, "".concat(settings.colWidthCls, "-").concat(shiftnum));
-                                                var l2a = l2navelement.querySelectorAll(":scope > .".concat(settings.colCls, " > ul > li > a"));
-                                                for (var k = l2a.length - 1; k >= 0; k--) {
-                                                    var thisl2anchor = l2a[k];
-                                                    _AddClass(thisl2anchor, settings.l2AnchorCls);
-                                                }
-                                                for (var k = l2cols.length - 1; k >= 0; k--) {
-                                                    var thisl2col = l2cols[k];
-                                                    // _AddClass(l2cols[k], `__amegmen--col-${l2cols.length}`);
-                                                    _AddClass(thisl2col, "".concat(settings.colCls ? settings.colCls : "", "-1"));
-                                                }
-                                                nav1obj.l2nav = l2a;
-                                            }
-                                        }
-                                    }
-                                    nav0obj.l1nav.push(nav1obj);
-                                }
-                            }
-                        }
-                    }
-                }
-                core.l0nav.push(nav0obj);
-            }
-        }
-        amm_toggleevents(core, settings);
-        return core;
+        var _core = {};
+        _core.root = root;
+        _core.eHandlers = [];
+        _core.opts = mapSettings(settings);
+        _core.canvas = root.querySelector("".concat(_Selectors.canvas));
+        _core.cCta = root.querySelector("".concat(_Selectors.cCta));
+        _core.oCta = root.querySelector("".concat(_Selectors.oCta));
+        _core.l0ul = root.querySelectorAll("".concat(_Selectors.l0ul));
+        _core.l0li = root.querySelectorAll("".concat(_Selectors.l0ul, " > li"));
+        _core.l0a = root.querySelectorAll("".concat(_Selectors.l0ul, " > li > a"));
+        _core.l1W = root.querySelectorAll("".concat(_Selectors.l0ul, " > li > ").concat(_Selectors.l1W));
+        console.log(_core);
+        toggleEvents(_core);
+        return _core;
     };
-    /**
-     * Function to destroy AMegMen instance
-     *
-     * @param thisid - Element id of the AMegMen instance
-     * @param core - AMegMen instance core object
-     *
-     */
-    var amm_destroy = function (thisid, core) {
-        if (core.root) {
-            var settings = core.opts;
-            var allElems = core.root.querySelectorAll(".".concat(settings.landingCtaCls, " > a, .").concat(settings.toggleBtnCls, ", .").concat(settings.closeBtnCls, ", .").concat(settings.mainBtnCls, ", .").concat(settings.backBtnCls, ", .").concat(settings.l0AnchorCls, ", .").concat(settings.l0PanelCls, ", .").concat(settings.l1AnchorCls, ", .").concat(settings.l2AnchorCls));
-            var cls = "".concat(settings.rootCls, " ").concat(settings.l0AnchorCls, " ").concat(settings.l0PanelCls, " ").concat(settings.l1AnchorCls, " ").concat(settings.l1PanelCls, " ").concat(settings.l2AnchorCls, " ").concat(settings.lastColCls, " ").concat(settings.activeCls, " ").concat(settings.focusCls, " ").concat(settings.hoverCls, " ").concat(settings.rtlCls, " ").concat(settings.l2ActiveCls, " ").concat(settings.l1ActiveCls, " ").concat(settings.overflowHiddenCls);
-            for (var i = allElems.length - 1; i >= 0; i--) {
-                var thiselem = allElems[i];
-                amm_removeEventListeners(core, thiselem);
-                if ((_HasClass(thiselem, settings.l0AnchorCls) ||
-                    _HasClass(thiselem, settings.l1AnchorCls)) &&
-                    thiselem.getAttribute("role") === "button") {
-                    thiselem.removeAttribute("role");
-                    thiselem.removeAttribute("aria-expanded");
-                }
-                if ((_HasClass(thiselem, settings.l0PanelCls) ||
-                    _HasClass(thiselem, settings.l1PanelCls)) &&
-                    thiselem.getAttribute("role") === "region") {
-                    thiselem.removeAttribute("role");
-                    thiselem.removeAttribute("aria-expanded");
-                    thiselem.removeAttribute("aria-hidden");
-                }
-                _RemoveClass(thiselem, cls);
-                _ToggleUniqueId(thiselem, settings, i, false);
-            }
-            var keycount = 0;
-            for (var i in AllAMegMenInstances) {
-                if (AllAMegMenInstances.hasOwnProperty(i)) {
-                    keycount++;
-                }
-            }
-            if (keycount === 1) {
-                amm_removeEventListeners(core, document);
-                if (settings.actOnHover) {
-                    amm_removeEventListeners(core, window);
-                }
-            }
-            _RemoveClass(core.root, cls);
-            delete AllAMegMenInstances[thisid];
-        }
-    };
+    removeEventListeners;
+    eventHandler;
+    addClass;
+    removeClass;
+    toFixed4;
     /**
      *  ██████  ██████  ██████  ███████
      * ██      ██    ██ ██   ██ ██
@@ -984,14 +278,12 @@ var AMegMen;
      * ██      ██    ██ ██   ██ ██
      *  ██████  ██████  ██   ██ ███████
      *
-     * Class for every AMegMen instance.
+     * Class for every Carouzel instance.
      *
      */
     var Core = /** @class */ (function () {
-        function Core(thisid, rootElem, options) {
-            this.core = {};
-            this.core = amm_init(this.core, rootElem, __assign(__assign({}, _Defaults), options));
-            AllAMegMenInstances[thisid] = this.core;
+        function Core(thisid, root, options) {
+            allLocalInstances[thisid] = init(root, __assign(__assign({}, _Defaults), options));
         }
         return Core;
     }());
@@ -1011,88 +303,87 @@ var AMegMen;
          *
          */
         function Root() {
-            var _this = this;
-            this.instances = {};
             /**
-             * Function to initialize the AMegMen plugin for provided query strings.
+             * Function to return count of all available carouzel objects
              *
-             * @param query - The CSS selector for which the AMegMen needs to be initialized.
-             * @param options - The optional object to customize every AMegMen instance.
+             * @returns count of all available carouzel objects
+             *
+             */
+            this.getLength = function () {
+                getCoreInstancesLength();
+            };
+            /**
+             * Function to initialize the Carouzel plugin for provided query strings.
+             *
+             * @param query - The CSS selector for which the Carouzel needs to be initialized.
+             * @param options - The optional object to customize every Carouzel instance.
              *
              */
             this.init = function (query, options) {
-                var roots = document.querySelectorAll(query);
-                var rootsLen = roots.length;
-                var instancelen = 0;
-                for (var i in _this.instances) {
-                    if (_this.instances.hasOwnProperty(i)) {
-                        instancelen++;
-                    }
-                }
-                if (rootsLen > 0) {
-                    for (var i = 0; i < rootsLen; i++) {
-                        var id = roots[i].getAttribute("id");
-                        var iselempresent = false;
+                var elements = document === null || document === void 0 ? void 0 : document.querySelectorAll(query);
+                var elementsLength = elements.length;
+                var instanceLength = getCoreInstancesLength();
+                if (elementsLength > 0) {
+                    for (var i = 0; i < elementsLength; i++) {
+                        var id = elements[i].getAttribute("id");
+                        var isElementPresent = false;
                         if (id) {
-                            for (var j = 0; j < instancelen; j++) {
-                                if (_this.instances[id]) {
-                                    iselempresent = true;
+                            for (var j = 0; j < instanceLength; j++) {
+                                if (allLocalInstances[id]) {
+                                    isElementPresent = true;
                                     break;
                                 }
                             }
                         }
-                        if (!iselempresent) {
+                        if (!isElementPresent) {
+                            var newOptions = void 0;
+                            var autoDataAttr = elements[i].getAttribute(_Selectors.rootAuto.slice(1, -1)) || "";
+                            if (autoDataAttr) {
+                                try {
+                                    newOptions = JSON.parse(stringTrim(autoDataAttr).replace(/'/g, "\""));
+                                }
+                                catch (e) {
+                                    // throw new TypeError(_optionsParseTypeError);
+                                    console.error(_optionsParseTypeError);
+                                }
+                            }
+                            else {
+                                newOptions = options;
+                            }
                             if (id) {
-                                _this.instances[id] = new Core(id, roots[i], options);
+                                new Core(id, elements[i], newOptions);
                             }
                             else {
                                 var thisid = id
                                     ? id
-                                    : __assign(__assign({}, options), _Defaults).idPrefix +
+                                    : __assign(__assign({}, _Defaults), newOptions).idPrefix +
                                         "_" +
                                         new Date().getTime() +
                                         "_root_" +
                                         (i + 1);
-                                roots[i].setAttribute("id", thisid);
-                                _this.instances[thisid] = new Core(thisid, roots[i], options);
+                                elements[i].setAttribute("id", thisid);
+                                new Core(thisid, elements[i], newOptions);
                             }
                         }
                     }
-                }
-                else {
-                    console.error("Element(s) with the provided query do(es) not exist");
-                }
-            };
-            /**
-             * Function to destroy the AMegMen plugin for provided query strings.
-             *
-             * @param query - The CSS selector for which the AMegMen needs to be initialized.
-             *
-             */
-            this.destroy = function (query) {
-                var roots = document.querySelectorAll(query);
-                var rootsLen = roots.length;
-                if (rootsLen > 0) {
-                    for (var i = 0; i < rootsLen; i++) {
-                        var id = roots[i].getAttribute("id");
-                        if (id && _this.instances[id]) {
-                            amm_destroy(id, _this.instances[id].core);
-                            delete _this.instances[id];
-                        }
+                    if (getCoreInstancesLength() > 0 && !isWindowEventAttached) {
+                        isWindowEventAttached = true;
+                        window === null || window === void 0 ? void 0 : window.addEventListener("resize", winResizeFn, false);
                     }
                 }
                 else {
-                    console.error("Element(s) with the provided query do(es) not exist");
+                    if (query !== _Selectors.rootAuto) {
+                        // throw new TypeError(_rootSelectorTypeError);
+                        console.error("init() \"".concat(query, "\": ").concat(_rootSelectorTypeError));
+                    }
                 }
             };
-            _EnableQSQSAScope();
-            _EnableClosest();
-            // _EnableAssign();
+            this.init(_Selectors.rootAuto);
         }
         /**
          * Function to return single instance
          *
-         * @returns Single AMegMen Instance
+         * @returns Single Carouzel Instance
          *
          */
         Root.getInstance = function () {
