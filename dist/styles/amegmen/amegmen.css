@@ -133,8 +133,11 @@
   left: 0;
   position: absolute;
   top: 50px; }
-  [data-amegmen] [data-amegmen-navl0] > li > a {
-    padding: 10px; }
+  [data-amegmen] [data-amegmen-navl0] > li {
+    border-bottom: 1px solid #ccc; }
+    [data-amegmen] [data-amegmen-navl0] > li > a {
+      padding: 10px;
+      text-decoration: none; }
 
 @media (min-width: 768px) {
   [data-amegmen] [data-amegmen-opencta],
@@ -157,6 +160,13 @@
     left: auto;
     position: relative;
     top: auto;
-    flex-direction: row; } }
+    flex-direction: row; }
+    [data-amegmen] [data-amegmen-navl0] > li {
+      border-bottom: 0;
+      border-left: 1px solid #ccc; }
+      [data-amegmen] [data-amegmen-navl0] > li:first-child {
+        border-left: 0; }
+      [data-amegmen] [data-amegmen-navl0] > li > a {
+        text-align: center; } }
 
 /*# sourceMappingURL=amegmen.css.map */

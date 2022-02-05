@@ -24,8 +24,13 @@
     top: auto;
     flex-direction: row;
     > li {
-      &,
+      border-bottom: 0;
+      border-left: 1px solid #ccc;
+      &:first-child {
+        border-left: 0;
+      }
       > a {
+        text-align: center;
       }
     }
   }

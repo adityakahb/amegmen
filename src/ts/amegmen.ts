@@ -40,6 +40,10 @@ namespace AMegMen {
     editCls: string;
     hidCls: string;
   }
+  interface IElement {
+    el: HTMLElement | null;
+    pLi: HTMLElement | null;
+  }
   interface ICore {
     _t: ITimer;
     canvas: HTMLElement | null;
@@ -267,6 +271,9 @@ namespace AMegMen {
     return eventHandler;
   };
 
+  const openL1 = (core: ICore) => {
+    core;
+  };
   const toggleEvents = (core: ICore) => {
     if (core.oCta && core.canvas && core.root) {
       core.eHandlers.push(
@@ -300,6 +307,7 @@ namespace AMegMen {
         core.eHandlers.push(
           eventHandler(core.l0a[i], `click`, function (event: Event) {
             event.preventDefault();
+            openL1(core);
           })
         );
       }

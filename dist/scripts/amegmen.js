@@ -193,6 +193,9 @@ var AMegMen;
         element.addEventListener(type, listener, _useCapture);
         return eventHandler;
     };
+    var openL1 = function (core) {
+        core;
+    };
     var toggleEvents = function (core) {
         if (core.oCta && core.canvas && core.root) {
             core.eHandlers.push(eventHandler(core.oCta, "click", function (event) {
@@ -222,6 +225,7 @@ var AMegMen;
             if (parent_1 && parent_1.querySelector(_Selectors.l1W)) {
                 core.eHandlers.push(eventHandler(core.l0a[i], "click", function (event) {
                     event.preventDefault();
+                    openL1(core);
                 }));
             }
         }

@@ -151,8 +151,12 @@
     left: 0;
     position: absolute;
     top: 50px;
-    > li > a {
-      padding: 10px;
+    > li {
+      border-bottom: 1px solid #ccc;
+      > a {
+        padding: 10px;
+        text-decoration: none;
+      }
     }
   }
 }
