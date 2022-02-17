@@ -1,311 +1,169 @@
-# AMegMen
-AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.
+# Carouzel
 
-## Demo
-[https://adityakahb.github.io/amegmen](https://adityakahb.github.io/amegmen/)
+Carouzel is a framework free light-weight carousel plugin, which is responsive, handles multiple configurations. It uses DOM hardware acceleration for animation effects.
+
+## Homepage
+
+[https://adityakahb.github.io/carouzel](https://adityakahb.github.io/carouzel/)
+
+## Codesandbox Demoes
+
+- [Simple](https://codesandbox.io/s/carouzel-simple-jt6g6?file=/index.html)
+- [Multiple](https://codesandbox.io/s/carouzel-multiple-rm53q?file=/index.html)
+- [Responsive](https://codesandbox.io/s/carouzel-responsive-4o4p9?file=/index.html)
+- [Fade Animation](https://codesandbox.io/s/carouzel-fading-animaton-9p9jh?file=/index.html)
+- [Through `data-attribute`](https://codesandbox.io/s/carouzel-using-data-attribute-wqked?file=/index.html)
+- [Autoplay](https://codesandbox.io/s/carouzel-autoplay-k4tk4?file=/index.html)
+- [Finite](https://codesandbox.io/s/carouzel-finite-3sy8r?file=/index.html)
+- [Events & Methods](https://codesandbox.io/s/carouzel-events-and-methods-0s52x?file=/index.html)
+- [Centered](https://codesandbox.io/s/carouzel-centered-jmbr4?file=/index.html)
+- [Slide titles as navigation](https://codesandbox.io/s/carouzel-slide-titles-as-dots-tykcs?file=/index.html)
+- [Gutter space between slides](https://codesandbox.io/s/carouzel-gutter-space-cltvd?file=/index.html)
+- [Right to Left](https://codesandbox.io/s/carouzel-right-to-left-pop1y?file=/index.html)
+- [Easing](https://codesandbox.io/s/carouzel-easing-vkuxo?file=/index.html)
+- [Hash navigation](https://codesandbox.io/s/carouzel-hash-navigation-wppyo?file=/index.html)
+- [Video](https://codesandbox.io/s/carouzel-video-z6j56?file=/index.html)
 
 ## Features
-- Available in Vanilla Javascript and CommonJS module
-- Framework-free
-- Can be navigated through Tab Key
-- Supports 3 levels
-- Supports Click and Hover behaviors
-- Supports Right to Left UI
-- Fully responsive
-- With bare minimum css (with no icons, reset, normalize, custom fonts or images)
-- Can have multiple instances with multiple configurations
-- Compiled through Typescript
-- Styled through SASS (Mobile first and with one breakpoint) - Source included for customization
-- Tested through Karma and Jasmine
-- Polyfills for `Object.assign`, `querySelector:scope`, `querySelectorAll:scope` and `Element.closest` included, no other polyfill required.
 
-## Development Points
-Since AMegMen supports 3 levels, following points are considered during the development:
-- Levels start from 0, just like an array.
-- `Root` -> `Level 0 UL/LI` -> `Level 0 Anchor and Level 0 Subnav Panel`
-- `Level 0 Subnav Panel` -> `Level 0 Landing link and Level 1 Panel Columns`
-- `Level 1 Panel Columns` -> `Level 1 UL/LI -> Level 1 Anchor and Level 2 Subnav Panel`
-- `Level 2 Subnav Panel` -> `Level 1 Landing link and Level 2 a Single Panel Column`
-- `Level 2 Panel Column` -> `Level 2 UL/LI` -> `Level 2 Anchor`
-- All Subnav panels must have columns in them, to position the 3rd level accurately.
-- Mobile devices don't support hover, so the hover behavior is implemented as an option, which if required, can be enabled by passing `actOnHover` as `true`.
-- Right to Left is based on just a CSS property `direction: rtl`, and it may not be supported on old browsers.
-- Actual code resides in Typescript, which is compiled to Javascript (ES3 and NO Module code generation) and is compressed through Uglify-JS.
-- Styles reside in SASS files with minimum configurations and changes mobile to desktop view at 768px. The styles are compressed through UglifyCSS.
+- Available in Vanilla Javascript and CommonJS module.
+- Framework-free.
+- Can be used as ES6 module import OR direct source.
+- Mobile First and fully responsive.
+- With bare minimum css (scss source included)
+- Compiled through Typescript.
+- Can have multiple instances with multiple configurations.
+- Styled through SASS - Source included for customization.
+- Has 16 easing options to go with scroll and fade effects.
+- Can be navigated through keyboard arrows.
+- Can be initiated manually or via `data-attribute`.
+- Uses [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) for animation.
+- Object.assign polyfill is added by Typescript! No other polyfills required.
+
+## NPM
+
+```bash
+npm install carouzel
+```
 
 ## Installation
 
-### NPM
-
-```bash
-npm install amegmen
-```
-**THEN**
-```html
-<link href="node_modules/amegmen/dist/styles/theme-1/amegmen.min.css"/>
-<script src="node_modules/amegmen/dist/scripts/amegmen.min.js"></script>
-```
-**OR**
-```javascript
-import AMegMen from 'amegmen';
-```
-```sass
-@import '~amegmen\src\sass-theme-1\amegmen';
-```
-
-### HTML
+### References
 
 ```html
-<!-- Root Element -->
-<nav  id="__amegmen_root">
-    <!-- Button (on mobile) to toggle Megamenu on mobile device -->
-    <button  class="__amegmen--toggle-cta">Menu</button>
-    <!-- Off-Canvas which slides on mobile device -->
-    <div  class="__amegmen--canvas">
-        <!-- Nav Header containing a Button to close the Megamenu -->
-        <header>
-            <!-- Button (on mobile) to close the Megamenu -->
-            <button  class="__amegmen--close-cta">Close</button>
-        </header>
-        <!-- Main section containing Megamenu navigation -->
-        <section  class="__amegmen--main">
-            <!-- Level 0 UL/LI -->
-            <ul>
-                <li>
-                    <!-- Level 0 anchor -->
-                    <a  href="#">Risus</a>
-                        <!-- Level 0 Megamenu panel -->
-                        <section  class="__amegmen--panel">
-                            <!-- Container for Level 0 anchor's landing page url -->
-                            <div  class="__amegmen--landing">
-                                <!-- Button (on mobile) to go main menu (level 0) -->
-                                <button  class="__amegmen--main-cta">Main</button>
-                                <!-- Level 0 anchor's landing page url -->
-                                <a  href="#Tempor sit maecenas">Landing page: Tempor sit maecenas</a>
-                            </div>
-                            <!-- Level 1 navigation -->
-                            <nav>
-                                <!-- Level 1 navigation column 0 -->
-                                <div  class="__amegmen--col">
-                                    <!-- Level 1 UL/LI -->
-                                    <ul>
-                                        <li>
-                                            <!-- Level 1 anchor -->
-                                            <a  href="#">Amet nunc dis Sem</a>
-                                            <!-- Level 1 Megamenu panel -->
-                                            <section  class="__amegmen--panel">
-                                                <!-- Container for Level 1 anchor's landing page url -->
-                                                <div  class="__amegmen--landing">
-                                                    <!-- Button (on mobile) to go previous menu (level 1) -->
-                                                    <button  class="__amegmen--back-cta">Back</button>
-                                                    <!-- Level 1 anchor's landing page url -->
-                                                    <a  href="#">Landing page: Tempor consectetur gravida Malesuada penatibus Purus</a>
-                                                </div>
-                                                <!-- Level 2 navigation -->
-                                                <nav>
-                                                    <!-- Level 2 navigation column -->
-                                                    <div  class="__amegmen--col">
-                                                        <!-- Level 2 UL/LI/A -->
-                                                        <ul>
-                                                            <li><a  href="#">Vivamus maecenas ex</a></li>
-                                                            <li><a  href="#">Amet vulputate malesuada</a></li>
-                                                            <li><a  href="#">Nulla maximus malesuada Magnis metus Etiam</a></li>
-                                                            <li><a  href="#">Eget velit elit</a></li>
-                                                            <li><a  href="#">Nullam molestie vestibulum In amet In</a></li>
-                                                            <li><a  href="#">Neque congue elit Ut</a></li>
-                                                            <li><a  href="#">Nisl et lorem Nullam</a></li>
-                                                            <li><a  href="#">Nullam fermentum malesuada Ut ac Quam</a></li>
-                                                            <li><a  href="#">Erat quam a In mattis</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </nav>
-                                            </section>
-                                        </li>
-                                        . . .
-                                    </ul>
-                                </div>
-                                <!-- Level 1 navigation column 1 -->
-                                <div  class="__amegmen--col">
-                                    <!-- Level 1 UL/LI -->
-                                    <ul>
-                                        <li>
-                                            <!-- Level 1 anchor -->
-                                            <a  href="#">Et elementum gravida Porttitor</a>
-                                            <!-- Level 1 Megamenu panel -->
-                                            <section  class="__amegmen--panel">
-                                                <!-- Container for Level 1 anchor's landing page url -->
-                                                <div  class="__amegmen--landing">
-                                                    <!-- Button (on mobile) to go previous menu (level 1) -->
-                                                    <button  class="__amegmen--back-cta">Back</button>
-                                                    <!-- Level 1 anchor's landing page url -->
-                                                    <a  href="#">Landing page: Magnis congue vehicula Aliquam turpis</a>
-                                                </div>
-                                                <!-- Level 2 navigation -->
-                                                <nav>
-                                                    <!-- Level 2 navigation column -->
-                                                    <div  class="__amegmen--col">
-                                                        <!-- Level 2 UL/LI/A -->
-                                                        <ul>
-                                                            <li><a  href="#">Pulvinar consectetur elementum Phasellus dolor</a></li>
-                                                            <li><a  href="#">Nullam vivamus turpis Ut</a></li>
-                                                            <li><a  href="#">Tempus et proin</a></li>
-                                                            <li><a  href="#">Maximus non nunc Porta in</a></li>
-                                                            . . .
-                                                        </ul>
-                                                    </div>
-                                                </nav>
-                                            </section>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- Repeat Level 1 navigation columns -->
-                            </nav>
-                        </section>
-                    </li>
-                <!-- Repeat Repeat Level 0 LI -->
-            </ul>
-        </section>
+<link href="../location/carouzel.min.css" rel="stylesheet" />
+<script src="../location/carouzel.min.js" type="text/javascript"></script>
+```
+
+### Markup
+
+```html
+<section
+  data-carouzel
+  id="__carouzel_id"
+  aria-roledescription="carousel"
+  aria-label="Carouzel Implementation"
+>
+  <div data-carouzel-trackwrapper>
+    <div data-carouzel-trackmask>
+      <div data-carouzel-trackouter>
+        <div data-carouzel-track aria-live="polite">
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="1 of 6"
+          >
+            01
+          </div>
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="2 of 6"
+          >
+            02
+          </div>
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="3 of 6"
+          >
+            03
+          </div>
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="4 of 6"
+          >
+            04
+          </div>
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="5 of 6"
+          >
+            05
+          </div>
+          <div
+            data-carouzel-slide
+            role="group"
+            aria-roledescription="slide"
+            aria-label="6 of 6"
+          >
+            06
+          </div>
+        </div>
+      </div>
     </div>
-</nav>
+    <div data-carouzel-controlswrapper>
+      <button type="button" data-carouzel-previousarrow aria-label="Previous">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+          fill="#000000"
+        >
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
+        </svg>
+      </button>
+      <button type="button" data-carouzel-nextarrow aria-label="Next">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+          fill="#000000"
+        >
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div data-carouzel-navigationwrapper>
+    <ul data-carouzel-navigation></ul>
+  </div>
+</section>
 ```
 
 ### JavaScript
 
 ```javascript
-var  amegmen_instance = AMegMen.Root.getInstance();
-var  amegmen_options = {};
-amegmen_instance.init("#__amegmen_root", amegmen_options);
-
-/* You can destroy it as well */
-amegmen_instance.destroy("#__amegmen_root");
+var __carouzel_instance = Carouzel.Root.getInstance();
+var __carouzel_options = {};
+__carouzel_instance.init('#__carouzel_id', __carouzel_options);
 ```
 
+## Options & Methods
 
-### Options
-
-**activeCls** - CSS Class
-Default: `active`
-Associated with the root element and its children which get a subnav panel opened or activated
-
-**actOnHover** - Boolean
-Default: `false`
-Toggles Hover behavior on or after the breakpoint specified by `actOnHoverAt`
-
-**actOnHoverAt** - Number
-Default: `1280`
-If `actOnHover` is enabled, Hover behaviour will be activated on or after this breakpoint.
-
-**backBtnCls** - CSS Class
-Default: `__amegmen--back-cta`
-Associated with the Level 2 Buttons on mobile, which navigates to the Level 1 Menu.
-
-**closeBtnCls** - CSS Class
-Default: `__amegmen--close-cta`
-Associated with the Button on mobile, which closes the Megamenu.
-
-**colCls** - CSS Class
-Default: `__amegmen--col`
-Associated with the Columns on Panels at Level 1 and level 2.
-
-**focusCls** - CSS Class
-Default: `focus`
-Triggered when focus event is fired on related elements.
-
-**hoverCls** - CSS Class
-Default: `hover`
-Triggered when hover event is fired on related elements.
-
-**idPrefix** - String
-Default: `__amegmen_id`
-Some elements need an id associated with them for behavior calculation. This is a prefix string for those IDs.
-
-**isRTL** - Boolean
-Default: `false`
-Changes the direction of the Megamenu to Right to Left. Caution: It uses CSS property `direction: rtl`
-
-**l0AnchorCls** - CSS Class
-Default: `__amegmen--anchor-l0`
-Associated with the links at Level 0
-
-**l0PanelCls** - CSS Class
-Default: `__amegmen--panel-l0`
-Associated with the Subnav Panel at Level 0
-
-**l1ActiveCls** - CSS Class
-Default: `__amegmen--l1-active`
-Associated when the Subnav Panel at Level 0 is active
-
-**l1AnchorCls** - CSS Class
-Default: `__amegmen--anchor-l1`
-Associated with the links at Level 1
-
-**l1PanelCls** - CSS Class
-Default: `__amegmen--panel-l1`
-Associated with the Subnav Panel at Level 1
-
-**l2ActiveCls** - CSS Class
-Default: `__amegmen--l2-active`
-Associated when the Subnav Panel at Level 1 is active
-
-**l2AnchorCls** - CSS Class
-Default: `__amegmen--anchor-l2`
-Associated with the links at Level 2
-
-**landingCtaCls** - CSS Class
-Default: `__amegmen--landing`
-Associated with the containers at Level 1 and 2 which contain links to parent links at Level 0 and Level 1 respectively
-
-**lastcolCls** - CSS Class
-Default: `__amegmen--col-last`
-Associated with the last column at Level 1
-
-**mainBtnCls** - CSS Class
-Default: `__amegmen--main-cta`
-Associated with the Level 1 Buttons on mobile, which navigates to the Level 0 Menu.
-
-**mainElementCls** - CSS Class
-Default: `__amegmen--main`
-Associated with the Level 0 main section which contains Level 0 anchors
-
-**offcanvasCls** - CSS Class
-Default: `__amegmen--canvas`
-Associated with scrollable elements which the scrolling needs to be disabled
-
-**overflowHiddenCls** - CSS Class
-Default: `__amegmen--nooverflow`
-Associated with scrollable elements which the scrolling needs to be disabled
-
-**panelCls** - CSS Class
-Default: `__amegmen--panel`
-Associated with the Subnav Panels at Level 1 and Level 2
-
-**rootCls** - CSS Class
-Default: `__amegmen`
-Associated with the Root Element
-
-**rtl_Cls** - CSS Class
-Default: `__amegmen--r-to-l`
-Associated with the Root Element, if `isRTL` is enabled
-
-**supportedCols** - Number
-Default: `4`
-Maximum number of columns associated with Level 1 Subnav Panel
-
-**toggleBtnCls** - CSS Class
-Default: `__amegmen--toggle-cta`
-Associated with the Button on mobile, which toggles the Megamenu specified by `offcanvasCls`
-
-
-### Methods
-
-**init**
-Parameters: CSS Selector
-The Root element id or class to be passed to initialize the Megamenu. Example `#root`, `.root`
-
-**destroy**
-Parameters: CSS Selector
-The Root element id or class to be passed to destroy the Megamenu. Example `#root`, `.root`
-
+Visit [home](https://adityakahb.github.io/carouzel/) to know more about options and methods.
 
 ### License
+
 MIT

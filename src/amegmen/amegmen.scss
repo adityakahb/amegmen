@@ -1,9 +1,0 @@
-$breakpoint: 768px;
-$menuheight: 480px;
-$time500: 500ms;
-$time250: 250ms;
-
-@import './viewports/small';
-@media (min-width: $breakpoint) {
-  @import './viewports/large';
-}
