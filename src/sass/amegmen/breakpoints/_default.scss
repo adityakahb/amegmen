@@ -1,0 +1,15 @@
+[data-amegmen-ul0] {
+  display: flex;
+  flex-wrap: wrap;
+  @include horizontal-list;
+  > li {
+    width: 100%;
+    > a {
+      display: block;
+    }
+  }
+}
+[data-amegmen-subnavwrap] {
+  visibility: hidden;
+  position: absolute;
+}
