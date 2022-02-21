@@ -3,14 +3,44 @@ namespace AMegMen {
     [key: string]: any;
   }
 
+  // interface IDevice {
+  //   bp: number;
+  //   ly: string;
+  // }
+
+  interface ICoreBreakpoint {
+    bp: number;
+    hov: boolean;
+    ly: string;
+  }
+
   interface IBreakpoint {
     actOnHover: boolean;
     layout: string;
-    minWidth: number | string;
+    minWidth: number;
   }
 
-  interface IamegmenEasing {
+  interface IEasing {
     [key: string]: (t: number) => number;
+  }
+
+  interface ICoreSettings {
+    activeCls: string;
+    aFn?: () => void;
+    bFn?: () => void;
+    disableCls: string;
+    easeFn: string;
+    editCls: string;
+    effect: string;
+    hidCls: string;
+    hov: boolean;
+    idPrefix?: string;
+    l1c: number;
+    ly: string;
+    res: ICoreBreakpoint[];
+    rtl: boolean;
+    speed: number;
+    threshold: number;
   }
 
   interface ISettings {
@@ -45,6 +75,11 @@ namespace AMegMen {
 
   interface ICore {
     _t: ITimer;
+    bpall: ICoreBreakpoint[];
+    bpo: ICoreBreakpoint;
+    bpoOld: ICoreBreakpoint;
+    o: ICoreSettings;
+    root: IRoot;
   }
 
   interface ICoreInstance {
@@ -55,7 +90,7 @@ namespace AMegMen {
    * Easing Functions - inspired from http://gizma.com/easing/
    * only considering the t value for the range [0, 1] => [0, 1]
    */
-  const cEasingFunctions: IamegmenEasing = {
+  const cEasingFunctions: IEasing = {
     // no easing, no acceleration
     linear: (t: number) => t,
     // accelerating from zero velocity
@@ -95,7 +130,24 @@ namespace AMegMen {
     //     ? (0.02 + 0.01 / t) * Math.sin(50 * t)
     //     : (0.02 - 0.01 / t) * Math.sin(50 * t) + 1,
   };
-
+  // const cDevices: IDevice[] = [
+  //   {
+  //     bp: 0,
+  //     ly: `xsmall`
+  //   },
+  //   {
+  //     bp: 320,
+  //     ly: `small`
+  //   },
+  //   {
+  //     bp: 700,
+  //     ly: `medium`
+  //   },
+  //   {
+  //     bp: 1200,
+  //     ly: `large`
+  //   }
+  // ];
   const cAnimationEffects = [`slide`, `fade`];
   const cRootSelectorTypeError = `Element(s) with the provided query do(es) not exist`;
   const cOptionsParseTypeError = `Unable to parse the options string`;
@@ -109,33 +161,11 @@ namespace AMegMen {
   ).join(`, `)}]. Setting the easing function to ${
     Object.keys(cEasingFunctions)[0]
   }.`;
-  const cUseCapture = false;
+  // const cUseCapture = false;
   const cSelectors = {
-    arrowN: `[data-amegmen-nextarrow]`,
-    arrowP: `[data-amegmen-previousarrow]`,
-    cntr: `[data-amegmen-centered]`,
-    ctrlW: `[data-amegmen-ctrlWrapper]`,
-    curp: `[data-amegmen-currentpage]`,
-    dot: `[data-amegmen-dot]`,
-    nav: `[data-amegmen-navigation]`,
-    navW: `[data-amegmen-navigationwrapper]`,
-    pauseBtn: `[data-amegmen-pause]`,
-    playBtn: `[data-amegmen-play]`,
     root: `[data-amegmen]`,
     rootAuto: `[data-amegmen-auto]`,
-    rtl: `[data-amegmen-rtl]`,
-    scbar: `[data-amegmen-hasscrollbar]`,
-    scbarB: `[data-amegmen-scrollbarthumb]`,
-    scbarT: `[data-amegmen-scrollbartrack]`,
-    scbarW: `[data-amegmen-scrollbarwrapper]`,
-    slide: `[data-amegmen-slide]`,
-    stitle: `[data-amegmen-title]`,
-    totp: `[data-amegmen-totalpages]`,
-    trk: `[data-amegmen-track]`,
-    trkM: `[data-amegmen-trackMask]`,
-    trkO: `[data-amegmen-trackOuter]`,
-    trkW: `[data-amegmen-trackWrapper]`,
-    ver: `[data-amegmen-vertical]`
+    rtl: `[data-amegmen-rtl]`
   };
   const cDefaults: ISettings = {
     activeClass: `__amegmen-active`,
@@ -256,7 +286,7 @@ namespace AMegMen {
     windowResizeAny = setTimeout(() => {
       for (const e in allLocalInstances) {
         if (allLocalInstances.hasOwnProperty(e)) {
-          // applyLayout(allLocalInstances[e]);
+          applyLayout(allLocalInstances[e]);
         }
       }
     }, 0);
@@ -268,6 +298,182 @@ namespace AMegMen {
    */
   const getCoreInstancesLength = () => {
     return Object.keys(allLocalInstances).length;
+  };
+
+  /**
+   * Function to find and apply the appropriate breakpoint settings based on the viewport
+   *
+   * @param core - Carouzel instance core object
+   *
+   */
+  const applyLayout = (core: ICore) => {
+    const viewportWidth = window?.innerWidth;
+    let bpoptions = core.bpall[0];
+    let len = 0;
+
+    while (len < core.bpall.length) {
+      if (
+        (core.bpall[len + 1] && core.bpall[len + 1].bp > viewportWidth) ||
+        typeof core.bpall[len + 1] === `undefined`
+      ) {
+        bpoptions = core.bpall[len];
+        break;
+      }
+      len++;
+    }
+    console.log('=========bpoptions', bpoptions);
+  };
+
+  /**
+   * Function to validate all breakpoints to check duplicates
+   *
+   * @param breakpoints - Breakpoint settings array
+   *
+   */
+  const validateBreakpoints = (breakpoints: ICoreBreakpoint[]) => {
+    try {
+      const tempArr = [];
+      let len = breakpoints.length;
+      while (len--) {
+        if (tempArr.indexOf(breakpoints[len].bp) === -1) {
+          tempArr.push(breakpoints[len].bp);
+        }
+      }
+      if (tempArr.length === breakpoints.length) {
+        return {
+          val: true,
+          bp: breakpoints.sort(
+            (a, b) => parseFloat(`${a.bp}`) - parseFloat(`${b.bp}`)
+          )
+        };
+      } else {
+        // throw new TypeError(cDuplicateBreakpointsTypeError);
+        console.error(cDuplicateBreakpointsTypeError);
+        return {};
+      }
+    } catch (e) {
+      // throw new TypeError(cBreakpointsParseTypeError);
+      console.error(cBreakpointsParseTypeError);
+      return {};
+    }
+  };
+
+  /**
+   * Function to update breakpoints to override missing settings from previous breakpoint
+   *
+   * @param settings - Core settings object containing merge of default and custom settings
+   *
+   */
+  const updateBreakpoints = (settings: ICoreSettings) => {
+    const defaultBreakpoint: ICoreBreakpoint = {
+      hov: settings.hov,
+      ly: settings.ly,
+      bp: 0
+    };
+    const tempArr = [];
+    if (settings.res && settings.res.length > 0) {
+      let settingsLen = settings.res.length;
+      while (settingsLen--) {
+        tempArr.push(settings.res[settingsLen]);
+      }
+    }
+    tempArr.push(defaultBreakpoint);
+    const updatedArr = validateBreakpoints(tempArr);
+
+    if (updatedArr.val) {
+      const bpArr = [updatedArr.bp[0]];
+      let bpLen = 1;
+      let bp1: ICoreBreakpoint;
+      let bp2: ICoreBreakpoint;
+      while (bpLen < updatedArr.bp.length) {
+        bp1 = bpArr[bpLen - 1];
+        bp2 = { ...bp1, ...updatedArr.bp[bpLen] };
+        if (typeof bp2.hov === `undefined`) {
+          bp2.hov = bp1.hov;
+        }
+        if (typeof bp2.ly === `undefined`) {
+          bp2.ly = bp1.ly;
+        }
+        bpArr.push(bp2);
+        bpLen++;
+      }
+      return bpArr;
+    }
+    return [];
+  };
+
+  /**
+   * Function to map default and custom settings to Core settings with shorter names
+   *
+   * @param settings - Settings object containing merge of default and custom settings
+   *
+   */
+  const mapSettings = (settings: ISettings) => {
+    const settingsobj: ICoreSettings = {
+      activeCls: settings.activeClass,
+      aFn: settings.afterInitFn,
+      bFn: settings.beforeInitFn,
+      disableCls: settings.disabledClass,
+      editCls: settings.editModeClass,
+      hidCls: settings.hiddenClass,
+      hov: settings.actOnHover,
+      l1c: settings.l1Cols,
+      ly: settings.layout,
+      res: [],
+      rtl: settings.isRtl,
+      speed: settings.animationSpeed,
+      threshold: settings.touchThreshold,
+      effect: (() => {
+        if (cAnimationEffects.indexOf(settings.animationEffect) > -1) {
+          return settings.animationEffect;
+        }
+        console.warn(cNoEffectFoundError);
+        return cAnimationEffects[0];
+      })(),
+      easeFn: (() => {
+        if (cEasingFunctions[settings.easingFunction]) {
+          return settings.easingFunction;
+        }
+        console.warn(cNoEasingFoundError);
+        return Object.keys(cEasingFunctions)[0];
+      })()
+    };
+
+    if (settings.breakpoints && settings.breakpoints.length > 0) {
+      for (let i = 0; i < settings.breakpoints.length; i++) {
+        const obj: ICoreBreakpoint = {
+          bp: settings.breakpoints[i].minWidth,
+          hov: settings.breakpoints[i].actOnHover,
+          ly: settings.breakpoints[i].layout
+        };
+        if (settingsobj.res) {
+          settingsobj.res.push(obj);
+        }
+      }
+    }
+    return settingsobj;
+  };
+
+  /**
+   * Function to initialize the carouzel core object and assign respective events
+   *
+   * @param root - The root element which needs to be initialized as Carouzel slider
+   * @param settings - The options applicable to the same Carouzel slider
+   *
+   */
+  const init = (root: HTMLElement, settings: ISettings) => {
+    if (typeof settings.beforeInitFn === `function`) {
+      settings.beforeInitFn();
+    }
+
+    const cCore = {} as ICore;
+    cCore.root = root;
+    cCore.o = mapSettings(settings);
+    cCore.bpall = updateBreakpoints(cCore.o);
+    if (cCore.bpall.length > 0) {
+      applyLayout(cCore);
+    }
+    return cCore;
   };
 
   /**
@@ -286,7 +492,7 @@ namespace AMegMen {
      * @constructor
      */
     constructor(thisid: string, root: HTMLElement, options?: ISettings) {
-      // allLocalInstances[thisid] = init(root, { ...cDefaults, ...options });
+      allLocalInstances[thisid] = init(root, { ...cDefaults, ...options });
     }
   }
 
@@ -325,9 +531,6 @@ namespace AMegMen {
      *
      */
     public init = (query: string, options?: ISettings) => {
-      query;
-      options;
-      cEasingFunctions;
       addClass;
       removeClass;
       toFixed4;

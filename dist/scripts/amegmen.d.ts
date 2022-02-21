@@ -2,7 +2,7 @@ declare namespace AMegMen {
     interface IBreakpoint {
         actOnHover: boolean;
         layout: string;
-        minWidth: number | string;
+        minWidth: number;
     }
     interface ISettings {
         activeClass: string;

@@ -59,6 +59,24 @@ var AMegMen;
         //     ? (0.02 + 0.01 / t) * Math.sin(50 * t)
         //     : (0.02 - 0.01 / t) * Math.sin(50 * t) + 1,
     };
+    // const cDevices: IDevice[] = [
+    //   {
+    //     bp: 0,
+    //     ly: `xsmall`
+    //   },
+    //   {
+    //     bp: 320,
+    //     ly: `small`
+    //   },
+    //   {
+    //     bp: 700,
+    //     ly: `medium`
+    //   },
+    //   {
+    //     bp: 1200,
+    //     ly: `large`
+    //   }
+    // ];
     var cAnimationEffects = ["slide", "fade"];
     var cRootSelectorTypeError = "Element(s) with the provided query do(es) not exist";
     var cOptionsParseTypeError = "Unable to parse the options string";
@@ -66,33 +84,11 @@ var AMegMen;
     var cBreakpointsParseTypeError = "Error parsing breakpoints";
     var cNoEffectFoundError = "Animation effect function not found in presets. Try using one from (".concat(cAnimationEffects.join(", "), "). Setting the animation effect to ").concat(cAnimationEffects[0], ".");
     var cNoEasingFoundError = "Easing function not found in presets. Try using one from [".concat(Object.keys(cEasingFunctions).join(", "), "]. Setting the easing function to ").concat(Object.keys(cEasingFunctions)[0], ".");
-    var cUseCapture = false;
+    // const cUseCapture = false;
     var cSelectors = {
-        arrowN: "[data-amegmen-nextarrow]",
-        arrowP: "[data-amegmen-previousarrow]",
-        cntr: "[data-amegmen-centered]",
-        ctrlW: "[data-amegmen-ctrlWrapper]",
-        curp: "[data-amegmen-currentpage]",
-        dot: "[data-amegmen-dot]",
-        nav: "[data-amegmen-navigation]",
-        navW: "[data-amegmen-navigationwrapper]",
-        pauseBtn: "[data-amegmen-pause]",
-        playBtn: "[data-amegmen-play]",
         root: "[data-amegmen]",
         rootAuto: "[data-amegmen-auto]",
-        rtl: "[data-amegmen-rtl]",
-        scbar: "[data-amegmen-hasscrollbar]",
-        scbarB: "[data-amegmen-scrollbarthumb]",
-        scbarT: "[data-amegmen-scrollbartrack]",
-        scbarW: "[data-amegmen-scrollbarwrapper]",
-        slide: "[data-amegmen-slide]",
-        stitle: "[data-amegmen-title]",
-        totp: "[data-amegmen-totalpages]",
-        trk: "[data-amegmen-track]",
-        trkM: "[data-amegmen-trackMask]",
-        trkO: "[data-amegmen-trackOuter]",
-        trkW: "[data-amegmen-trackWrapper]",
-        ver: "[data-amegmen-vertical]"
+        rtl: "[data-amegmen-rtl]"
     };
     var cDefaults = {
         activeClass: "__amegmen-active",
@@ -206,7 +202,7 @@ var AMegMen;
         windowResizeAny = setTimeout(function () {
             for (var e in allLocalInstances) {
                 if (allLocalInstances.hasOwnProperty(e)) {
-                    // applyLayout(allLocalInstances[e]);
+                    applyLayout(allLocalInstances[e]);
                 }
             }
         }, 0);
@@ -217,6 +213,171 @@ var AMegMen;
      */
     var getCoreInstancesLength = function () {
         return Object.keys(allLocalInstances).length;
+    };
+    /**
+     * Function to find and apply the appropriate breakpoint settings based on the viewport
+     *
+     * @param core - Carouzel instance core object
+     *
+     */
+    var applyLayout = function (core) {
+        var viewportWidth = window === null || window === void 0 ? void 0 : window.innerWidth;
+        var bpoptions = core.bpall[0];
+        var len = 0;
+        while (len < core.bpall.length) {
+            if ((core.bpall[len + 1] && core.bpall[len + 1].bp > viewportWidth) ||
+                typeof core.bpall[len + 1] === "undefined") {
+                bpoptions = core.bpall[len];
+                break;
+            }
+            len++;
+        }
+        console.log('=========bpoptions', bpoptions);
+    };
+    /**
+     * Function to validate all breakpoints to check duplicates
+     *
+     * @param breakpoints - Breakpoint settings array
+     *
+     */
+    var validateBreakpoints = function (breakpoints) {
+        try {
+            var tempArr = [];
+            var len = breakpoints.length;
+            while (len--) {
+                if (tempArr.indexOf(breakpoints[len].bp) === -1) {
+                    tempArr.push(breakpoints[len].bp);
+                }
+            }
+            if (tempArr.length === breakpoints.length) {
+                return {
+                    val: true,
+                    bp: breakpoints.sort(function (a, b) { return parseFloat("".concat(a.bp)) - parseFloat("".concat(b.bp)); })
+                };
+            }
+            else {
+                // throw new TypeError(cDuplicateBreakpointsTypeError);
+                console.error(cDuplicateBreakpointsTypeError);
+                return {};
+            }
+        }
+        catch (e) {
+            // throw new TypeError(cBreakpointsParseTypeError);
+            console.error(cBreakpointsParseTypeError);
+            return {};
+        }
+    };
+    /**
+     * Function to update breakpoints to override missing settings from previous breakpoint
+     *
+     * @param settings - Core settings object containing merge of default and custom settings
+     *
+     */
+    var updateBreakpoints = function (settings) {
+        var defaultBreakpoint = {
+            hov: settings.hov,
+            ly: settings.ly,
+            bp: 0
+        };
+        var tempArr = [];
+        if (settings.res && settings.res.length > 0) {
+            var settingsLen = settings.res.length;
+            while (settingsLen--) {
+                tempArr.push(settings.res[settingsLen]);
+            }
+        }
+        tempArr.push(defaultBreakpoint);
+        var updatedArr = validateBreakpoints(tempArr);
+        if (updatedArr.val) {
+            var bpArr = [updatedArr.bp[0]];
+            var bpLen = 1;
+            var bp1 = void 0;
+            var bp2 = void 0;
+            while (bpLen < updatedArr.bp.length) {
+                bp1 = bpArr[bpLen - 1];
+                bp2 = __assign(__assign({}, bp1), updatedArr.bp[bpLen]);
+                if (typeof bp2.hov === "undefined") {
+                    bp2.hov = bp1.hov;
+                }
+                if (typeof bp2.ly === "undefined") {
+                    bp2.ly = bp1.ly;
+                }
+                bpArr.push(bp2);
+                bpLen++;
+            }
+            return bpArr;
+        }
+        return [];
+    };
+    /**
+     * Function to map default and custom settings to Core settings with shorter names
+     *
+     * @param settings - Settings object containing merge of default and custom settings
+     *
+     */
+    var mapSettings = function (settings) {
+        var settingsobj = {
+            activeCls: settings.activeClass,
+            aFn: settings.afterInitFn,
+            bFn: settings.beforeInitFn,
+            disableCls: settings.disabledClass,
+            editCls: settings.editModeClass,
+            hidCls: settings.hiddenClass,
+            hov: settings.actOnHover,
+            l1c: settings.l1Cols,
+            ly: settings.layout,
+            res: [],
+            rtl: settings.isRtl,
+            speed: settings.animationSpeed,
+            threshold: settings.touchThreshold,
+            effect: (function () {
+                if (cAnimationEffects.indexOf(settings.animationEffect) > -1) {
+                    return settings.animationEffect;
+                }
+                console.warn(cNoEffectFoundError);
+                return cAnimationEffects[0];
+            })(),
+            easeFn: (function () {
+                if (cEasingFunctions[settings.easingFunction]) {
+                    return settings.easingFunction;
+                }
+                console.warn(cNoEasingFoundError);
+                return Object.keys(cEasingFunctions)[0];
+            })()
+        };
+        if (settings.breakpoints && settings.breakpoints.length > 0) {
+            for (var i = 0; i < settings.breakpoints.length; i++) {
+                var obj = {
+                    bp: settings.breakpoints[i].minWidth,
+                    hov: settings.breakpoints[i].actOnHover,
+                    ly: settings.breakpoints[i].layout
+                };
+                if (settingsobj.res) {
+                    settingsobj.res.push(obj);
+                }
+            }
+        }
+        return settingsobj;
+    };
+    /**
+     * Function to initialize the carouzel core object and assign respective events
+     *
+     * @param root - The root element which needs to be initialized as Carouzel slider
+     * @param settings - The options applicable to the same Carouzel slider
+     *
+     */
+    var init = function (root, settings) {
+        if (typeof settings.beforeInitFn === "function") {
+            settings.beforeInitFn();
+        }
+        var cCore = {};
+        cCore.root = root;
+        cCore.o = mapSettings(settings);
+        cCore.bpall = updateBreakpoints(cCore.o);
+        if (cCore.bpall.length > 0) {
+            applyLayout(cCore);
+        }
+        return cCore;
     };
     /**
      *  ██████  ██████  ██████  ███████
@@ -234,7 +395,7 @@ var AMegMen;
          * @constructor
          */
         function Core(thisid, root, options) {
-            // allLocalInstances[thisid] = init(root, { ...cDefaults, ...options });
+            allLocalInstances[thisid] = init(root, __assign(__assign({}, cDefaults), options));
         }
         return Core;
     }());
@@ -259,9 +420,6 @@ var AMegMen;
              *
              */
             this.init = function (query, options) {
-                query;
-                options;
-                cEasingFunctions;
                 addClass;
                 removeClass;
                 toFixed4;

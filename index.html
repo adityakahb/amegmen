@@ -110,7 +110,23 @@
 </head>
 
   <body>
-    <nav data-amegmen>
+    <nav
+  data-amegmen
+  data-amegmen-auto="{
+  'device': 'mobile',
+  'breakpoints': [
+      {
+        'minWidth': 700,
+        'layout': 'tablet'
+      },
+      {
+        'actOnHover': true,
+        'minWidth': 1100,
+        'layout': 'desktop'
+      }
+  ]
+}"
+>
   <div>
     <ul data-amegmen-ul0>
       <li>
