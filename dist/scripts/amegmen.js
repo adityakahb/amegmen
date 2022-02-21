@@ -12,6 +12,10 @@ var __assign = (this && this.__assign) || function () {
 };
 var AMegMen;
 (function (AMegMen) {
+    // interface IRoot {
+    //   [key: string]: any;
+    // }
+    var _this = this;
     /*
      * Easing Functions - inspired from http://gizma.com/easing/
      * only considering the t value for the range [0, 1] => [0, 1]
@@ -49,15 +53,6 @@ var AMegMen;
         easeInOutQuint: function (t) {
             return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
         }
-        // elastic bounce effect at the beginning
-        // easeInElastic: (t: number) => (0.04 - 0.04 / t) * Math.sin(25 * t) + 1,
-        // elastic bounce effect at the end
-        // easeOutElastic: (t: number) => ((0.04 * t) / --t) * Math.sin(25 * t),
-        // elastic bounce effect at the beginning and end
-        // easeInOutElastic: (t: number) =>
-        //   (t -= 0.5) < 0
-        //     ? (0.02 + 0.01 / t) * Math.sin(50 * t)
-        //     : (0.02 - 0.01 / t) * Math.sin(50 * t) + 1,
     };
     // const cDevices: IDevice[] = [
     //   {
@@ -84,11 +79,15 @@ var AMegMen;
     var cBreakpointsParseTypeError = "Error parsing breakpoints";
     var cNoEffectFoundError = "Animation effect function not found in presets. Try using one from (".concat(cAnimationEffects.join(", "), "). Setting the animation effect to ").concat(cAnimationEffects[0], ".");
     var cNoEasingFoundError = "Easing function not found in presets. Try using one from [".concat(Object.keys(cEasingFunctions).join(", "), "]. Setting the easing function to ").concat(Object.keys(cEasingFunctions)[0], ".");
-    // const cUseCapture = false;
+    var cUseCapture = false;
     var cSelectors = {
+        main: "[data-amegmen-main]",
+        mask: "[data-amegmen-mask]",
+        nav: "[data-amegmen-nav]",
         root: "[data-amegmen]",
         rootAuto: "[data-amegmen-auto]",
-        rtl: "[data-amegmen-rtl]"
+        rtl: "[data-amegmen-rtl]",
+        toggle: "[data-amegmen-toggle]"
     };
     var cDefaults = {
         activeClass: "__amegmen-active",
@@ -111,6 +110,37 @@ var AMegMen;
     var jloop = 0;
     var windowResizeAny;
     var isWindowEventAttached = false;
+    var visible = function (element) {
+        return ($.expr.filters.visible(element) &&
+            !$(element)
+                .parents()
+                .addBack()
+                .filter(function () {
+                return $.css(_this, 'visibility') === 'hidden';
+            }).length);
+    };
+    var focusable = function (element) {
+        var map;
+        var mapName;
+        var img;
+        var nodeName = element.nodeName.toLowerCase();
+        if ('area' === nodeName) {
+            map = element.parentNode;
+            mapName = map.name;
+            if (!element.href || !mapName || map.nodeName.toLowerCase() !== 'map') {
+                return false;
+            }
+            img = $('img[usemap=#' + mapName + ']')[0];
+            return !!img && visible(img);
+        }
+        return ((/input|select|textarea|button|object/.test(nodeName)
+            ? !element.disabled
+            : 'a' === nodeName
+                ? element.href || isTabIndexNotNaN
+                : isTabIndexNotNaN) &&
+            // the element and all of its ancestors must be visible
+            visible(element));
+    };
     /**
      * Function to trim whitespaces from a string
      *
@@ -215,12 +245,51 @@ var AMegMen;
         return Object.keys(allLocalInstances).length;
     };
     /**
+     * Function to remove all local events assigned to the navigation elements.
+     *
+     * @param core - Carouzel instance core object
+     * @param element - An HTML Element from which the events need to be removed
+     *
+     */
+    var removeEventListeners = function (core, element) {
+        var j = core.eH.length;
+        while (j--) {
+            if (core.eH[j].element.isEqualNode &&
+                core.eH[j].element.isEqualNode(element)) {
+                core.eH[j].remove();
+                core.eH.splice(j, 1);
+            }
+        }
+    };
+    /**
+     * Function to remove all local events assigned to the navigation elements.
+     *
+     * @param element - An HTML Element which needs to be assigned an event
+     * @param type - Event type
+     * @param listener - The Event handler function
+     *
+     * @returns The event handler object
+     *
+     */
+    var eventHandler = function (element, type, listener) {
+        removeEventListeners;
+        var eventHandlerObj = {
+            element: element,
+            remove: function () {
+                element.removeEventListener(type, listener, cUseCapture);
+            }
+        };
+        element.addEventListener(type, listener, cUseCapture);
+        return eventHandlerObj;
+    };
+    /**
      * Function to find and apply the appropriate breakpoint settings based on the viewport
      *
      * @param core - Carouzel instance core object
      *
      */
     var applyLayout = function (core) {
+        var _a;
         var viewportWidth = window === null || window === void 0 ? void 0 : window.innerWidth;
         var bpoptions = core.bpall[0];
         var len = 0;
@@ -232,7 +301,11 @@ var AMegMen;
             }
             len++;
         }
-        console.log('=========bpoptions', bpoptions);
+        if ((core.bpoOld || {}).bp !== bpoptions.bp) {
+            core.bpo = bpoptions;
+            core.bpoOld = bpoptions;
+            (_a = core.root) === null || _a === void 0 ? void 0 : _a.setAttribute("data-amegmen-viewport", bpoptions.ly);
+        }
     };
     /**
      * Function to validate all breakpoints to check duplicates
@@ -359,6 +432,30 @@ var AMegMen;
         }
         return settingsobj;
     };
+    var gatherElements = function (core) {
+        var _a, _b, _c, _d;
+        core.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
+        core.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
+        core.nav = (_c = core.root) === null || _c === void 0 ? void 0 : _c.querySelector(cSelectors.nav);
+        core.toggle = (_d = core.root) === null || _d === void 0 ? void 0 : _d.querySelector(cSelectors.toggle);
+    };
+    var addEvents = function (core) {
+        if (core.toggle) {
+            core.eH.push(eventHandler(core.toggle, "click", function () {
+                if (core.mask && core.main && core.toggle) {
+                    hasClass(core.toggle, 'active')
+                        ? removeClass(core.toggle, 'active')
+                        : addClass(core.toggle, 'active');
+                    hasClass(core.mask, 'active')
+                        ? removeClass(core.mask, 'active')
+                        : addClass(core.mask, 'active');
+                    hasClass(core.main, 'active')
+                        ? removeClass(core.main, 'active')
+                        : addClass(core.main, 'active');
+                }
+            }));
+        }
+    };
     /**
      * Function to initialize the carouzel core object and assign respective events
      *
@@ -374,7 +471,10 @@ var AMegMen;
         cCore.root = root;
         cCore.o = mapSettings(settings);
         cCore.bpall = updateBreakpoints(cCore.o);
+        cCore.eH = [];
         if (cCore.bpall.length > 0) {
+            gatherElements(cCore);
+            addEvents(cCore);
             applyLayout(cCore);
         }
         return cCore;

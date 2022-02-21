@@ -34,13 +34,14 @@ $timeInMilliseconds: 250ms;
   &.__amegmen-editmode {
     background-color: inherit;
   }
-
   @import './breakpoints/default';
-
-  &.__amegmen-medium {
-    @import './breakpoints/medium';
-  }
-  &.__amegmen-large {
-    @import './breakpoints/large';
-  }
+}
+[data-amegmen-viewport='small'] {
+  @import './breakpoints/small';
+}
+[data-amegmen-viewport='medium'] {
+  @import './breakpoints/medium';
+}
+[data-amegmen-viewport='large'] {
+  @import './breakpoints/large';
 }

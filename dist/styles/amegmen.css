@@ -39,7 +39,8 @@
   visibility: hidden;
   position: absolute;
 }
-[data-amegmen].__amegmen-large [data-amegmen-ul0] {
+
+[data-amegmen-viewport=large] [data-amegmen-ul0] {
   display: flex;
   flex-wrap: nowrap;
 }

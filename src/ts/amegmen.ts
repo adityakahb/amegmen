@@ -1,7 +1,7 @@
 namespace AMegMen {
-  interface IRoot {
-    [key: string]: any;
-  }
+  // interface IRoot {
+  //   [key: string]: any;
+  // }
 
   // interface IDevice {
   //   bp: number;
@@ -78,12 +78,22 @@ namespace AMegMen {
     bpall: ICoreBreakpoint[];
     bpo: ICoreBreakpoint;
     bpoOld: ICoreBreakpoint;
+    eH: any[];
+    main: HTMLElement | null | undefined;
+    mask: HTMLElement | null | undefined;
+    nav: HTMLElement | null | undefined;
     o: ICoreSettings;
-    root: IRoot;
+    root: HTMLElement | null | undefined;
+    toggle: HTMLElement | null | undefined;
   }
 
   interface ICoreInstance {
     [key: string]: ICore;
+  }
+
+  interface IEventHandler {
+    element: Element | Document | Window;
+    remove: () => void;
   }
 
   /*
@@ -119,7 +129,7 @@ namespace AMegMen {
     easeOutQuint: (t: number) => 1 + --t * t * t * t * t,
     // acceleration until halfway, then deceleration
     easeInOutQuint: (t: number) =>
-      t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t
+      t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
     // elastic bounce effect at the beginning
     // easeInElastic: (t: number) => (0.04 - 0.04 / t) * Math.sin(25 * t) + 1,
     // elastic bounce effect at the end
@@ -161,11 +171,15 @@ namespace AMegMen {
   ).join(`, `)}]. Setting the easing function to ${
     Object.keys(cEasingFunctions)[0]
   }.`;
-  // const cUseCapture = false;
+  const cUseCapture = false;
   const cSelectors = {
+    main: `[data-amegmen-main]`,
+    mask: `[data-amegmen-mask]`,
+    nav: `[data-amegmen-nav]`,
     root: `[data-amegmen]`,
     rootAuto: `[data-amegmen-auto]`,
-    rtl: `[data-amegmen-rtl]`
+    rtl: `[data-amegmen-rtl]`,
+    toggle: `[data-amegmen-toggle]`,
   };
   const cDefaults: ISettings = {
     activeClass: `__amegmen-active`,
@@ -181,13 +195,73 @@ namespace AMegMen {
     isRtl: false,
     l1Cols: 3,
     layout: 'mobile',
-    touchThreshold: 125
+    touchThreshold: 125,
   };
   const allLocalInstances: ICoreInstance = {};
   let iloop = 0;
   let jloop = 0;
   let windowResizeAny: any;
   let isWindowEventAttached = false;
+
+  const visible = (element: HTMLElement) => {
+    let visibility = element.style.visibility;
+    while (visibility === 'inherit') {
+      element = element.parentNode as HTMLElement;
+      visibility = element.style.visibility;
+    }
+    return visibility === 'visible';
+  };
+
+  const focusable = (element: Element, hasTabindex?: boolean) => {
+    let map;
+    let mapName;
+    let img;
+    let focusableIfVisible;
+    let fieldset;
+    let nodeName = element.nodeName.toLowerCase();
+    if (!hasTabindex) {
+      hasTabindex = element.getAttribute(`tabindex`) !== null;
+    }
+
+    if ('area' === nodeName) {
+      map = element.parentNode;
+      mapName = map.name;
+      if (!element.href || !mapName || map.nodeName.toLowerCase() !== 'map') {
+        return false;
+      }
+      img = $("img[usemap='#" + mapName + "']");
+      return img.length > 0 && img.is(':visible');
+    }
+
+    if (/^(input|select|textarea|button|object)$/.test(nodeName)) {
+      focusableIfVisible = !element.disabled;
+
+      if (focusableIfVisible) {
+        // Form controls within a disabled fieldset are disabled.
+        // However, controls within the fieldset's legend do not get disabled.
+        // Since controls generally aren't placed inside legends, we skip
+        // this portion of the check.
+        fieldset = $(element).closest('fieldset')[0];
+        if (fieldset) {
+          focusableIfVisible = !fieldset.disabled;
+        }
+      }
+    } else if ('a' === nodeName) {
+      focusableIfVisible = element.href || hasTabindex;
+    } else {
+      focusableIfVisible = hasTabindex;
+    }
+
+    return (
+      focusableIfVisible && $(element).is(':visible') && visible($(element))
+    );
+  };
+
+  const tabbable = (element: Element) => {
+    const tabIndex = parseInt(element.getAttribute(`tabindex`) || '', 10);
+    const hasTabindex = tabIndex !== null;
+    return (!hasTabindex || tabIndex >= 0) && focusable(element, hasTabindex);
+  };
 
   /**
    * Function to trim whitespaces from a string
@@ -205,7 +279,6 @@ namespace AMegMen {
    * Function to check wheather an element has a string in its class attribute
    *
    * @param element - An HTML Element
-   * @param cls - A string
    *
    * @returns `true` if the string exists in class attribute, otherwise `false`
    *
@@ -301,6 +374,55 @@ namespace AMegMen {
   };
 
   /**
+   * Function to remove all local events assigned to the navigation elements.
+   *
+   * @param core - Carouzel instance core object
+   * @param element - An HTML Element from which the events need to be removed
+   *
+   */
+  const removeEventListeners = (
+    core: any,
+    element: Element | Document | Window
+  ) => {
+    let j = core.eH.length;
+    while (j--) {
+      if (
+        core.eH[j].element.isEqualNode &&
+        core.eH[j].element.isEqualNode(element)
+      ) {
+        core.eH[j].remove();
+        core.eH.splice(j, 1);
+      }
+    }
+  };
+
+  /**
+   * Function to remove all local events assigned to the navigation elements.
+   *
+   * @param element - An HTML Element which needs to be assigned an event
+   * @param type - Event type
+   * @param listener - The Event handler function
+   *
+   * @returns The event handler object
+   *
+   */
+  const eventHandler = (
+    element: Element | Document | Window,
+    type: string,
+    listener: EventListenerOrEventListenerObject
+  ) => {
+    removeEventListeners;
+    const eventHandlerObj: IEventHandler = {
+      element,
+      remove: () => {
+        element.removeEventListener(type, listener, cUseCapture);
+      },
+    };
+    element.addEventListener(type, listener, cUseCapture);
+    return eventHandlerObj;
+  };
+
+  /**
    * Function to find and apply the appropriate breakpoint settings based on the viewport
    *
    * @param core - Carouzel instance core object
@@ -321,7 +443,11 @@ namespace AMegMen {
       }
       len++;
     }
-    console.log('=========bpoptions', bpoptions);
+    if ((core.bpoOld || {}).bp !== bpoptions.bp) {
+      core.bpo = bpoptions;
+      core.bpoOld = bpoptions;
+      core.root?.setAttribute(`data-amegmen-viewport`, bpoptions.ly);
+    }
   };
 
   /**
@@ -344,7 +470,7 @@ namespace AMegMen {
           val: true,
           bp: breakpoints.sort(
             (a, b) => parseFloat(`${a.bp}`) - parseFloat(`${b.bp}`)
-          )
+          ),
         };
       } else {
         // throw new TypeError(cDuplicateBreakpointsTypeError);
@@ -368,7 +494,7 @@ namespace AMegMen {
     const defaultBreakpoint: ICoreBreakpoint = {
       hov: settings.hov,
       ly: settings.ly,
-      bp: 0
+      bp: 0,
     };
     const tempArr = [];
     if (settings.res && settings.res.length > 0) {
@@ -436,7 +562,7 @@ namespace AMegMen {
         }
         console.warn(cNoEasingFoundError);
         return Object.keys(cEasingFunctions)[0];
-      })()
+      })(),
     };
 
     if (settings.breakpoints && settings.breakpoints.length > 0) {
@@ -444,7 +570,7 @@ namespace AMegMen {
         const obj: ICoreBreakpoint = {
           bp: settings.breakpoints[i].minWidth,
           hov: settings.breakpoints[i].actOnHover,
-          ly: settings.breakpoints[i].layout
+          ly: settings.breakpoints[i].layout,
         };
         if (settingsobj.res) {
           settingsobj.res.push(obj);
@@ -452,6 +578,33 @@ namespace AMegMen {
       }
     }
     return settingsobj;
+  };
+
+  const gatherElements = (core: ICore) => {
+    core.main = core.root?.querySelector(cSelectors.main);
+    core.mask = core.root?.querySelector(cSelectors.mask);
+    core.nav = core.root?.querySelector(cSelectors.nav);
+    core.toggle = core.root?.querySelector(cSelectors.toggle);
+  };
+
+  const addEvents = (core: ICore) => {
+    if (core.toggle) {
+      core.eH.push(
+        eventHandler(core.toggle, `click`, () => {
+          if (core.mask && core.main && core.toggle) {
+            hasClass(core.toggle, 'active')
+              ? removeClass(core.toggle, 'active')
+              : addClass(core.toggle, 'active');
+            hasClass(core.mask, 'active')
+              ? removeClass(core.mask, 'active')
+              : addClass(core.mask, 'active');
+            hasClass(core.main, 'active')
+              ? removeClass(core.main, 'active')
+              : addClass(core.main, 'active');
+          }
+        })
+      );
+    }
   };
 
   /**
@@ -470,7 +623,10 @@ namespace AMegMen {
     cCore.root = root;
     cCore.o = mapSettings(settings);
     cCore.bpall = updateBreakpoints(cCore.o);
+    cCore.eH = [];
     if (cCore.bpall.length > 0) {
+      gatherElements(cCore);
+      addEvents(cCore);
       applyLayout(cCore);
     }
     return cCore;
