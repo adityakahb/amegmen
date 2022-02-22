@@ -15,7 +15,6 @@ var AMegMen;
     // interface IRoot {
     //   [key: string]: any;
     // }
-    var _this = this;
     /*
      * Easing Functions - inspired from http://gizma.com/easing/
      * only considering the t value for the range [0, 1] => [0, 1]
@@ -53,6 +52,15 @@ var AMegMen;
         easeInOutQuint: function (t) {
             return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
         }
+        // elastic bounce effect at the beginning
+        // easeInElastic: (t: number) => (0.04 - 0.04 / t) * Math.sin(25 * t) + 1,
+        // elastic bounce effect at the end
+        // easeOutElastic: (t: number) => ((0.04 * t) / --t) * Math.sin(25 * t),
+        // elastic bounce effect at the beginning and end
+        // easeInOutElastic: (t: number) =>
+        //   (t -= 0.5) < 0
+        //     ? (0.02 + 0.01 / t) * Math.sin(50 * t)
+        //     : (0.02 - 0.01 / t) * Math.sin(50 * t) + 1,
     };
     // const cDevices: IDevice[] = [
     //   {
@@ -105,42 +113,28 @@ var AMegMen;
         layout: 'mobile',
         touchThreshold: 125
     };
+    var cFocusables = (function () {
+        var str = '';
+        var arr = [
+            'a',
+            'button',
+            'input',
+            'textarea',
+            'select',
+            'details',
+            '[tabindex]',
+            '[contenteditable="true"]'
+        ];
+        for (var i = arr.length - 1; i >= 0; i--) {
+            str += "".concat(arr[i], ":not([tabindex^=\"-\"]),");
+        }
+        return str.slice(0, -1);
+    })();
     var allLocalInstances = {};
     var iloop = 0;
     var jloop = 0;
     var windowResizeAny;
     var isWindowEventAttached = false;
-    var visible = function (element) {
-        return ($.expr.filters.visible(element) &&
-            !$(element)
-                .parents()
-                .addBack()
-                .filter(function () {
-                return $.css(_this, 'visibility') === 'hidden';
-            }).length);
-    };
-    var focusable = function (element) {
-        var map;
-        var mapName;
-        var img;
-        var nodeName = element.nodeName.toLowerCase();
-        if ('area' === nodeName) {
-            map = element.parentNode;
-            mapName = map.name;
-            if (!element.href || !mapName || map.nodeName.toLowerCase() !== 'map') {
-                return false;
-            }
-            img = $('img[usemap=#' + mapName + ']')[0];
-            return !!img && visible(img);
-        }
-        return ((/input|select|textarea|button|object/.test(nodeName)
-            ? !element.disabled
-            : 'a' === nodeName
-                ? element.href || isTabIndexNotNaN
-                : isTabIndexNotNaN) &&
-            // the element and all of its ancestors must be visible
-            visible(element));
-    };
     /**
      * Function to trim whitespaces from a string
      *
@@ -156,7 +150,6 @@ var AMegMen;
      * Function to check wheather an element has a string in its class attribute
      *
      * @param element - An HTML Element
-     * @param cls - A string
      *
      * @returns `true` if the string exists in class attribute, otherwise `false`
      *
@@ -209,6 +202,46 @@ var AMegMen;
             }
             element.className = stringTrim(curclass.join(" "));
         }
+    };
+    var isElement = function (obj) {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+        if (typeof obj.jquery !== 'undefined') {
+            obj = obj[0];
+        }
+        return typeof obj.nodeType !== 'undefined';
+    };
+    var isVisible = function (element) {
+        if (!isElement(element) || element.getClientRects().length === 0) {
+            return false;
+        }
+        return (getComputedStyle(element).getPropertyValue('visibility') === 'visible');
+    };
+    var isDisabled = function (element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+            return true;
+        }
+        if (hasClass(element, 'disabled')) {
+            return true;
+        }
+        if (typeof element.disabled !== 'undefined') {
+            return element.disabled;
+        }
+        return (element.hasAttribute('disabled') &&
+            element.getAttribute('disabled') !== 'false');
+    };
+    var getFocusableElements = function (core) {
+        var _a;
+        core.focusables = [];
+        isVisible;
+        var arr = ((_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelectorAll(cFocusables)) || [];
+        for (iloop = 0; iloop < (arr === null || arr === void 0 ? void 0 : arr.length); iloop++) {
+            if (!isDisabled(arr[iloop])) {
+                core.focusables.push(arr[iloop]);
+            }
+        }
+        console.log('=======core.focusables', core.focusables);
     };
     /**
      * Function to fix the decimal places to 4
@@ -434,6 +467,7 @@ var AMegMen;
     };
     var gatherElements = function (core) {
         var _a, _b, _c, _d;
+        getFocusableElements(core);
         core.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
         core.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
         core.nav = (_c = core.root) === null || _c === void 0 ? void 0 : _c.querySelector(cSelectors.nav);

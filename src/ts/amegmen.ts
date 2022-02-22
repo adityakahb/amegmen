@@ -85,6 +85,7 @@ namespace AMegMen {
     o: ICoreSettings;
     root: HTMLElement | null | undefined;
     toggle: HTMLElement | null | undefined;
+    focusables: HTMLElement[];
   }
 
   interface ICoreInstance {
@@ -129,7 +130,7 @@ namespace AMegMen {
     easeOutQuint: (t: number) => 1 + --t * t * t * t * t,
     // acceleration until halfway, then deceleration
     easeInOutQuint: (t: number) =>
-      t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
+      t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t
     // elastic bounce effect at the beginning
     // easeInElastic: (t: number) => (0.04 - 0.04 / t) * Math.sin(25 * t) + 1,
     // elastic bounce effect at the end
@@ -179,7 +180,7 @@ namespace AMegMen {
     root: `[data-amegmen]`,
     rootAuto: `[data-amegmen-auto]`,
     rtl: `[data-amegmen-rtl]`,
-    toggle: `[data-amegmen-toggle]`,
+    toggle: `[data-amegmen-toggle]`
   };
   const cDefaults: ISettings = {
     activeClass: `__amegmen-active`,
@@ -195,9 +196,28 @@ namespace AMegMen {
     isRtl: false,
     l1Cols: 3,
     layout: 'mobile',
-    touchThreshold: 125,
+    touchThreshold: 125
   };
+  const cFocusables = (() => {
+    let str = '';
+    const arr = [
+      'a',
+      'button',
+      'input',
+      'textarea',
+      'select',
+      'details',
+      '[tabindex]',
+      '[contenteditable="true"]'
+    ];
+    for (let i = arr.length - 1; i >= 0; i--) {
+      str += `${arr[i]}:not([tabindex^="-"]),`;
+    }
+    return str.slice(0, -1);
+  })();
+
   const allLocalInstances: ICoreInstance = {};
+
   let iloop = 0;
   let jloop = 0;
   let windowResizeAny: any;
@@ -274,6 +294,54 @@ namespace AMegMen {
       }
       element.className = stringTrim(curclass.join(` `));
     }
+  };
+
+  const isElement = (obj: any) => {
+    if (!obj || typeof obj !== 'object') {
+      return false;
+    }
+    if (typeof obj.jquery !== 'undefined') {
+      obj = obj[0];
+    }
+    return typeof obj.nodeType !== 'undefined';
+  };
+
+  const isVisible = (element: Element) => {
+    if (!isElement(element) || element.getClientRects().length === 0) {
+      return false;
+    }
+    return (
+      getComputedStyle(element).getPropertyValue('visibility') === 'visible'
+    );
+  };
+
+  const isDisabled = (element: Element) => {
+    if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+      return true;
+    }
+    if (hasClass(element as HTMLElement, 'disabled')) {
+      return true;
+    }
+    if (typeof (element as any).disabled !== 'undefined') {
+      return (element as any).disabled;
+    }
+
+    return (
+      element.hasAttribute('disabled') &&
+      element.getAttribute('disabled') !== 'false'
+    );
+  };
+
+  const getFocusableElements = (core: ICore) => {
+    core.focusables = [] as HTMLElement[];
+    isVisible;
+    const arr = core.root?.querySelectorAll(cFocusables) || [];
+    for (iloop = 0; iloop < arr?.length; iloop++) {
+      if (!isDisabled(arr[iloop])) {
+        core.focusables.push(arr[iloop] as HTMLElement);
+      }
+    }
+    console.log('=======core.focusables', core.focusables);
   };
 
   /**
@@ -356,7 +424,7 @@ namespace AMegMen {
       element,
       remove: () => {
         element.removeEventListener(type, listener, cUseCapture);
-      },
+      }
     };
     element.addEventListener(type, listener, cUseCapture);
     return eventHandlerObj;
@@ -410,7 +478,7 @@ namespace AMegMen {
           val: true,
           bp: breakpoints.sort(
             (a, b) => parseFloat(`${a.bp}`) - parseFloat(`${b.bp}`)
-          ),
+          )
         };
       } else {
         // throw new TypeError(cDuplicateBreakpointsTypeError);
@@ -434,7 +502,7 @@ namespace AMegMen {
     const defaultBreakpoint: ICoreBreakpoint = {
       hov: settings.hov,
       ly: settings.ly,
-      bp: 0,
+      bp: 0
     };
     const tempArr = [];
     if (settings.res && settings.res.length > 0) {
@@ -502,7 +570,7 @@ namespace AMegMen {
         }
         console.warn(cNoEasingFoundError);
         return Object.keys(cEasingFunctions)[0];
-      })(),
+      })()
     };
 
     if (settings.breakpoints && settings.breakpoints.length > 0) {
@@ -510,7 +578,7 @@ namespace AMegMen {
         const obj: ICoreBreakpoint = {
           bp: settings.breakpoints[i].minWidth,
           hov: settings.breakpoints[i].actOnHover,
-          ly: settings.breakpoints[i].layout,
+          ly: settings.breakpoints[i].layout
         };
         if (settingsobj.res) {
           settingsobj.res.push(obj);
@@ -521,6 +589,7 @@ namespace AMegMen {
   };
 
   const gatherElements = (core: ICore) => {
+    getFocusableElements(core);
     core.main = core.root?.querySelector(cSelectors.main);
     core.mask = core.root?.querySelector(cSelectors.mask);
     core.nav = core.root?.querySelector(cSelectors.nav);
@@ -558,7 +627,6 @@ namespace AMegMen {
     if (typeof settings.beforeInitFn === `function`) {
       settings.beforeInitFn();
     }
-
     const cCore = {} as ICore;
     cCore.root = root;
     cCore.o = mapSettings(settings);
