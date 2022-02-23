@@ -31,13 +31,14 @@ let str = `<div data-amegmen data-amegmen-auto="{
     </div>
     <nav data-amegmen-nav>
       <div>
-        <ul data-amegmen-ul0>`;
+        <ul data-amegmen-level="0">`;
 
 for (let i = 0; i < l0count; i++) {
   str += `<li><a href="#">L0-${i}</a>`;
-  str += `<div data-amegmen-subnavwrap><div><div>`;
+  str += `<div data-amegmen-subnav><div data-amegmen-grid><div data-amegmen-row>`;
+  str += `<div data-amegmen-col data-amegmen-landing><a href="#">Landing - ${i}</a></div>`;
   for (let j = 0; j < l1cols; j++) {
-    str += `<div><ul>`;
+    str += `<div data-amegmen-col><ul data-amegmen-level="1">`;
     for (let k = 0; k < l1count; k++) {
       str += `<li><a href="#">L1-${i}.${j}.${k}</a>`;
       str += '</li>';

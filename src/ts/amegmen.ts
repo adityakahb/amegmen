@@ -73,19 +73,102 @@ namespace AMegMen {
     total: number;
   }
 
+  interface Il4li {
+    el: Element | null | undefined;
+    itm: Element | null | undefined;
+  }
+
+  interface Il4ul {
+    el: Element | null | undefined;
+    li: Il4li[];
+  }
+
+  interface Il3Subnav {
+    el: Element | null | undefined;
+    lan: Element | null | undefined;
+    ul: Il4ul[];
+  }
+
+  interface Il3li {
+    el: Element | null | undefined;
+    itm: Element | null | undefined;
+    sub: Il3Subnav;
+  }
+
+  interface Il3ul {
+    el: Element | null | undefined;
+    li: Il3li[];
+  }
+
+  interface Il2Subnav {
+    el: Element | null | undefined;
+    lan: Element | null | undefined;
+    ul: Il3ul[];
+  }
+
+  interface Il2li {
+    el: Element | null | undefined;
+    itm: Element | null | undefined;
+    sub: Il2Subnav;
+  }
+
+  interface Il2ul {
+    el: Element | null | undefined;
+    li: Il2li[];
+  }
+
+  interface Il1Subnav {
+    el: Element | null | undefined;
+    lan: Element | null | undefined;
+    ul: Il2ul[];
+  }
+
+  interface Il1li {
+    el: Element | null | undefined;
+    itm: Element | null | undefined;
+    sub: Il1Subnav;
+  }
+
+  interface Il1ul {
+    el: Element | null | undefined;
+    li: Il1li[];
+  }
+
+  interface Il0Subnav {
+    el: Element | null | undefined;
+    lan: Element | null | undefined;
+    ul: Il1ul[];
+  }
+
+  interface Il0li {
+    el: Element | null | undefined;
+    itm: Element | null | undefined;
+    sub: Il0Subnav;
+  }
+
+  interface Il0ul {
+    el: Element | null | undefined;
+    li: Il0li[];
+  }
+
+  interface IDom {
+    root: Element | null | undefined;
+    toggle: Element | null | undefined;
+    main: Element | null | undefined;
+    mask: Element | null | undefined;
+    nav: Element | null | undefined;
+    l0ul: Il0ul;
+  }
+
   interface ICore {
     _t: ITimer;
     bpall: ICoreBreakpoint[];
     bpo: ICoreBreakpoint;
     bpoOld: ICoreBreakpoint;
     eH: any[];
-    main: HTMLElement | null | undefined;
-    mask: HTMLElement | null | undefined;
-    nav: HTMLElement | null | undefined;
     o: ICoreSettings;
-    root: HTMLElement | null | undefined;
-    toggle: HTMLElement | null | undefined;
-    focusables: HTMLElement[];
+    root: Element | null | undefined;
+    dom: IDom;
   }
 
   interface ICoreInstance {
@@ -180,7 +263,18 @@ namespace AMegMen {
     root: `[data-amegmen]`,
     rootAuto: `[data-amegmen-auto]`,
     rtl: `[data-amegmen-rtl]`,
-    toggle: `[data-amegmen-toggle]`
+    toggle: `[data-amegmen-toggle]`,
+    l0ul: `[data-amegmen-level='0']`,
+    l0li: `[data-amegmen-level='0'] > li`,
+    l0sub: `[data-amegmen-subnav='0']`,
+    l1ul: `[data-amegmen-level='1']`,
+    l1li: `[data-amegmen-level='1'] > li`,
+    l1sub: `[data-amegmen-subnav='1']`,
+    l2ul: `[data-amegmen-level='2']`,
+    l2li: `[data-amegmen-level='2'] > li`,
+    l2sub: `[data-amegmen-subnav='2']`,
+    l3ul: `[data-amegmen-level='3']`,
+    l3li: `[data-amegmen-level='3'] > li`
   };
   const cDefaults: ISettings = {
     activeClass: `__amegmen-active`,
@@ -198,28 +292,13 @@ namespace AMegMen {
     layout: 'mobile',
     touchThreshold: 125
   };
-  const cFocusables = (() => {
-    let str = '';
-    const arr = [
-      'a',
-      'button',
-      'input',
-      'textarea',
-      'select',
-      'details',
-      '[tabindex]',
-      '[contenteditable="true"]'
-    ];
-    for (let i = arr.length - 1; i >= 0; i--) {
-      str += `${arr[i]}:not([tabindex^="-"]),`;
-    }
-    return str.slice(0, -1);
-  })();
 
   const allLocalInstances: ICoreInstance = {};
 
   let iloop = 0;
   let jloop = 0;
+  // let kloop = 0;
+  // let lloop = 0;
   let windowResizeAny: any;
   let isWindowEventAttached = false;
 
@@ -243,7 +322,7 @@ namespace AMegMen {
    * @returns `true` if the string exists in class attribute, otherwise `false`
    *
    */
-  const hasClass = (element: HTMLElement, cls: string) => {
+  const hasClass = (element: Element, cls: string) => {
     if (typeof element?.className === `string`) {
       const clsarr = element.className.split(` `);
       return clsarr.indexOf(cls) > -1 ? true : false;
@@ -259,7 +338,7 @@ namespace AMegMen {
    * @param cls - A string
    *
    */
-  const addClass = (element: HTMLElement, cls: string) => {
+  const addClass = (element: Element, cls: string) => {
     if (typeof element?.className === `string`) {
       const clsarr = cls.split(` `);
       const clsarrLength = clsarr.length;
@@ -280,7 +359,7 @@ namespace AMegMen {
    * @param cls - A string
    *
    */
-  const removeClass = (element: HTMLElement, cls: string) => {
+  const removeClass = (element: Element, cls: string) => {
     if (typeof element?.className === `string`) {
       const clsarr = cls.split(` `);
       const curclass = element.className.split(` `);
@@ -294,54 +373,6 @@ namespace AMegMen {
       }
       element.className = stringTrim(curclass.join(` `));
     }
-  };
-
-  const isElement = (obj: any) => {
-    if (!obj || typeof obj !== 'object') {
-      return false;
-    }
-    if (typeof obj.jquery !== 'undefined') {
-      obj = obj[0];
-    }
-    return typeof obj.nodeType !== 'undefined';
-  };
-
-  const isVisible = (element: Element) => {
-    if (!isElement(element) || element.getClientRects().length === 0) {
-      return false;
-    }
-    return (
-      getComputedStyle(element).getPropertyValue('visibility') === 'visible'
-    );
-  };
-
-  const isDisabled = (element: Element) => {
-    if (!element || element.nodeType !== Node.ELEMENT_NODE) {
-      return true;
-    }
-    if (hasClass(element as HTMLElement, 'disabled')) {
-      return true;
-    }
-    if (typeof (element as any).disabled !== 'undefined') {
-      return (element as any).disabled;
-    }
-
-    return (
-      element.hasAttribute('disabled') &&
-      element.getAttribute('disabled') !== 'false'
-    );
-  };
-
-  const getFocusableElements = (core: ICore) => {
-    core.focusables = [] as HTMLElement[];
-    isVisible;
-    const arr = core.root?.querySelectorAll(cFocusables) || [];
-    for (iloop = 0; iloop < arr?.length; iloop++) {
-      if (!isDisabled(arr[iloop])) {
-        core.focusables.push(arr[iloop] as HTMLElement);
-      }
-    }
-    console.log('=======core.focusables', core.focusables);
   };
 
   /**
@@ -588,28 +619,121 @@ namespace AMegMen {
     return settingsobj;
   };
 
+  const isElement = (obj: any) => {
+    if (!obj || typeof obj !== 'object') {
+      return false;
+    }
+    if (typeof obj.jquery !== 'undefined') {
+      obj = obj[0];
+    }
+    return typeof obj.nodeType !== 'undefined';
+  };
+
+  const isVisible = (element: Element) => {
+    if (!isElement(element) || element.getClientRects().length === 0) {
+      return false;
+    }
+    return (
+      getComputedStyle(element).getPropertyValue('visibility') === 'visible'
+    );
+  };
+
+  const isDisabled = (element: Element) => {
+    if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+      return true;
+    }
+    if (hasClass(element as HTMLElement, 'disabled')) {
+      return true;
+    }
+    if (typeof (element as any).disabled !== 'undefined') {
+      return (element as any).disabled;
+    }
+
+    return (
+      element.hasAttribute('disabled') &&
+      element.getAttribute('disabled') !== 'false'
+    );
+  };
+
+  const getFocusableElement = (selector: string) => {
+    let str = '';
+    const arr = [
+      'a',
+      'button',
+      'input',
+      'textarea',
+      'select',
+      'details',
+      '[tabindex]',
+      '[contenteditable="true"]'
+    ];
+    for (let i = arr.length - 1; i >= 0; i--) {
+      str += `${selector} > ${arr[i]}:not([tabindex^="-"]),`;
+    }
+    return str.slice(0, -1);
+  };
+
+  const getFocusableElements = (core: ICore) => {
+    core;
+    getFocusableElement;
+    isVisible;
+    isDisabled;
+    // core.focusables = [] as HTMLElement[];
+    // isVisible;
+    // const arr = core.root?.querySelectorAll(cFocusables) || [];
+    // for (iloop = 0; iloop < arr?.length; iloop++) {
+    //   if (!isDisabled(arr[iloop])) {
+    //     core.focusables.push(arr[iloop] as HTMLElement);
+    //   }
+    // }
+    // console.log('=======core.focusables', core.focusables);
+  };
+
   const gatherElements = (core: ICore) => {
-    getFocusableElements(core);
-    core.main = core.root?.querySelector(cSelectors.main);
-    core.mask = core.root?.querySelector(cSelectors.mask);
-    core.nav = core.root?.querySelector(cSelectors.nav);
-    core.toggle = core.root?.querySelector(cSelectors.toggle);
+    // getFocusableElements(core);
+    getFocusableElements;
+    core.dom = {} as IDom;
+    core.dom.main = core.root?.querySelector(cSelectors.main);
+    core.dom.mask = core.root?.querySelector(cSelectors.mask);
+    core.dom.nav = core.root?.querySelector(cSelectors.nav);
+    core.dom.root = core.root;
+    core.dom.toggle = core.root?.querySelector(cSelectors.toggle);
+
+    const l0ul = core.root?.querySelector(cSelectors.l0ul);
+    if (l0ul) {
+      core.dom.l0ul = {} as Il0ul;
+      core.dom.l0ul.el = l0ul as Element;
+      core.dom.l0ul.li = [] as Il0li[];
+      const l0li = core.root?.querySelectorAll(cSelectors.l0li);
+      if (l0li && (l0li || []).length > 0) {
+        for (iloop = 0; iloop < l0li?.length; iloop++) {
+          const l0liObj = {} as Il0li;
+          l0liObj.el = l0li[iloop] as Element;
+          console.log(
+            '=========tabbable',
+            core.root?.querySelector(getFocusableElement(cSelectors.l0li))
+          );
+          core.dom.l0ul.li.push(l0liObj);
+        }
+      }
+    }
+    console.log('==========core.dom', core.dom);
   };
 
   const addEvents = (core: ICore) => {
-    if (core.toggle) {
+    if (core.dom.toggle) {
       core.eH.push(
-        eventHandler(core.toggle, `click`, () => {
-          if (core.mask && core.main && core.toggle) {
-            hasClass(core.toggle, 'active')
-              ? removeClass(core.toggle, 'active')
-              : addClass(core.toggle, 'active');
-            hasClass(core.mask, 'active')
-              ? removeClass(core.mask, 'active')
-              : addClass(core.mask, 'active');
-            hasClass(core.main, 'active')
-              ? removeClass(core.main, 'active')
-              : addClass(core.main, 'active');
+        eventHandler(core.dom.toggle, `click`, () => {
+          if (core.dom.mask && core.dom.main && core.dom.toggle) {
+            hasClass(core.dom.toggle, 'active')
+              ? removeClass(core.dom.toggle, 'active')
+              : addClass(core.dom.toggle, 'active');
+            hasClass(core.dom.mask, 'active')
+              ? removeClass(core.dom.mask, 'active')
+              : addClass(core.dom.mask, 'active');
+            hasClass(core.dom.main, 'active')
+              ? removeClass(core.dom.main, 'active')
+              : addClass(core.dom.main, 'active');
           }
         })
       );

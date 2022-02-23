@@ -95,7 +95,18 @@ var AMegMen;
         root: "[data-amegmen]",
         rootAuto: "[data-amegmen-auto]",
         rtl: "[data-amegmen-rtl]",
-        toggle: "[data-amegmen-toggle]"
+        toggle: "[data-amegmen-toggle]",
+        l0ul: "[data-amegmen-level='0']",
+        l0li: "[data-amegmen-level='0'] > li",
+        l0sub: "[data-amegmen-subnav='0']",
+        l1ul: "[data-amegmen-level='1']",
+        l1li: "[data-amegmen-level='1'] > li",
+        l1sub: "[data-amegmen-subnav='1']",
+        l2ul: "[data-amegmen-level='2']",
+        l2li: "[data-amegmen-level='2'] > li",
+        l2sub: "[data-amegmen-subnav='2']",
+        l3ul: "[data-amegmen-level='3']",
+        l3li: "[data-amegmen-level='3'] > li"
     };
     var cDefaults = {
         activeClass: "__amegmen-active",
@@ -113,26 +124,11 @@ var AMegMen;
         layout: 'mobile',
         touchThreshold: 125
     };
-    var cFocusables = (function () {
-        var str = '';
-        var arr = [
-            'a',
-            'button',
-            'input',
-            'textarea',
-            'select',
-            'details',
-            '[tabindex]',
-            '[contenteditable="true"]'
-        ];
-        for (var i = arr.length - 1; i >= 0; i--) {
-            str += "".concat(arr[i], ":not([tabindex^=\"-\"]),");
-        }
-        return str.slice(0, -1);
-    })();
     var allLocalInstances = {};
     var iloop = 0;
     var jloop = 0;
+    // let kloop = 0;
+    // let lloop = 0;
     var windowResizeAny;
     var isWindowEventAttached = false;
     /**
@@ -202,46 +198,6 @@ var AMegMen;
             }
             element.className = stringTrim(curclass.join(" "));
         }
-    };
-    var isElement = function (obj) {
-        if (!obj || typeof obj !== 'object') {
-            return false;
-        }
-        if (typeof obj.jquery !== 'undefined') {
-            obj = obj[0];
-        }
-        return typeof obj.nodeType !== 'undefined';
-    };
-    var isVisible = function (element) {
-        if (!isElement(element) || element.getClientRects().length === 0) {
-            return false;
-        }
-        return (getComputedStyle(element).getPropertyValue('visibility') === 'visible');
-    };
-    var isDisabled = function (element) {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
-            return true;
-        }
-        if (hasClass(element, 'disabled')) {
-            return true;
-        }
-        if (typeof element.disabled !== 'undefined') {
-            return element.disabled;
-        }
-        return (element.hasAttribute('disabled') &&
-            element.getAttribute('disabled') !== 'false');
-    };
-    var getFocusableElements = function (core) {
-        var _a;
-        core.focusables = [];
-        isVisible;
-        var arr = ((_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelectorAll(cFocusables)) || [];
-        for (iloop = 0; iloop < (arr === null || arr === void 0 ? void 0 : arr.length); iloop++) {
-            if (!isDisabled(arr[iloop])) {
-                core.focusables.push(arr[iloop]);
-            }
-        }
-        console.log('=======core.focusables', core.focusables);
     };
     /**
      * Function to fix the decimal places to 4
@@ -465,27 +421,106 @@ var AMegMen;
         }
         return settingsobj;
     };
+    var isElement = function (obj) {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+        if (typeof obj.jquery !== 'undefined') {
+            obj = obj[0];
+        }
+        return typeof obj.nodeType !== 'undefined';
+    };
+    var isVisible = function (element) {
+        if (!isElement(element) || element.getClientRects().length === 0) {
+            return false;
+        }
+        return (getComputedStyle(element).getPropertyValue('visibility') === 'visible');
+    };
+    var isDisabled = function (element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+            return true;
+        }
+        if (hasClass(element, 'disabled')) {
+            return true;
+        }
+        if (typeof element.disabled !== 'undefined') {
+            return element.disabled;
+        }
+        return (element.hasAttribute('disabled') &&
+            element.getAttribute('disabled') !== 'false');
+    };
+    var getFocusableElement = function (selector) {
+        var str = '';
+        var arr = [
+            'a',
+            'button',
+            'input',
+            'textarea',
+            'select',
+            'details',
+            '[tabindex]',
+            '[contenteditable="true"]'
+        ];
+        for (var i = arr.length - 1; i >= 0; i--) {
+            str += "".concat(selector, " > ").concat(arr[i], ":not([tabindex^=\"-\"]),");
+        }
+        return str.slice(0, -1);
+    };
+    var getFocusableElements = function (core) {
+        core;
+        getFocusableElement;
+        isVisible;
+        isDisabled;
+        // core.focusables = [] as HTMLElement[];
+        // isVisible;
+        // const arr = core.root?.querySelectorAll(cFocusables) || [];
+        // for (iloop = 0; iloop < arr?.length; iloop++) {
+        //   if (!isDisabled(arr[iloop])) {
+        //     core.focusables.push(arr[iloop] as HTMLElement);
+        //   }
+        // }
+        // console.log('=======core.focusables', core.focusables);
+    };
     var gatherElements = function (core) {
-        var _a, _b, _c, _d;
-        getFocusableElements(core);
-        core.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
-        core.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
-        core.nav = (_c = core.root) === null || _c === void 0 ? void 0 : _c.querySelector(cSelectors.nav);
-        core.toggle = (_d = core.root) === null || _d === void 0 ? void 0 : _d.querySelector(cSelectors.toggle);
+        var _a, _b, _c, _d, _e, _f, _g;
+        // getFocusableElements(core);
+        getFocusableElements;
+        core.dom = {};
+        core.dom.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
+        core.dom.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
+        core.dom.nav = (_c = core.root) === null || _c === void 0 ? void 0 : _c.querySelector(cSelectors.nav);
+        core.dom.root = core.root;
+        core.dom.toggle = (_d = core.root) === null || _d === void 0 ? void 0 : _d.querySelector(cSelectors.toggle);
+        var l0ul = (_e = core.root) === null || _e === void 0 ? void 0 : _e.querySelector(cSelectors.l0ul);
+        if (l0ul) {
+            core.dom.l0ul = {};
+            core.dom.l0ul.el = l0ul;
+            core.dom.l0ul.li = [];
+            var l0li = (_f = core.root) === null || _f === void 0 ? void 0 : _f.querySelectorAll(cSelectors.l0li);
+            if (l0li && (l0li || []).length > 0) {
+                for (iloop = 0; iloop < (l0li === null || l0li === void 0 ? void 0 : l0li.length); iloop++) {
+                    var l0liObj = {};
+                    l0liObj.el = l0li[iloop];
+                    console.log('=========tabbable', (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElement(cSelectors.l0li)));
+                    core.dom.l0ul.li.push(l0liObj);
+                }
+            }
+        }
+        console.log('==========core.dom', core.dom);
     };
     var addEvents = function (core) {
-        if (core.toggle) {
-            core.eH.push(eventHandler(core.toggle, "click", function () {
-                if (core.mask && core.main && core.toggle) {
-                    hasClass(core.toggle, 'active')
-                        ? removeClass(core.toggle, 'active')
-                        : addClass(core.toggle, 'active');
-                    hasClass(core.mask, 'active')
-                        ? removeClass(core.mask, 'active')
-                        : addClass(core.mask, 'active');
-                    hasClass(core.main, 'active')
-                        ? removeClass(core.main, 'active')
-                        : addClass(core.main, 'active');
+        if (core.dom.toggle) {
+            core.eH.push(eventHandler(core.dom.toggle, "click", function () {
+                if (core.dom.mask && core.dom.main && core.dom.toggle) {
+                    hasClass(core.dom.toggle, 'active')
+                        ? removeClass(core.dom.toggle, 'active')
+                        : addClass(core.dom.toggle, 'active');
+                    hasClass(core.dom.mask, 'active')
+                        ? removeClass(core.dom.mask, 'active')
+                        : addClass(core.dom.mask, 'active');
+                    hasClass(core.dom.main, 'active')
+                        ? removeClass(core.dom.main, 'active')
+                        : addClass(core.dom.main, 'active');
                 }
             }));
         }

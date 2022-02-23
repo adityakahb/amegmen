@@ -19,20 +19,22 @@
 [data-amegmen].__amegmen-editmode {
   background-color: inherit;
 }
-[data-amegmen] [data-amegmen-ul0] {
-  display: flex;
-  flex-wrap: wrap;
+[data-amegmen] [data-amegmen-level] {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-[data-amegmen] [data-amegmen-ul0] li {
+[data-amegmen] [data-amegmen-level] li {
   display: block;
 }
-[data-amegmen] [data-amegmen-ul0] > li {
+[data-amegmen] [data-amegmen-level="0"] {
+  display: flex;
+  flex-wrap: wrap;
+}
+[data-amegmen] [data-amegmen-level="0"] > li {
   width: 100%;
 }
-[data-amegmen] [data-amegmen-ul0] > li > a {
+[data-amegmen] [data-amegmen-level="0"] > li > a {
   display: block;
 }
 [data-amegmen] [data-amegmen-subnavwrap] {

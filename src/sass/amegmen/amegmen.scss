@@ -34,6 +34,9 @@ $timeInMilliseconds: 250ms;
   &.__amegmen-editmode {
     background-color: inherit;
   }
+  [data-amegmen-level] {
+    @include horizontal-list;
+  }
   @import './breakpoints/default';
 }
 [data-amegmen-viewport='small'] {

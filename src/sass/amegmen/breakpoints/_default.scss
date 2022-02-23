@@ -1,7 +1,6 @@
-[data-amegmen-ul0] {
+[data-amegmen-level='0'] {
   display: flex;
   flex-wrap: wrap;
-  @include horizontal-list;
   > li {
     width: 100%;
     > a {
