@@ -98,15 +98,7 @@ var AMegMen;
         toggle: "[data-amegmen-toggle]",
         l0ul: "[data-amegmen-level='0']",
         l0li: "[data-amegmen-level='0'] > li",
-        l0sub: "[data-amegmen-subnav='0']",
-        l1ul: "[data-amegmen-level='1']",
-        l1li: "[data-amegmen-level='1'] > li",
-        l1sub: "[data-amegmen-subnav='1']",
-        l2ul: "[data-amegmen-level='2']",
-        l2li: "[data-amegmen-level='2'] > li",
-        l2sub: "[data-amegmen-subnav='2']",
-        l3ul: "[data-amegmen-level='3']",
-        l3li: "[data-amegmen-level='3'] > li"
+        l0sub: "[data-amegmen-subnav='0']"
     };
     var cDefaults = {
         activeClass: "__amegmen-active",
@@ -449,7 +441,7 @@ var AMegMen;
         return (element.hasAttribute('disabled') &&
             element.getAttribute('disabled') !== 'false');
     };
-    var getFocusableElement = function (selector) {
+    var getFocusableElements = function (selector) {
         var str = '';
         var arr = [
             'a',
@@ -462,13 +454,13 @@ var AMegMen;
             '[contenteditable="true"]'
         ];
         for (var i = arr.length - 1; i >= 0; i--) {
-            str += "".concat(selector, " > ").concat(arr[i], ":not([tabindex^=\"-\"]),");
+            str += "".concat(selector, " ").concat(arr[i], ":not([tabindex^=\"-\"]),");
         }
         return str.slice(0, -1);
     };
-    var getFocusableElements = function (core) {
+    var getFocusableElementss = function (core) {
         core;
-        getFocusableElement;
+        getFocusableElements;
         isVisible;
         isDisabled;
         // core.focusables = [] as HTMLElement[];
@@ -482,9 +474,9 @@ var AMegMen;
         // console.log('=======core.focusables', core.focusables);
     };
     var gatherElements = function (core) {
-        var _a, _b, _c, _d, _e, _f, _g;
-        // getFocusableElements(core);
-        getFocusableElements;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        // getFocusableElementss(core);
+        getFocusableElementss;
         core.dom = {};
         core.dom.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
         core.dom.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
@@ -500,8 +492,16 @@ var AMegMen;
             if (l0li && (l0li || []).length > 0) {
                 for (iloop = 0; iloop < (l0li === null || l0li === void 0 ? void 0 : l0li.length); iloop++) {
                     var l0liObj = {};
+                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, " >")));
                     l0liObj.el = l0li[iloop];
-                    console.log('=========tabbable', (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElement(cSelectors.l0li)));
+                    if (item) {
+                        l0liObj.itm = item;
+                    }
+                    var focusableEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, " > ").concat(cSelectors.l0sub)));
+                    focusableEl;
+                    console.log('=====focusables', getFocusableElements("".concat(cSelectors.l0li, " > ").concat(cSelectors.l0sub))
+                    // focusableEl
+                    );
                     core.dom.l0ul.li.push(l0liObj);
                 }
             }

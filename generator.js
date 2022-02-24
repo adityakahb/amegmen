@@ -40,7 +40,15 @@ for (let i = 0; i < l0count; i++) {
   for (let j = 0; j < l1cols; j++) {
     str += `<div data-amegmen-col><ul data-amegmen-level="1">`;
     for (let k = 0; k < l1count; k++) {
-      str += `<li><a href="#">L1-${i}.${j}.${k}</a>`;
+      if (k === l1count - 2) {
+        str += `<li><button type="button">L1-${i}.${j}.${k}</button>`;
+      } else {
+        str += `<li><a href="#">L1-${i}.${j}.${k}</a>`;
+      }
+
+      if (k == 2) {
+        str += `<div></div>`;
+      }
       str += '</li>';
     }
     str += `</ul></div>`;

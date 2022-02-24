@@ -73,71 +73,10 @@ namespace AMegMen {
     total: number;
   }
 
-  interface Il4li {
-    el: Element | null | undefined;
-    itm: Element | null | undefined;
-  }
-
-  interface Il4ul {
-    el: Element | null | undefined;
-    li: Il4li[];
-  }
-
-  interface Il3Subnav {
-    el: Element | null | undefined;
-    lan: Element | null | undefined;
-    ul: Il4ul[];
-  }
-
-  interface Il3li {
-    el: Element | null | undefined;
-    itm: Element | null | undefined;
-    sub: Il3Subnav;
-  }
-
-  interface Il3ul {
-    el: Element | null | undefined;
-    li: Il3li[];
-  }
-
-  interface Il2Subnav {
-    el: Element | null | undefined;
-    lan: Element | null | undefined;
-    ul: Il3ul[];
-  }
-
-  interface Il2li {
-    el: Element | null | undefined;
-    itm: Element | null | undefined;
-    sub: Il2Subnav;
-  }
-
-  interface Il2ul {
-    el: Element | null | undefined;
-    li: Il2li[];
-  }
-
-  interface Il1Subnav {
-    el: Element | null | undefined;
-    lan: Element | null | undefined;
-    ul: Il2ul[];
-  }
-
-  interface Il1li {
-    el: Element | null | undefined;
-    itm: Element | null | undefined;
-    sub: Il1Subnav;
-  }
-
-  interface Il1ul {
-    el: Element | null | undefined;
-    li: Il1li[];
-  }
-
   interface Il0Subnav {
     el: Element | null | undefined;
     lan: Element | null | undefined;
-    ul: Il1ul[];
+    all: Element[];
   }
 
   interface Il0li {
@@ -266,15 +205,7 @@ namespace AMegMen {
     toggle: `[data-amegmen-toggle]`,
     l0ul: `[data-amegmen-level='0']`,
     l0li: `[data-amegmen-level='0'] > li`,
-    l0sub: `[data-amegmen-subnav='0']`,
-    l1ul: `[data-amegmen-level='1']`,
-    l1li: `[data-amegmen-level='1'] > li`,
-    l1sub: `[data-amegmen-subnav='1']`,
-    l2ul: `[data-amegmen-level='2']`,
-    l2li: `[data-amegmen-level='2'] > li`,
-    l2sub: `[data-amegmen-subnav='2']`,
-    l3ul: `[data-amegmen-level='3']`,
-    l3li: `[data-amegmen-level='3'] > li`
+    l0sub: `[data-amegmen-subnav='0']`
   };
   const cDefaults: ISettings = {
     activeClass: `__amegmen-active`,
@@ -655,7 +586,7 @@ namespace AMegMen {
     );
   };
 
-  const getFocusableElement = (selector: string) => {
+  const getFocusableElements = (selector: string) => {
     let str = '';
     const arr = [
       'a',
@@ -668,14 +599,14 @@ namespace AMegMen {
       '[contenteditable="true"]'
     ];
     for (let i = arr.length - 1; i >= 0; i--) {
-      str += `${selector} > ${arr[i]}:not([tabindex^="-"]),`;
+      str += `${selector} ${arr[i]}:not([tabindex^="-"]),`;
     }
     return str.slice(0, -1);
   };
 
-  const getFocusableElements = (core: ICore) => {
+  const getFocusableElementss = (core: ICore) => {
     core;
-    getFocusableElement;
+    getFocusableElements;
     isVisible;
     isDisabled;
     // core.focusables = [] as HTMLElement[];
@@ -690,8 +621,8 @@ namespace AMegMen {
   };
 
   const gatherElements = (core: ICore) => {
-    // getFocusableElements(core);
-    getFocusableElements;
+    // getFocusableElementss(core);
+    getFocusableElementss;
     core.dom = {} as IDom;
     core.dom.main = core.root?.querySelector(cSelectors.main);
     core.dom.mask = core.root?.querySelector(cSelectors.mask);
@@ -708,10 +639,21 @@ namespace AMegMen {
       if (l0li && (l0li || []).length > 0) {
         for (iloop = 0; iloop < l0li?.length; iloop++) {
           const l0liObj = {} as Il0li;
+          const item = core.root?.querySelector(
+            getFocusableElements(`${cSelectors.l0li} >`)
+          );
           l0liObj.el = l0li[iloop] as Element;
+          if (item) {
+            l0liObj.itm = item;
+          }
+          const focusableEl = core.root?.querySelectorAll(
+            getFocusableElements(`${cSelectors.l0li} > ${cSelectors.l0sub}`)
+          );
+          focusableEl;
           console.log(
-            '=========tabbable',
-            core.root?.querySelector(getFocusableElement(cSelectors.l0li))
+            '=====focusables',
+            getFocusableElements(`${cSelectors.l0li} > ${cSelectors.l0sub}`)
+            // focusableEl
           );
           core.dom.l0ul.li.push(l0liObj);
         }
