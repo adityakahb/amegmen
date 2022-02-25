@@ -37,8 +37,7 @@
 [data-amegmen] [data-amegmen-level="0"] > li > a {
   display: block;
 }
-[data-amegmen] [data-amegmen-subnavwrap] {
-  visibility: hidden;
+[data-amegmen] [data-amegmen-subnav] {
   position: absolute;
 }
 

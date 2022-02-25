@@ -47,7 +47,12 @@ for (let i = 0; i < l0count; i++) {
       }
 
       if (k == 2) {
-        str += `<div></div>`;
+        str += `<div data-amegmen-subnav="1"><ul data-amegmen-level="2">`;
+        for (let l = 0; l < l2count; l++) {
+          str += `<li><a href="#">L2-${i}.${j}.${k}.${l}</a>`;
+          str += `</li>`;
+        }
+        str += `</ul></div>`;
       }
       str += '</li>';
     }

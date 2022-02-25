@@ -458,25 +458,8 @@ var AMegMen;
         }
         return str.slice(0, -1);
     };
-    var getFocusableElementss = function (core) {
-        core;
-        getFocusableElements;
-        isVisible;
-        isDisabled;
-        // core.focusables = [] as HTMLElement[];
-        // isVisible;
-        // const arr = core.root?.querySelectorAll(cFocusables) || [];
-        // for (iloop = 0; iloop < arr?.length; iloop++) {
-        //   if (!isDisabled(arr[iloop])) {
-        //     core.focusables.push(arr[iloop] as HTMLElement);
-        //   }
-        // }
-        // console.log('=======core.focusables', core.focusables);
-    };
     var gatherElements = function (core) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        // getFocusableElementss(core);
-        getFocusableElementss;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         core.dom = {};
         core.dom.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
         core.dom.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
@@ -492,14 +475,28 @@ var AMegMen;
             if (l0li && (l0li || []).length > 0) {
                 for (iloop = 0; iloop < (l0li === null || l0li === void 0 ? void 0 : l0li.length); iloop++) {
                     var l0liObj = {};
-                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") >")));
                     l0liObj.el = l0li[iloop];
-                    if (item) {
+                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") >")));
+                    if (item &&
+                        !isDisabled(item) &&
+                        isVisible(item)) {
                         l0liObj.itm = item;
+                        var subnavEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelector("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub));
+                        if (subnavEl) {
+                            l0liObj.sub = {};
+                            l0liObj.sub.el = subnavEl;
+                            var focusableL1 = (_j = core.root) === null || _j === void 0 ? void 0 : _j.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub)));
+                            if (focusableL1 && focusableL1.length > 0) {
+                                l0liObj.sub.all = [];
+                                for (jloop = 0; jloop < focusableL1.length; jloop++) {
+                                    if (!isDisabled(focusableL1[jloop]) &&
+                                        isVisible(focusableL1[jloop])) {
+                                        // l0liObj.sub.all.push(focusableL1[jloop]);
+                                    }
+                                }
+                            }
+                        }
                     }
-                    var focusableEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub)));
-                    console.log('=====focusables', focusableEl);
-                    for (jloop = 0; jloop < (focusableEl || []).length; jloop++) { }
                     core.dom.l0ul.li.push(l0liObj);
                 }
             }
