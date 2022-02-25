@@ -640,21 +640,19 @@ namespace AMegMen {
         for (iloop = 0; iloop < l0li?.length; iloop++) {
           const l0liObj = {} as Il0li;
           const item = core.root?.querySelector(
-            getFocusableElements(`${cSelectors.l0li} >`)
+            getFocusableElements(`${cSelectors.l0li}:nth-child(${iloop + 1}) >`)
           );
           l0liObj.el = l0li[iloop] as Element;
           if (item) {
             l0liObj.itm = item;
           }
           const focusableEl = core.root?.querySelectorAll(
-            getFocusableElements(`${cSelectors.l0li} > ${cSelectors.l0sub}`)
+            getFocusableElements(
+              `${cSelectors.l0li}:nth-child(${iloop + 1}) > ${cSelectors.l0sub}`
+            )
           );
-          focusableEl;
-          console.log(
-            '=====focusables',
-            getFocusableElements(`${cSelectors.l0li} > ${cSelectors.l0sub}`)
-            // focusableEl
-          );
+          console.log('=====focusables', focusableEl);
+          for (jloop = 0; jloop < (focusableEl || []).length; jloop++) {}
           core.dom.l0ul.li.push(l0liObj);
         }
       }

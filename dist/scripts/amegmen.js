@@ -492,16 +492,14 @@ var AMegMen;
             if (l0li && (l0li || []).length > 0) {
                 for (iloop = 0; iloop < (l0li === null || l0li === void 0 ? void 0 : l0li.length); iloop++) {
                     var l0liObj = {};
-                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, " >")));
+                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") >")));
                     l0liObj.el = l0li[iloop];
                     if (item) {
                         l0liObj.itm = item;
                     }
-                    var focusableEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, " > ").concat(cSelectors.l0sub)));
-                    focusableEl;
-                    console.log('=====focusables', getFocusableElements("".concat(cSelectors.l0li, " > ").concat(cSelectors.l0sub))
-                    // focusableEl
-                    );
+                    var focusableEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub)));
+                    console.log('=====focusables', focusableEl);
+                    for (jloop = 0; jloop < (focusableEl || []).length; jloop++) { }
                     core.dom.l0ul.li.push(l0liObj);
                 }
             }
