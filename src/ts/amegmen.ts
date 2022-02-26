@@ -571,7 +571,7 @@ namespace AMegMen {
     return settingsobj;
   };
 
-  const visible = (elem: HTMLElement) => {
+  const isVisible = (elem: HTMLElement) => {
     return !!(
       elem.offsetWidth ||
       elem.offsetHeight ||
@@ -579,7 +579,7 @@ namespace AMegMen {
     );
   };
 
-  const focusable = (element: Element, hasTabindex: boolean) => {
+  const isFocusable = (element: Element, hasTabindex: boolean) => {
     let map;
     let mapName;
     let img;
@@ -599,7 +599,7 @@ namespace AMegMen {
           return false;
         }
         img = document.querySelector(`img[usemap='#${mapName}']`);
-        return img && visible(img as HTMLElement);
+        return img && isVisible(img as HTMLElement);
       }
     }
 
@@ -618,15 +618,17 @@ namespace AMegMen {
       focusableIfVisible = hasTabindex;
     }
 
-    return focusableIfVisible && visible(element as HTMLElement);
+    return focusableIfVisible && isVisible(element as HTMLElement);
   };
 
-  const tabbable = (element: Element) => {
+  const isTabbable = (element: Element) => {
     let tabIndex: number | string | null = element.getAttribute(`tabindex`);
     if (tabIndex && tabIndex !== null) {
       tabIndex = parseInt(tabIndex, 10);
       const hasTabindex = tabIndex != null;
-      return (!hasTabindex || tabIndex >= 0) && focusable(element, hasTabindex);
+      return (
+        (!hasTabindex || tabIndex >= 0) && isFocusable(element, hasTabindex)
+      );
     }
   };
 
@@ -644,47 +646,47 @@ namespace AMegMen {
       core.dom.l0ul.el = l0ul as Element;
       core.dom.l0ul.li = [] as Il0li[];
       const l0li = core.root?.querySelectorAll(cSelectors.l0li);
-      if (l0li && (l0li || []).length > 0) {
-        // for (iloop = 0; iloop < l0li?.length; iloop++) {
-        //   const l0liObj = {} as Il0li;
-        //   l0liObj.el = l0li[iloop] as Element;
-        //   const item = core.root?.querySelector(
-        //     getFocusableElements(`${cSelectors.l0li}:nth-child(${iloop + 1}) >`)
-        //   );
-        //   if (
-        //     item &&
-        //     !isDisabled(item as Element) &&
-        //     isVisible(item as Element)
-        //   ) {
-        //     l0liObj.itm = item;
-        //     const subnavEl = core.root?.querySelector(
-        //       `${cSelectors.l0li}:nth-child(${iloop + 1}) > ${cSelectors.l0sub}`
-        //     );
-        //     if (subnavEl) {
-        //       l0liObj.sub = {} as Il0Subnav;
-        //       l0liObj.sub.el = subnavEl;
-        //       const focusableL1 = core.root?.querySelectorAll(
-        //         getFocusableElements(
-        //           `${cSelectors.l0li}:nth-child(${iloop + 1}) > ${
-        //             cSelectors.l0sub
-        //           }`
-        //         )
-        //       );
-        //       if (focusableL1 && focusableL1.length > 0) {
-        //         l0liObj.sub.all = [] as Il1El[];
-        //         for (jloop = 0; jloop < focusableL1.length; jloop++) {
-        //           if (
-        //             !isDisabled(focusableL1[jloop] as Element) &&
-        //             isVisible(focusableL1[jloop] as Element)
-        //           ) {
-        //             // l0liObj.sub.all.push(focusableL1[jloop]);
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        //   core.dom.l0ul.li.push(l0liObj);
-        // }
+      if (l0li && l0li.length > 0) {
+        for (iloop = 0; iloop < l0li?.length; iloop++) {
+          const l0liObj = {} as Il0li;
+          l0liObj.el = l0li[iloop] as Element;
+          const item = core.root?.querySelector(
+            getFocusableElements(`${cSelectors.l0li}:nth-child(${iloop + 1}) >`)
+          );
+          if (
+            item &&
+            !isDisabled(item as Element) &&
+            isVisible(item as Element)
+          ) {
+            l0liObj.itm = item;
+            const subnavEl = core.root?.querySelector(
+              `${cSelectors.l0li}:nth-child(${iloop + 1}) > ${cSelectors.l0sub}`
+            );
+            if (subnavEl) {
+              l0liObj.sub = {} as Il0Subnav;
+              l0liObj.sub.el = subnavEl;
+              const focusableL1 = core.root?.querySelectorAll(
+                getFocusableElements(
+                  `${cSelectors.l0li}:nth-child(${iloop + 1}) > ${
+                    cSelectors.l0sub
+                  }`
+                )
+              );
+              if (focusableL1 && focusableL1.length > 0) {
+                l0liObj.sub.all = [] as Il1El[];
+                for (jloop = 0; jloop < focusableL1.length; jloop++) {
+                  if (
+                    !isDisabled(focusableL1[jloop] as Element) &&
+                    isVisible(focusableL1[jloop] as Element)
+                  ) {
+                    // l0liObj.sub.all.push(focusableL1[jloop]);
+                  }
+                }
+              }
+            }
+          }
+          core.dom.l0ul.li.push(l0liObj);
+        }
       }
     }
     console.log('==========core.dom', core.dom);
