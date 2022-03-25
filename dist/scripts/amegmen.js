@@ -97,8 +97,13 @@ var AMegMen;
         rtl: "[data-amegmen-rtl]",
         toggle: "[data-amegmen-toggle]",
         l0ul: "[data-amegmen-level='0']",
-        l0li: "[data-amegmen-level='0'] > li",
-        l0sub: "[data-amegmen-subnav='0']"
+        l0col: "[data-amegmen-col]",
+        l0lan: "[data-amegmen-landing='0']",
+        l0sub: "[data-amegmen-subnav='0']",
+        l1lan: "[data-amegmen-landing='1']",
+        l1sub: "[data-amegmen-subnav='1']",
+        l2lan: "[data-amegmen-landing='2']",
+        l2sub: "[data-amegmen-subnav='2']"
     };
     var cDefaults = {
         activeClass: "__amegmen-active",
@@ -113,13 +118,15 @@ var AMegMen;
         idPrefix: "__amegmen",
         isRtl: false,
         l1Cols: 3,
-        layout: 'mobile',
+        layout: "mobile",
         touchThreshold: 125
     };
+    var focusablesStr = ["a:not([tabindex^=\"-\"])", "button:not([tabindex^=\"-\"])", "input:not([tabindex^=\"-\"])", "textarea:not([tabindex^=\"-\"])", "select:not([tabindex^=\"-\"])", "details:not([tabindex^=\"-\"])", "[tabindex]:not([tabindex^=\"-\"])", "[contenteditable=\"true\"]:not([tabindex^=\"-\"])"];
+    var scopedFocusablesStr = [":scope > a:not([tabindex^=\"-\"])", ":scope > button:not([tabindex^=\"-\"])", ":scope > input:not([tabindex^=\"-\"])", ":scope > textarea:not([tabindex^=\"-\"])", ":scope > select:not([tabindex^=\"-\"])", ":scope > details:not([tabindex^=\"-\"])", ":scope > [tabindex]:not([tabindex^=\"-\"])", ":scope > [contenteditable=\"true\"]:not([tabindex^=\"-\"])"];
     var allLocalInstances = {};
     var iloop = 0;
     var jloop = 0;
-    // let kloop = 0;
+    var kloop = 0;
     // let lloop = 0;
     var windowResizeAny;
     var isWindowEventAttached = false;
@@ -413,95 +420,126 @@ var AMegMen;
         }
         return settingsobj;
     };
-    var isElement = function (obj) {
-        if (!obj || typeof obj !== 'object') {
-            return false;
-        }
-        if (typeof obj.jquery !== 'undefined') {
-            obj = obj[0];
-        }
-        return typeof obj.nodeType !== 'undefined';
-    };
-    var isVisible = function (element) {
-        if (!isElement(element) || element.getClientRects().length === 0) {
-            return false;
-        }
-        return (getComputedStyle(element).getPropertyValue('visibility') === 'visible');
-    };
-    var isDisabled = function (element) {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+    var isElementDisabled = function (element) {
+        if ((!element || element.nodeType !== Node.ELEMENT_NODE) || hasClass(element, "disabled")) {
             return true;
         }
-        if (hasClass(element, 'disabled')) {
-            return true;
-        }
-        if (typeof element.disabled !== 'undefined') {
+        if (typeof element.disabled !== "undefined") {
             return element.disabled;
         }
-        return (element.hasAttribute('disabled') &&
-            element.getAttribute('disabled') !== 'false');
+        return element.hasAttribute("disabled") && element.getAttribute("disabled") !== "false";
     };
-    var getFocusableElements = function (selector) {
-        var str = '';
-        var arr = [
-            'a',
-            'button',
-            'input',
-            'textarea',
-            'select',
-            'details',
-            '[tabindex]',
-            '[contenteditable="true"]'
-        ];
-        for (var i = arr.length - 1; i >= 0; i--) {
-            str += "".concat(selector, " ").concat(arr[i], ":not([tabindex^=\"-\"]),");
+    var isElementVisible = function (element) {
+        if (element.getClientRects().length === 0) {
+            return false;
         }
-        return str.slice(0, -1);
+        return getComputedStyle(element).getPropertyValue("visibility") === "visible";
     };
-    var gatherElements = function (core) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        core.dom = {};
-        core.dom.main = (_a = core.root) === null || _a === void 0 ? void 0 : _a.querySelector(cSelectors.main);
-        core.dom.mask = (_b = core.root) === null || _b === void 0 ? void 0 : _b.querySelector(cSelectors.mask);
-        core.dom.nav = (_c = core.root) === null || _c === void 0 ? void 0 : _c.querySelector(cSelectors.nav);
-        core.dom.root = core.root;
-        core.dom.toggle = (_d = core.root) === null || _d === void 0 ? void 0 : _d.querySelector(cSelectors.toggle);
-        var l0ul = (_e = core.root) === null || _e === void 0 ? void 0 : _e.querySelector(cSelectors.l0ul);
-        if (l0ul) {
-            core.dom.l0ul = {};
-            core.dom.l0ul.el = l0ul;
-            core.dom.l0ul.li = [];
-            var l0li = (_f = core.root) === null || _f === void 0 ? void 0 : _f.querySelectorAll(cSelectors.l0li);
-            if (l0li && (l0li || []).length > 0) {
-                for (iloop = 0; iloop < (l0li === null || l0li === void 0 ? void 0 : l0li.length); iloop++) {
-                    var l0liObj = {};
-                    l0liObj.el = l0li[iloop];
-                    var item = (_g = core.root) === null || _g === void 0 ? void 0 : _g.querySelector(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") >")));
-                    if (item &&
-                        !isDisabled(item) &&
-                        isVisible(item)) {
-                        l0liObj.itm = item;
-                        var subnavEl = (_h = core.root) === null || _h === void 0 ? void 0 : _h.querySelector("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub));
-                        if (subnavEl) {
-                            l0liObj.sub = {};
-                            l0liObj.sub.el = subnavEl;
-                            var focusableL1 = (_j = core.root) === null || _j === void 0 ? void 0 : _j.querySelectorAll(getFocusableElements("".concat(cSelectors.l0li, ":nth-child(").concat(iloop + 1, ") > ").concat(cSelectors.l0sub)));
-                            if (focusableL1 && focusableL1.length > 0) {
-                                l0liObj.sub.all = [];
-                                for (jloop = 0; jloop < focusableL1.length; jloop++) {
-                                    if (!isDisabled(focusableL1[jloop]) &&
-                                        isVisible(focusableL1[jloop])) {
-                                        // l0liObj.sub.all.push(focusableL1[jloop]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    core.dom.l0ul.li.push(l0liObj);
-                }
+    var _selectorEngine = {
+        $: function (parent, selector) { return parent.querySelector(selector); },
+        $$: function (parent, selector) { return _selectorEngine.arr(parent.querySelectorAll(selector) || []); },
+        arr: function (nodes) { return Array.prototype.slice.call(nodes); },
+        closest: function (el, sel) { return el.closest(sel); },
+        next: function (el) { return el.nextElementSibling; },
+        parent: function (el) { return el.parentNode; },
+        prev: function (el) { return el.previousElementSibling; }
+    };
+    var getAllFocusableChildren = function (parent, withinScope) {
+        var str = withinScope ? scopedFocusablesStr.join(',') : focusablesStr.join(',');
+        var selected = _selectorEngine.$$(parent, str);
+        var newArr = [];
+        for (kloop = 0; kloop < selected.length; kloop++) {
+            if (!isElementDisabled(selected[kloop]) && isElementVisible(selected[kloop])) {
+                newArr.push(selected[kloop]);
             }
         }
-        console.log('==========core.dom', core.dom);
+        return newArr;
+    };
+    var getFirstFocusableChild = function (parent, withinScope) {
+        return getAllFocusableChildren(parent, withinScope)[0];
+    };
+    var gatherElements = function (core) {
+        core.dom = {};
+        if (core.root) {
+            core.dom.main = _selectorEngine.$(core.root, cSelectors.main);
+            core.dom.mask = _selectorEngine.$(core.root, cSelectors.mask);
+            core.dom.nav = _selectorEngine.$(core.root, cSelectors.nav);
+            core.dom.root = core.root;
+            core.dom.toggle = _selectorEngine.$(core.root, cSelectors.toggle);
+            var l0ul = _selectorEngine.$(core.root, cSelectors.l0ul);
+            if (l0ul) {
+                core.dom.l0ul = {};
+                core.dom.l0ul.e = l0ul;
+                core.dom.l0ul.l = [];
+                var l0li = _selectorEngine.$$(core.dom.l0ul.e, ":scope > li");
+                if (l0li && l0li.length > 0) {
+                    for (iloop = 0; iloop < l0li.length; iloop++) {
+                        var l0liObj = {};
+                        l0liObj.p = l0li[iloop];
+                        l0liObj.e = getFirstFocusableChild(l0liObj.p, true);
+                        l0liObj.s = {};
+                        l0liObj.s.e = _selectorEngine.$(l0liObj.p, ":scope > ".concat(cSelectors.l0sub));
+                        if (l0liObj.s.e) {
+                            l0liObj.s.c = [];
+                            var cols = _selectorEngine.$$(l0liObj.s.e, "".concat(cSelectors.l0col));
+                            for (jloop = 0; jloop < cols.length; jloop++) {
+                                var colObj = {};
+                                colObj.e = cols[jloop];
+                                if (colObj.e) {
+                                    colObj.a = [];
+                                    // let isFromlL1Sub: any;
+                                    // let isFromlL2Sub: any;
+                                    var isL0Landing = void 0;
+                                    // let isL1Landing: any;
+                                    var l1Elems = getAllFocusableChildren(colObj.e, false);
+                                    for (kloop = 0; kloop < l1Elems.length; kloop++) {
+                                        // isFromlL1Sub = _selectorEngine.closest(l1Elems[kloop], cSelectors.l1sub) || null;
+                                        // isFromlL2Sub = _selectorEngine.closest(l1Elems[kloop], cSelectors.l2sub) || null;
+                                        isL0Landing = _selectorEngine.closest(l1Elems[kloop], cSelectors.l0lan) || null;
+                                        // isL1Landing = _selectorEngine.closest(l1Elems[kloop], cSelectors.l1lan) || null;
+                                        if (isL0Landing) {
+                                            l0liObj.s.l = l1Elems[kloop];
+                                        }
+                                    }
+                                }
+                                l0liObj.s.c.push(colObj);
+                            }
+                        }
+                        // if (l0liObj.s.e) {
+                        //   l0liObj.s.a = [] as Il1El[];
+                        //   let isFromlL1Sub: any;
+                        //   let isFromlL2Sub: any;
+                        //   let isL0Landing : any;
+                        //   let isL1Landing: any;
+                        //   const l1Elems = getAllFocusableChildren(l0liObj.s.e, false);
+                        //   for (jloop = 0; jloop < l1Elems.length; jloop++) {
+                        //     isFromlL1Sub = _selectorEngine.closest(l1Elems[jloop], cSelectors.l1sub) || null;
+                        //     isFromlL2Sub = _selectorEngine.closest(l1Elems[jloop], cSelectors.l2sub) || null;
+                        //     isL0Landing = _selectorEngine.closest(l1Elems[jloop], cSelectors.l0lan) || null;
+                        //     isL1Landing = _selectorEngine.closest(l1Elems[jloop], cSelectors.l1lan) || null;
+                        //     if (isL0Landing) {
+                        //       l0liObj.s.l = l1Elems[jloop];
+                        //     }
+                        //     if (!isFromlL1Sub && !isFromlL2Sub && !isL0Landing && !isL1Landing) {
+                        //       const l1ElObj = {} as Il1El;
+                        //       l1ElObj.e = l1Elems[jloop];
+                        //       if (l1ElObj.e) {
+                        //         l1ElObj.p = _selectorEngine.parent(l1ElObj.e);
+                        //         l1ElObj.s = {} as Il0Subnav;
+                        //         l1ElObj.s.e = _selectorEngine.$(l1ElObj.p, `:scope > ${cSelectors.l1sub}`);
+                        //         if (l1ElObj.s.e) {
+                        //         }
+                        //       }
+                        //       l0liObj.s.a.push(l1ElObj);
+                        //     }
+                        //   }
+                        // }
+                        core.dom.l0ul.l.push(l0liObj);
+                    }
+                }
+            }
+            console.log('==========core.dom', core.dom);
+        }
     };
     var addEvents = function (core) {
         if (core.dom.toggle) {
