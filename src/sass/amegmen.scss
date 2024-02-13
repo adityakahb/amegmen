@@ -1,0 +1,65 @@
+$timeInMilliseconds: 250ms;
+$idPrefix: "__amegmen";
+@mixin reset-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@mixin horizontal-list {
+  @include reset-list;
+  li {
+    display: block;
+  }
+}
+[data#{$idPrefix}] {
+  position: relative;
+  &,
+  * {
+    &,
+    &:after,
+    &:before {
+      box-sizing: border-box;
+    }
+  }
+  button:not(:disabled),
+  [type='button']:not(:disabled),
+  [type='reset']:not(:disabled),
+  [type='submit']:not(:disabled) {
+    cursor: pointer;
+  }
+  .#{$idPrefix}-hidden {
+    display: none !important;
+  }
+  &.#{$idPrefix}-editmode {
+    background-color: inherit;
+  }
+  [data#{$idPrefix}-level], [data#{$idPrefix}-grid] {
+    @include horizontal-list;
+  }
+}
+
+
+/**==================================**/
+/**================xs================**/
+[data#{$idPrefix}-viewport='xs'] {
+  @import './breakpoints/_xs';
+}
+
+/**==================================**/
+/**================sm================**/
+[data#{$idPrefix}-viewport='sm'] {
+  @import './breakpoints/_sm';
+}
+
+/**==================================**/
+/**================md================**/
+[data#{$idPrefix}-viewport='md'] {
+  @import './breakpoints/_md';
+}
+
+/**==================================**/
+/**================lg================**/
+[data#{$idPrefix}-viewport='lg'] {
+  @import './breakpoints/_lg';
+}

@@ -1,0 +1,14 @@
+[data#{$idPrefix}-main], [data#{$idPrefix}-subnav] {
+  height: 0;
+  left: 0;
+  position: fixed;
+  top: 0;
+  visibility: hidden;
+  width: 100%;
+}
+[data#{$idPrefix}-main] {
+  z-index: 9999;
+}
+[data#{$idPrefix}-subnav] {
+  z-index: 2;
+}
