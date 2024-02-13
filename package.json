@@ -1,7 +1,7 @@
 {
   "name": "amegmen",
   "version": "2.0.0",
-  "description": "AMegMen (Accessible MegaMenu) is an Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.",
+  "description": "AMegMen (Accessible MegaMenu) is a Keyboard accessible, jQuery-free and Framework-free MegaMenu plugin which is fully responsive, and supports multiple levels.",
   "private": false,
   "scripts": {
     "start": "gulp",
@@ -42,6 +42,7 @@
     "browser-sync": "latest",
     "del": "latest",
     "eslint": "latest",
+    "eslint-config-prettier": "latest",
     "gulp": "latest",
     "gulp-clean": "latest",
     "gulp-clean-css": "latest",
@@ -54,7 +55,7 @@
     "gulp-typescript": "latest",
     "gulp-uglify": "latest",
     "gulp-watch": "latest",
-    "sass": "latest",
-    "typescript": "latest"
+    "prettier": "latest",
+    "sass": "latest"
   }
 }
