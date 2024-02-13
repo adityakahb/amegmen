@@ -1,6 +1,7 @@
 "use strict";
 const AMegMen = (() => {
     const __v = "2.0.0";
+    const win = window;
     const _events = {
         c: "click",
         kd: "keydown",
@@ -43,7 +44,7 @@ const AMegMen = (() => {
     };
     const _useCapture = false;
     const allInstances = {};
-    const win = window;
+    const allReturnInstances = [];
     let instanceIndex = 0;
     let resizeTimer;
     const cDefaults = {
@@ -128,9 +129,9 @@ const AMegMen = (() => {
         element.addEventListener(type, listener, _useCapture);
         return eventHandlerObj;
     };
-    const areValidOptions = (options) => {
+    const areValidOptions = (localOptions) => {
         var _a;
-        const receivedArr = Object.keys(options);
+        const receivedArr = Object.keys(localOptions);
         const defaultArr = Object.keys(cDefaults);
         const breakpointsArr = [];
         const duplicates = [];
@@ -139,17 +140,15 @@ const AMegMen = (() => {
         if (resultArr.length) {
             return false;
         }
-        (_a = options.breakpoints) === null || _a === void 0 ? void 0 : _a.forEach((breakpoint) => {
-            if (breakpoint.minWidth) {
-                breakpointsArr.push(breakpoint.minWidth);
-            }
+        (_a = localOptions.breakpoints) === null || _a === void 0 ? void 0 : _a.forEach((breakpoint) => {
+            breakpoint.minWidth && breakpointsArr.push(breakpoint.minWidth);
         });
         breakpointsArr === null || breakpointsArr === void 0 ? void 0 : breakpointsArr.forEach((item) => {
             seen.includes(item) && !duplicates.includes(item)
                 ? duplicates.push(item)
                 : seen.push(item);
         });
-        return duplicates.length > 0 ? false : true;
+        return duplicates.length === 0;
     };
     const mergeOptions = (s) => {
         const o = {
@@ -192,6 +191,7 @@ const AMegMen = (() => {
         core.r.setAttribute(_selectors.vp.slice(1, -1), currentBP.lay);
     };
     const toggleOpenCloseMobile = (event, core, shouldOpen) => {
+        event.preventDefault();
         if (shouldOpen) {
             core.open && addAttribute(core.open, "tabindex", "-1");
             core.close && removeAttribute(core.close, "tabindex");
@@ -204,21 +204,20 @@ const AMegMen = (() => {
     const initiateStylesAndEvents = (core) => {
         core.close &&
             core.eH.push(eventHandler(core.close, _events.c, (event) => {
-                event.preventDefault();
                 toggleOpenCloseMobile(event, core, false);
             }));
         core.open &&
             core.eH.push(eventHandler(core.open, _events.c, (event) => {
-                event.preventDefault();
                 toggleOpenCloseMobile(event, core, true);
             }));
     };
-    const initAmegmen = (nav, options) => {
+    const initAmegmen = (menuId, nav, options) => {
         if (areValidOptions(options)) {
             typeof options.beforeInitFn === "function" && options.beforeInitFn();
             const core = {
                 close: $(nav, _selectors.close),
                 eH: [],
+                id: menuId,
                 main: $(nav, _selectors.main),
                 o: mergeOptions(options),
                 open: $(nav, _selectors.open),
@@ -235,27 +234,25 @@ const AMegMen = (() => {
         // TODO: Log invalid options
         return null;
     };
-    const destroy = (cores) => {
-        console.log("=========================destroy", cores);
+    const destroy = (core, cores) => {
+        console.log("=========================destroy", core.id, cores);
     };
-    const openMegamenu = (cores) => {
-        console.log("=========================openMegamenu", cores);
+    const openMegamenu = (core, cores) => {
+        console.log("=========================openMegamenu", core.id, cores);
     };
-    const closeMegamenu = (cores) => {
-        console.log("=========================openMegamenu", cores);
+    const closeMegamenu = (core, cores) => {
+        console.log("=========================openMegamenu", core.id, cores);
     };
     class Root {
         static getInstance() {
-            if (!Root.instance) {
-                Root.instance = new Root();
-            }
+            !Root.instance && (Root.instance = new Root());
             return Root.instance;
         }
         initGlobal() {
             this.init(true, "");
         }
         init(selector, opts) {
-            let receivedOptionsStr;
+            const coreArr = [];
             const returnArr = [];
             const isGlobal = typeof selector === "boolean" && selector;
             const allMegamenus = isGlobal
@@ -263,28 +260,34 @@ const AMegMen = (() => {
                 : $$(document, selector.toString());
             allMegamenus.forEach((thisMegamenu) => {
                 const megamenuId = generateID(thisMegamenu);
-                let megamenu;
+                let core;
                 addAttribute(thisMegamenu, "id", megamenuId);
                 if (!allInstances[megamenuId]) {
-                    receivedOptionsStr = isGlobal
+                    const receivedOptionsStr = isGlobal
                         ? JSON.parse((thisMegamenu.getAttribute(_selectors.global.slice(1, -1)) ||
                             "").replace(/'/g, '"'))
                         : opts
                             ? opts
                             : {};
-                    megamenu = initAmegmen(thisMegamenu, deepMerge(cDefaults, receivedOptionsStr));
-                    if (megamenu) {
-                        allInstances[megamenuId] = megamenu;
-                        returnArr.push(megamenu);
+                    core = initAmegmen(megamenuId, thisMegamenu, deepMerge(Object.assign({}, cDefaults), receivedOptionsStr));
+                    if (core) {
+                        allInstances[megamenuId] = core;
+                        coreArr.push(core);
                     }
                 }
             });
             win.addEventListener("resize", winResizeFn, _useCapture);
-            return {
-                destroy: destroy.bind(this, returnArr),
-                extraOpen: openMegamenu.bind(this, returnArr),
-                extraClose: closeMegamenu.bind(this, returnArr),
-            };
+            coreArr.forEach((core) => {
+                const returnObj = {
+                    destroy: destroy.bind(this, core, coreArr),
+                    id: core.id,
+                    extraOpen: openMegamenu.bind(this, core, coreArr),
+                    extraClose: closeMegamenu.bind(this, core, coreArr),
+                };
+                returnArr.push(returnObj);
+                allReturnInstances.push(returnObj);
+            });
+            return returnArr;
         }
     }
     setTimeout(() => {
@@ -293,6 +296,7 @@ const AMegMen = (() => {
     return {
         version: __v,
         init: Root.getInstance().init,
+        getAllInstances: allReturnInstances,
     };
 })();
 

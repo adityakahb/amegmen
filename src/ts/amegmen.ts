@@ -30,6 +30,7 @@ const AMegMen = (() => {
   type ICore = {
     close?: HTMLElement;
     eH: IEventHandler[];
+    id: string;
     main: HTMLElement;
     o: ISettingsShortened;
     open?: HTMLElement;
@@ -45,7 +46,16 @@ const AMegMen = (() => {
     remove: () => void;
   };
 
+  type IReturnObj = {
+    id: string;
+    destroy: FunctionType;
+    extraOpen: FunctionType;
+    extraClose: FunctionType;
+  };
+
   const __v = "2.0.0";
+  const win = window;
+
   const _events = {
     c: "click",
     kd: "keydown",
@@ -95,8 +105,9 @@ const AMegMen = (() => {
   const _useCapture = false;
 
   const allInstances: IInstances = {};
-  const win = window;
+  const allReturnInstances: IReturnObj[] = [];
   let instanceIndex = 0;
+
   let resizeTimer: any;
 
   const cDefaults: ISettings = {
@@ -208,8 +219,8 @@ const AMegMen = (() => {
     return eventHandlerObj;
   };
 
-  const areValidOptions = (options: ISettings): boolean => {
-    const receivedArr: number[] | string[] = Object.keys(options);
+  const areValidOptions = (localOptions: ISettings): boolean => {
+    const receivedArr: number[] | string[] = Object.keys(localOptions);
     const defaultArr: number[] | string[] = Object.keys(cDefaults);
     const breakpointsArr: number[] = [];
     const duplicates: number[] = [];
@@ -221,10 +232,9 @@ const AMegMen = (() => {
     if (resultArr.length) {
       return false;
     }
-    options.breakpoints?.forEach((breakpoint) => {
-      if (breakpoint.minWidth) {
-        breakpointsArr.push(breakpoint.minWidth);
-      }
+
+    localOptions.breakpoints?.forEach((breakpoint) => {
+      breakpoint.minWidth && breakpointsArr.push(breakpoint.minWidth);
     });
 
     breakpointsArr?.forEach((item) => {
@@ -233,7 +243,7 @@ const AMegMen = (() => {
         : seen.push(item);
     });
 
-    return duplicates.length > 0 ? false : true;
+    return duplicates.length === 0;
   };
 
   const mergeOptions = (s: ISettings): ISettingsShortened => {
@@ -284,6 +294,7 @@ const AMegMen = (() => {
     core: ICore,
     shouldOpen: boolean,
   ) => {
+    event.preventDefault();
     if (shouldOpen) {
       core.open && addAttribute(core.open, "tabindex", "-1");
       core.close && removeAttribute(core.close, "tabindex");
@@ -299,25 +310,28 @@ const AMegMen = (() => {
     core.close &&
       core.eH.push(
         eventHandler(core.close, _events.c, (event) => {
-          event.preventDefault();
           toggleOpenCloseMobile(event, core, false);
         }),
       );
     core.open &&
       core.eH.push(
         eventHandler(core.open, _events.c, (event) => {
-          event.preventDefault();
           toggleOpenCloseMobile(event, core, true);
         }),
       );
   };
 
-  const initAmegmen = (nav: Element, options: ISettings): ICore | null => {
+  const initAmegmen = (
+    menuId: string,
+    nav: Element,
+    options: ISettings,
+  ): ICore | null => {
     if (areValidOptions(options)) {
       typeof options.beforeInitFn === "function" && options.beforeInitFn();
       const core: ICore = {
         close: $(nav, _selectors.close) as HTMLElement,
         eH: [],
+        id: menuId,
         main: $(nav, _selectors.main) as HTMLElement,
         o: mergeOptions(options),
         open: $(nav, _selectors.open) as HTMLElement,
@@ -338,33 +352,33 @@ const AMegMen = (() => {
     return null;
   };
 
-  const destroy = (cores: ICore[]) => {
-    console.log("=========================destroy", cores);
+  const destroy = (core: ICore, cores: ICore[]) => {
+    console.log("=========================destroy", core.id, cores);
   };
 
-  const openMegamenu = (cores: ICore[]) => {
-    console.log("=========================openMegamenu", cores);
+  const openMegamenu = (core: ICore, cores: ICore[]) => {
+    console.log("=========================openMegamenu", core.id, cores);
   };
 
-  const closeMegamenu = (cores: ICore[]) => {
-    console.log("=========================openMegamenu", cores);
+  const closeMegamenu = (core: ICore, cores: ICore[]) => {
+    console.log("=========================openMegamenu", core.id, cores);
   };
 
   class Root {
     private static instance: Root;
-    public static getInstance(): Root {
-      if (!Root.instance) {
-        Root.instance = new Root();
-      }
 
+    public static getInstance(): Root {
+      !Root.instance && (Root.instance = new Root());
       return Root.instance;
     }
+
     public initGlobal() {
       this.init(true, "");
     }
+
     public init(selector: boolean | string, opts: string | undefined) {
-      let receivedOptionsStr: ISettings;
-      const returnArr: ICore[] = [];
+      const coreArr: ICore[] = [];
+      const returnArr: IReturnObj[] = [];
       const isGlobal = typeof selector === "boolean" && selector;
       const allMegamenus = isGlobal
         ? $$(document as Document, _selectors.global)
@@ -372,10 +386,12 @@ const AMegMen = (() => {
 
       allMegamenus.forEach((thisMegamenu: Element) => {
         const megamenuId = generateID(thisMegamenu);
-        let megamenu: ICore | null;
+        let core: ICore | null;
+
         addAttribute(thisMegamenu as HTMLElement, "id", megamenuId);
+
         if (!allInstances[megamenuId]) {
-          receivedOptionsStr = isGlobal
+          const receivedOptionsStr: ISettings = isGlobal
             ? JSON.parse(
                 (
                   thisMegamenu.getAttribute(_selectors.global.slice(1, -1)) ||
@@ -385,24 +401,35 @@ const AMegMen = (() => {
             : opts
               ? opts
               : {};
-          megamenu = initAmegmen(
+          core = initAmegmen(
+            megamenuId,
             thisMegamenu,
-            deepMerge(cDefaults, receivedOptionsStr),
+            deepMerge({ ...cDefaults }, receivedOptionsStr),
           );
-          if (megamenu) {
-            allInstances[megamenuId] = megamenu;
-            returnArr.push(megamenu);
+          if (core) {
+            allInstances[megamenuId] = core;
+            coreArr.push(core);
           }
         }
       });
+
       win.addEventListener("resize", winResizeFn, _useCapture);
-      return {
-        destroy: destroy.bind(this, returnArr),
-        extraOpen: openMegamenu.bind(this, returnArr),
-        extraClose: closeMegamenu.bind(this, returnArr),
-      };
+
+      coreArr.forEach((core: ICore) => {
+        const returnObj: IReturnObj = {
+          destroy: destroy.bind(this, core, coreArr),
+          id: core.id,
+          extraOpen: openMegamenu.bind(this, core, coreArr),
+          extraClose: closeMegamenu.bind(this, core, coreArr),
+        };
+        returnArr.push(returnObj);
+        allReturnInstances.push(returnObj);
+      });
+
+      return returnArr;
     }
   }
+
   setTimeout(() => {
     Root.getInstance().initGlobal();
   }, 0);
@@ -410,5 +437,6 @@ const AMegMen = (() => {
   return {
     version: __v,
     init: Root.getInstance().init,
+    getAllInstances: allReturnInstances,
   };
 })();
