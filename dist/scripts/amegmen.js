@@ -1,35 +1,34 @@
 "use strict";
-var AMegMen;
-(function (AMegMen) {
-    const __v = '2.0.0';
+const AMegMen = (() => {
+    const __v = "2.0.0";
     const _events = {
-        c: 'click',
-        kd: 'keydown',
-        ku: 'keyup',
-        md: 'mousedown',
-        mu: 'mouseup',
+        c: "click",
+        kd: "keydown",
+        ku: "keyup",
+        md: "mousedown",
+        mu: "mouseup",
     };
     const _keys = {
-        s: 'space',
-        en: 'enter',
-        es: 'escape',
-        ra: 'rightarrow',
-        la: 'leftarrow',
-        ta: 'toparrow',
-        ba: 'bottomarrow',
-        h: 'home',
-        e: 'end',
+        s: "space",
+        en: "enter",
+        es: "escape",
+        ra: "rightarrow",
+        la: "leftarrow",
+        ta: "toparrow",
+        ba: "bottomarrow",
+        h: "home",
+        e: "end",
     };
     const _focusableElements = [
-        'a[href]',
-        'button:enabled',
-        'input:enabled',
-        'select:enabled',
-        'textarea:enabled',
-        'option:enabled',
+        "a[href]",
+        "button:enabled",
+        "input:enabled",
+        "select:enabled",
+        "textarea:enabled",
+        "option:enabled",
         "[tabindex]:not([tabindex='-1'])",
-    ].join(', ');
-    const _idPrefix = '__amegmen';
+    ].join(", ");
+    const _idPrefix = "__amegmen";
     const _selectors = {
         close: `[data${_idPrefix}-close]`,
         global: `[data${_idPrefix}-auto]`,
@@ -54,8 +53,7 @@ var AMegMen;
     };
     const isVisible = (element) => {
         const elementStyle = win.getComputedStyle(element);
-        return (elementStyle.display !== 'none' &&
-            elementStyle.visibility !== 'hidden');
+        return (elementStyle.display !== "none" && elementStyle.visibility !== "hidden");
     };
     const isFocusable = (element) => {
         return isVisible(element) && element.matches(_focusableElements);
@@ -70,13 +68,13 @@ var AMegMen;
     };
     const $$ = (parent, str) => Array.prototype.slice.call(parent.querySelectorAll(str) || []);
     const $ = (parent, str) => $$(parent, str)[0];
-    const generateID = (element) => element.getAttribute('id') ||
+    const generateID = (element) => element.getAttribute("id") ||
         `${_idPrefix}_${new Date().getTime()}_root_${instanceIndex++}`;
     const addClass = (elem, classNames) => {
-        elem.classList.add(...classNames.split(' '));
+        elem.classList.add(...classNames.split(" "));
     };
     const removeClass = (elem, classNames) => {
-        elem.classList.remove(...classNames.split(' '));
+        elem.classList.remove(...classNames.split(" "));
     };
     const addAttribute = (elem, attribute, value) => {
         elem.setAttribute(attribute, value);
@@ -101,13 +99,12 @@ var AMegMen;
     //   }
     // };
     const deepMerge = (target, source) => {
-        if (typeof target !== 'object' || typeof source !== 'object') {
+        if (typeof target !== "object" || typeof source !== "object") {
             return source;
         }
         for (const key in source) {
             if (source[key] instanceof Array) {
-                !target[key] ||
-                    (!(target[key] instanceof Array) && (target[key] = []));
+                !target[key] || (!(target[key] instanceof Array) && (target[key] = []));
                 target[key] = target[key].concat(source[key]);
             }
             else if (source[key] instanceof Object) {
@@ -162,7 +159,7 @@ var AMegMen;
         };
         const defaultItem = {
             hov: false,
-            lay: 'xs',
+            lay: "xs",
             minW: 0,
         };
         if ((s.breakpoints || []).length > 0) {
@@ -177,9 +174,7 @@ var AMegMen;
                             ? bp.actOnHover
                             : newBps[currentIndex].hov,
                         lay: bp.layout ? bp.layout : newBps[currentIndex].lay,
-                        minW: bp.minWidth
-                            ? bp.minWidth
-                            : newBps[currentIndex].minW,
+                        minW: bp.minWidth ? bp.minWidth : newBps[currentIndex].minW,
                     });
                     currentIndex++;
                 }
@@ -192,20 +187,18 @@ var AMegMen;
         return o;
     };
     const applyLayout = (core) => {
-        let currentBP = core.o.bps
-            .filter((bp) => win.outerWidth >= bp.minW)
-            .pop();
+        let currentBP = core.o.bps.filter((bp) => win.outerWidth >= bp.minW).pop();
         !currentBP && (currentBP = core.o.bps.filter((bp) => bp.minW === 0)[0]);
         core.r.setAttribute(_selectors.vp.slice(1, -1), currentBP.lay);
     };
     const toggleOpenCloseMobile = (event, core, shouldOpen) => {
         if (shouldOpen) {
-            core.open && addAttribute(core.open, 'tabindex', '-1');
-            core.close && removeAttribute(core.close, 'tabindex');
+            core.open && addAttribute(core.open, "tabindex", "-1");
+            core.close && removeAttribute(core.close, "tabindex");
             return;
         }
-        core.close && addAttribute(core.close, 'tabindex', '-1');
-        core.open && removeAttribute(core.open, 'tabindex');
+        core.close && addAttribute(core.close, "tabindex", "-1");
+        core.open && removeAttribute(core.open, "tabindex");
         return;
     };
     const initiateStylesAndEvents = (core) => {
@@ -222,8 +215,7 @@ var AMegMen;
     };
     const initAmegmen = (nav, options) => {
         if (areValidOptions(options)) {
-            typeof options.beforeInitFn === 'function' &&
-                options.beforeInitFn();
+            typeof options.beforeInitFn === "function" && options.beforeInitFn();
             const core = {
                 close: $(nav, _selectors.close),
                 eH: [],
@@ -232,27 +224,25 @@ var AMegMen;
                 open: $(nav, _selectors.open),
                 r: nav,
             };
-            core.o.z &&
-                core.o.z > 0 &&
-                (core.main.style.zIndex = core.o.z + '');
+            core.o.z && core.o.z > 0 && (core.main.style.zIndex = core.o.z + "");
             core.o.rtl && addClass(core.main, _classes.rtl);
             initiateStylesAndEvents(core);
             applyLayout(core);
             addClass(core.r, _classes.active);
-            typeof options.afterInitFn === 'function' && options.afterInitFn();
+            typeof options.afterInitFn === "function" && options.afterInitFn();
             return core;
         }
         // TODO: Log invalid options
         return null;
     };
     const destroy = (cores) => {
-        console.log('=========================destroy', cores);
+        console.log("=========================destroy", cores);
     };
     const openMegamenu = (cores) => {
-        console.log('=========================openMegamenu', cores);
+        console.log("=========================openMegamenu", cores);
     };
     const closeMegamenu = (cores) => {
-        console.log('=========================openMegamenu', cores);
+        console.log("=========================openMegamenu", cores);
     };
     class Root {
         static getInstance() {
@@ -262,22 +252,23 @@ var AMegMen;
             return Root.instance;
         }
         initGlobal() {
-            this.init(true, '');
+            this.init(true, "");
         }
         init(selector, opts) {
             let receivedOptionsStr;
             const returnArr = [];
-            const isGlobal = typeof selector === 'boolean' && selector;
+            const isGlobal = typeof selector === "boolean" && selector;
             const allMegamenus = isGlobal
                 ? $$(document, _selectors.global)
                 : $$(document, selector.toString());
             allMegamenus.forEach((thisMegamenu) => {
                 const megamenuId = generateID(thisMegamenu);
                 let megamenu;
-                addAttribute(thisMegamenu, 'id', megamenuId);
+                addAttribute(thisMegamenu, "id", megamenuId);
                 if (!allInstances[megamenuId]) {
                     receivedOptionsStr = isGlobal
-                        ? JSON.parse((thisMegamenu.getAttribute(_selectors.global.slice(1, -1)) || '').replace(/'/g, '"'))
+                        ? JSON.parse((thisMegamenu.getAttribute(_selectors.global.slice(1, -1)) ||
+                            "").replace(/'/g, '"'))
                         : opts
                             ? opts
                             : {};
@@ -288,7 +279,7 @@ var AMegMen;
                     }
                 }
             });
-            win.addEventListener('resize', winResizeFn, _useCapture);
+            win.addEventListener("resize", winResizeFn, _useCapture);
             return {
                 destroy: destroy.bind(this, returnArr),
                 extraOpen: openMegamenu.bind(this, returnArr),
@@ -299,8 +290,10 @@ var AMegMen;
     setTimeout(() => {
         Root.getInstance().initGlobal();
     }, 0);
-    AMegMen.version = __v;
-    AMegMen.init = Root.getInstance().init;
-})(AMegMen || (AMegMen = {}));
+    return {
+        version: __v,
+        init: Root.getInstance().init,
+    };
+})();
 
 //# sourceMappingURL=amegmen.js.map
