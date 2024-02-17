@@ -10,15 +10,15 @@ const AMegMen = (() => {
         mu: "mouseup",
     };
     const _keys = {
-        s: "space",
-        en: "enter",
-        es: "escape",
-        ra: "rightarrow",
-        la: "leftarrow",
-        ta: "toparrow",
-        ba: "bottomarrow",
-        h: "home",
-        e: "end",
+        space: "space",
+        enter: "enter",
+        escape: "escape",
+        rightarrow: "rightarrow",
+        leftarrow: "leftarrow",
+        toparrow: "toparrow",
+        bottomarrow: "bottomarrow",
+        home: "home",
+        end: "end",
     };
     const _focusableElements = [
         "a[href]",
@@ -66,6 +66,9 @@ const AMegMen = (() => {
                 allInstances[key] && applyLayout(allInstances[key]);
             });
         }, 100);
+    };
+    const keyAccessFn = (event) => {
+        console.log("==========event.key", event.key.toLowerCase());
     };
     const $$ = (parent, str) => Array.prototype.slice.call(parent.querySelectorAll(str) || []);
     const $ = (parent, str) => $$(parent, str)[0];
@@ -249,6 +252,8 @@ const AMegMen = (() => {
             return Root.instance;
         }
         initGlobal() {
+            win.addEventListener("resize", winResizeFn, _useCapture);
+            win.addEventListener("keyup", keyAccessFn, _useCapture);
             this.init(true, "");
         }
         init(selector, opts) {
@@ -276,7 +281,6 @@ const AMegMen = (() => {
                     }
                 }
             });
-            win.addEventListener("resize", winResizeFn, _useCapture);
             coreArr.forEach((core) => {
                 const returnObj = {
                     destroy: destroy.bind(this, core, coreArr),

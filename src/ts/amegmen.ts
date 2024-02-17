@@ -65,15 +65,15 @@ const AMegMen = (() => {
   };
 
   const _keys = {
-    s: "space",
-    en: "enter",
-    es: "escape",
-    ra: "rightarrow",
-    la: "leftarrow",
-    ta: "toparrow",
-    ba: "bottomarrow",
-    h: "home",
-    e: "end",
+    space: "space",
+    enter: "enter",
+    escape: "escape",
+    rightarrow: "rightarrow",
+    leftarrow: "leftarrow",
+    toparrow: "toparrow",
+    bottomarrow: "bottomarrow",
+    home: "home",
+    end: "end",
   };
 
   const _focusableElements = [
@@ -134,6 +134,10 @@ const AMegMen = (() => {
         allInstances[key] && applyLayout(allInstances[key]);
       });
     }, 100);
+  };
+
+  const keyAccessFn = (event: KeyboardEvent) => {
+    console.log("==========event.key", event.key.toLowerCase());
   };
 
   const $$ = (parent: Element | Document, str: string) =>
@@ -373,6 +377,8 @@ const AMegMen = (() => {
     }
 
     public initGlobal() {
+      win.addEventListener("resize", winResizeFn, _useCapture);
+      win.addEventListener("keyup", keyAccessFn, _useCapture);
       this.init(true, "");
     }
 
@@ -412,8 +418,6 @@ const AMegMen = (() => {
           }
         }
       });
-
-      win.addEventListener("resize", winResizeFn, _useCapture);
 
       coreArr.forEach((core: ICore) => {
         const returnObj: IReturnObj = {
