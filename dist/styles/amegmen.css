@@ -1,36 +1,36 @@
-[data__amegmen] {
+[data-__amegmen] {
   position: relative;
 }
-[data__amegmen], [data__amegmen]:after, [data__amegmen]:before,
-[data__amegmen] *,
-[data__amegmen] *:after,
-[data__amegmen] *:before {
+[data-__amegmen], [data-__amegmen]:after, [data-__amegmen]:before,
+[data-__amegmen] *,
+[data-__amegmen] *:after,
+[data-__amegmen] *:before {
   box-sizing: border-box;
 }
-[data__amegmen] button:not(:disabled),
-[data__amegmen] [type=button]:not(:disabled),
-[data__amegmen] [type=reset]:not(:disabled),
-[data__amegmen] [type=submit]:not(:disabled) {
+[data-__amegmen] button:not(:disabled),
+[data-__amegmen] [type=button]:not(:disabled),
+[data-__amegmen] [type=reset]:not(:disabled),
+[data-__amegmen] [type=submit]:not(:disabled) {
   cursor: pointer;
 }
-[data__amegmen] .__amegmen-hidden {
+[data-__amegmen] .__amegmen-hidden {
   display: none !important;
 }
-[data__amegmen].__amegmen-editmode {
+[data-__amegmen].__amegmen-editmode {
   background-color: inherit;
 }
-[data__amegmen] [data__amegmen-level], [data__amegmen] [data__amegmen-grid] {
+[data-__amegmen] [data-__amegmen-level], [data-__amegmen] [data-__amegmen-grid] {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-[data__amegmen] [data__amegmen-level] li, [data__amegmen] [data__amegmen-grid] li {
+[data-__amegmen] [data-__amegmen-level] li, [data-__amegmen] [data-__amegmen-grid] li {
   display: block;
 }
 
 /**==================================**/
 /**================xs================**/
-[data__amegmen-viewport=xs] [data__amegmen-main], [data__amegmen-viewport=xs] [data__amegmen-subnav] {
+[data-__amegmen-viewport=xs] [data-__amegmen-main], [data-__amegmen-viewport=xs] [data-__amegmen-subnav] {
   height: 0;
   left: 0;
   position: fixed;
@@ -38,10 +38,10 @@
   visibility: hidden;
   width: 100%;
 }
-[data__amegmen-viewport=xs] [data__amegmen-main] {
+[data-__amegmen-viewport=xs] [data-__amegmen-main] {
   z-index: 9999;
 }
-[data__amegmen-viewport=xs] [data__amegmen-subnav] {
+[data-__amegmen-viewport=xs] [data-__amegmen-subnav] {
   z-index: 2;
 }
 

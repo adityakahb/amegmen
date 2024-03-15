@@ -1,4 +1,4 @@
-[data#{$idPrefix}-main], [data#{$idPrefix}-subnav] {
+[#{$idPrefixData}-main], [#{$idPrefixData}-subnav] {
   height: 0;
   left: 0;
   position: fixed;
@@ -6,9 +6,9 @@
   visibility: hidden;
   width: 100%;
 }
-[data#{$idPrefix}-main] {
+[#{$idPrefixData}-main] {
   z-index: 9999;
 }
-[data#{$idPrefix}-subnav] {
+[#{$idPrefixData}-subnav] {
   z-index: 2;
 }

@@ -89,11 +89,11 @@ const AMegMen = (() => {
   const _idPrefix = "__amegmen";
 
   const _selectors = {
-    close: `[data${_idPrefix}-close]`,
-    global: `[data${_idPrefix}-auto]`,
-    main: `[data${_idPrefix}-main]`,
-    open: `[data${_idPrefix}-open]`,
-    vp: `[data${_idPrefix}-viewport]`,
+    close: `[data-${_idPrefix}-close]`,
+    global: `[data-${_idPrefix}-auto]`,
+    main: `[data-${_idPrefix}-main]`,
+    open: `[data-${_idPrefix}-open]`,
+    vp: `[data-${_idPrefix}-viewport]`,
   };
 
   const _classes = {

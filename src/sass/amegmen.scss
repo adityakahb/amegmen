@@ -1,5 +1,6 @@
 $timeInMilliseconds: 250ms;
 $idPrefix: "__amegmen";
+$idPrefixData: "data-" + #{$idPrefix};
 @mixin reset-list {
   margin: 0;
   padding: 0;
@@ -12,7 +13,7 @@ $idPrefix: "__amegmen";
     display: block;
   }
 }
-[data#{$idPrefix}] {
+[#{$idPrefixData}] {
   position: relative;
   &,
   * {
@@ -34,7 +35,7 @@ $idPrefix: "__amegmen";
   &.#{$idPrefix}-editmode {
     background-color: inherit;
   }
-  [data#{$idPrefix}-level], [data#{$idPrefix}-grid] {
+  [#{$idPrefixData}-level], [#{$idPrefixData}-grid] {
     @include horizontal-list;
   }
 }
@@ -42,24 +43,24 @@ $idPrefix: "__amegmen";
 
 /**==================================**/
 /**================xs================**/
-[data#{$idPrefix}-viewport='xs'] {
+[#{$idPrefixData}-viewport='xs'] {
   @import './breakpoints/_xs';
 }
 
 /**==================================**/
 /**================sm================**/
-[data#{$idPrefix}-viewport='sm'] {
+[#{$idPrefixData}-viewport='sm'] {
   @import './breakpoints/_sm';
 }
 
 /**==================================**/
 /**================md================**/
-[data#{$idPrefix}-viewport='md'] {
+[#{$idPrefixData}-viewport='md'] {
   @import './breakpoints/_md';
 }
 
 /**==================================**/
 /**================lg================**/
-[data#{$idPrefix}-viewport='lg'] {
+[#{$idPrefixData}-viewport='lg'] {
   @import './breakpoints/_lg';
 }
