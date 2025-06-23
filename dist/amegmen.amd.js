@@ -1,56 +1,77 @@
-define(['exports'], (function (exports) { 'use strict';
+define((function () { 'use strict';
 
-    // src/index.ts
-    class MegaMenu {
-        element;
-        options;
-        constructor(options) {
-            this.options = {
-                animationSpeed: 300, // Default value
-                ...options,
+    var AMegMen;
+    (function (AMegMen) {
+        const globalEvents = [];
+        const $$ = (parent, selector) => Array.from(parent.querySelectorAll(selector));
+        // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
+        const defaults = {
+            idPrefix: 'amegmen_id_',
+        };
+        const toggleUniqueId = (element, settings, unique_number, shouldAddId) => {
+            if (settings.idPrefix) {
+                if (shouldAddId && !element.getAttribute('id')) {
+                    element.setAttribute('id', `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`);
+                }
+                else if (!shouldAddId && element.getAttribute('id')) {
+                    const thisid = element.getAttribute('id');
+                    const regex = new RegExp(settings.idPrefix, 'gi');
+                    if (regex.test(thisid || '')) {
+                        element.removeAttribute('id');
+                    }
+                }
+            }
+        };
+        console.log('==================================================toggleUniqueId', toggleUniqueId);
+        console.log('==================================================defaults', defaults);
+        const removeEventListeners = (core, element) => {
+            let j = core.eH.length;
+            while (j--) {
+                if (core.eH[j].element.isEqualNode && core.eH[j].element.isEqualNode(element)) {
+                    core.eH[j].remove();
+                    core.eH.splice(j, 1);
+                }
+            }
+        };
+        const eventHandler = (element, type, listener) => {
+            const eventHandlerObj = {
+                element,
+                remove: () => {
+                    element.removeEventListener(type, listener, false);
+                },
             };
-            const element = document.querySelector(this.options.selector);
-            if (!element) {
-                throw new Error(`MegaMenu: Element with selector "${this.options.selector}" not found.`);
-            }
-            this.element = element;
-            this.init();
+            element.addEventListener(type, listener, false);
+            return eventHandlerObj;
+        };
+        class Root {
         }
-        init() {
-            console.log(`MegaMenu initialized for element: ${this.options.selector}`);
-            console.log(`Animation speed: ${this.options.animationSpeed}ms`);
-            // Add your megamenu logic here
-            this.element.addEventListener('mouseenter', this.openMenu.bind(this));
-            this.element.addEventListener('mouseleave', this.closeMenu.bind(this));
-            // Example: If you have a specific content area within the megamenu
-            const content = this.element.querySelector('.megamenu-content');
-            if (content) {
-                content.setAttribute('style', `--animation-speed: ${this.options.animationSpeed}ms;`);
-            }
-        }
-        openMenu() {
-            console.log('Opening megamenu');
-            this.element.classList.add('is-open');
-        }
-        closeMenu() {
-            console.log('Closing megamenu');
-            this.element.classList.remove('is-open');
-        }
-        // Public method to destroy the instance, if needed
-        destroy() {
-            this.element.removeEventListener('mouseenter', this.openMenu.bind(this));
-            this.element.removeEventListener('mouseleave', this.closeMenu.bind(this));
-            console.log('MegaMenu destroyed.');
-        }
-    }
-    // Export a factory function for easier instantiation
-    function createMegaMenu(options) {
-        return new MegaMenu(options);
-    }
+        AMegMen.init = () => new Root();
+        AMegMen.destroy = () => new Root();
+        AMegMen.initGlobal = () => {
+            const allMenuElements = $$(document, '[data-amegmen]');
+            // const allGlobalInstances = [];
+            // console.log(
+            //   '==================================================allGlobalInstances',
+            //   allGlobalInstances,
+            // );
+            allMenuElements.forEach((menuEl) => {
+                try {
+                    const receivedOptions = menuEl.getAttribute('data-amegmen') || '{}';
+                    const menuOptions = { ...defaults, ...JSON.parse(receivedOptions) };
+                    console.log('==================================================menuOptions', menuOptions);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+            });
+        };
+        AMegMen.destroyGlobal = () => {
+            console.log('==================================================removeEventListeners', removeEventListeners);
+        };
+        globalEvents.push(eventHandler(document, 'DOMContentLoaded', AMegMen.initGlobal));
+    })(AMegMen || (AMegMen = {}));
+    var AMegMen$1 = AMegMen;
 
-    exports.createMegaMenu = createMegaMenu;
-    exports["default"] = MegaMenu;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
+    return AMegMen$1;
 
 }));

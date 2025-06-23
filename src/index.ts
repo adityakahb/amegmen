@@ -1,64 +1,103 @@
-// src/index.ts
-
-interface MegaMenuOptions {
-  selector: string;
-  animationSpeed?: number;
-  // Add more options as needed for your plugin
+interface IAMegMenSettings {
+  idPrefix?: string;
+}
+interface IEventHandler {
+  element: Element | Document | Window;
+  remove: () => void;
 }
 
-class MegaMenu {
-  private element: HTMLElement;
-  private options: MegaMenuOptions;
+interface ICore {
+  id: string;
+  events: [];
+}
 
-  constructor(options: MegaMenuOptions) {
-    this.options = {
-      animationSpeed: 300, // Default value
-      ...options,
+namespace AMegMen {
+  const globalEvents: IEventHandler[] = [];
+  const allInstances: ICore[] = [];
+
+  const $$ = (parent: Element | Document, selector: string) =>
+    Array.from(parent.querySelectorAll(selector));
+  // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
+
+  const defaults: IAMegMenSettings = {
+    idPrefix: 'amegmen_id_',
+  };
+
+  const toggleUniqueId = (
+    element: HTMLElement,
+    settings: IAMegMenSettings,
+    unique_number: number,
+    shouldAddId: boolean,
+  ) => {
+    if (settings.idPrefix) {
+      if (shouldAddId && !element.getAttribute('id')) {
+        element.setAttribute('id', `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`);
+      } else if (!shouldAddId && element.getAttribute('id')) {
+        const thisid = element.getAttribute('id');
+        const regex = new RegExp(settings.idPrefix, 'gi');
+        if (regex.test(thisid || '')) {
+          element.removeAttribute('id');
+        }
+      }
+    }
+  };
+
+  console.log('==================================================toggleUniqueId', toggleUniqueId);
+  console.log('==================================================defaults', defaults);
+
+  const removeEventListeners = (core: any, element: Element | Document | Window) => {
+    let j = core.eH.length;
+    while (j--) {
+      if (core.eH[j].element.isEqualNode && core.eH[j].element.isEqualNode(element)) {
+        core.eH[j].remove();
+        core.eH.splice(j, 1);
+      }
+    }
+  };
+
+  const eventHandler = (
+    element: Element | Document | Window,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+  ) => {
+    const eventHandlerObj: IEventHandler = {
+      element,
+      remove: () => {
+        element.removeEventListener(type, listener, false);
+      },
     };
-    const element = document.querySelector(this.options.selector);
-    if (!element) {
-      throw new Error(`MegaMenu: Element with selector "${this.options.selector}" not found.`);
-    }
-    this.element = element as HTMLElement;
-    this.init();
-  }
+    element.addEventListener(type, listener, false);
+    return eventHandlerObj;
+  };
 
-  private init(): void {
-    console.log(`MegaMenu initialized for element: ${this.options.selector}`);
-    console.log(`Animation speed: ${this.options.animationSpeed}ms`);
-    // Add your megamenu logic here
-    this.element.addEventListener('mouseenter', this.openMenu.bind(this));
-    this.element.addEventListener('mouseleave', this.closeMenu.bind(this));
+  class Root {}
+  export const init = () => new Root();
+  export const destroy = () => new Root();
 
-    // Example: If you have a specific content area within the megamenu
-    const content = this.element.querySelector('.megamenu-content');
-    if (content) {
-      content.setAttribute('style', `--animation-speed: ${this.options.animationSpeed}ms;`);
-    }
-  }
-
-  private openMenu(): void {
-    console.log('Opening megamenu');
-    this.element.classList.add('is-open');
-  }
-
-  private closeMenu(): void {
-    console.log('Closing megamenu');
-    this.element.classList.remove('is-open');
-  }
-
-  // Public method to destroy the instance, if needed
-  public destroy(): void {
-    this.element.removeEventListener('mouseenter', this.openMenu.bind(this));
-    this.element.removeEventListener('mouseleave', this.closeMenu.bind(this));
-    console.log('MegaMenu destroyed.');
-  }
+  export const initGlobal = () => {
+    const allMenuElements = $$(document, '[data-amegmen]');
+    // const allGlobalInstances = [];
+    // console.log(
+    //   '==================================================allGlobalInstances',
+    //   allGlobalInstances,
+    // );
+    allMenuElements.forEach((menuEl) => {
+      try {
+        const receivedOptions = menuEl.getAttribute('data-amegmen') || '{}';
+        const menuOptions: IAMegMenSettings = { ...defaults, ...JSON.parse(receivedOptions) };
+        console.log('==================================================menuOptions', menuOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  };
+  export const destroyGlobal = () => {
+    console.log(
+      '==================================================removeEventListeners',
+      removeEventListeners,
+    );
+  };
+  globalEvents.push(eventHandler(document as Document, 'DOMContentLoaded', initGlobal));
 }
 
-// Export a factory function for easier instantiation
-export function createMegaMenu(options: MegaMenuOptions): MegaMenu {
-  return new MegaMenu(options);
-}
-
-// Optionally, export the class directly as a default for scenarios where that's preferred
-export default MegaMenu;
+export default AMegMen;

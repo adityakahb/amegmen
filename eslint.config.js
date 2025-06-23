@@ -55,6 +55,7 @@ const thisConfig = [
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
+      'no-undef': 'off',
     },
   },
   // Override for test files

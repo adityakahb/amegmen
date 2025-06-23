@@ -1,16 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MegaMenu Plugin Test Page</title>
-    <link rel="stylesheet" href="./css/megamenu.css" />
+    <link rel="stylesheet" href="./dist/amegmen.css" />
   </head>
   <body>
     <div class="container">
       <h1>MegaMenu Plugin Example</h1>
 
-      <nav id="myMegamenu" class="megamenu">
+      <nav class="megamenu" data-amegmen="{'idPrefix': '__new'}">
         <ul>
           <li><a href="#">Home</a></li>
           <li>
@@ -44,14 +44,15 @@
       </p>
     </div>
 
-    <script src="./umd/megamenu.umd.js"></script>
+    <script src="./dist/amegmen.umd.js"></script>
     <script>
       // Initialize your MegaMenu plugin
       document.addEventListener('DOMContentLoaded', () => {
-        const myMegaMenu = MegaMenuPlugin.createMegaMenu({
-          selector: '#myMegamenu',
-          animationSpeed: 400, // Example custom option
-        });
+        console.log('==============AMegMen', AMegMen);
+        // const myMegaMenu = MegaMenuPlugin.createMegaMenu({
+        //   selector: '#myMegamenu',
+        //   animationSpeed: 400, // Example custom option
+        // });
 
         // You can also use the default export
         // const AnotherMegaMenu = new MegaMenuPlugin.default({ selector: '#anotherElement' });
