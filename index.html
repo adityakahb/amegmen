@@ -1,16 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>MegaMenu Plugin Test Page</title>
+    <link rel="stylesheet" href="./css/megamenu.css" />
   </head>
   <body>
-    Hello
-    <script type="module" src="./dist/amegmen.js"></script>
-    <script type="module">
-      document.addEventListener('DOMContentLoaded', (event) => {
-        console.log('DOM fully loaded and parsed', window.AMegMen);
+    <div class="container">
+      <h1>MegaMenu Plugin Example</h1>
+
+      <nav id="myMegamenu" class="megamenu">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li>
+            <a href="#">Products</a>
+            <div class="megamenu-content">
+              <h3>Product Categories</h3>
+              <ul>
+                <li><a href="#">Electronics</a></li>
+                <li><a href="#">Apparel</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="#">Software</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+
+      <p>
+        Hover over "Products" to see the megamenu in action. This is some placeholder content below
+        the menu.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    </div>
+
+    <script src="./umd/megamenu.umd.js"></script>
+    <script>
+      // Initialize your MegaMenu plugin
+      document.addEventListener('DOMContentLoaded', () => {
+        const myMegaMenu = MegaMenuPlugin.createMegaMenu({
+          selector: '#myMegamenu',
+          animationSpeed: 400, // Example custom option
+        });
+
+        // You can also use the default export
+        // const AnotherMegaMenu = new MegaMenuPlugin.default({ selector: '#anotherElement' });
       });
     </script>
   </body>
