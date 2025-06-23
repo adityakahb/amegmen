@@ -52,4 +52,3 @@ function createMegaMenu(options) {
 
 exports.createMegaMenu = createMegaMenu;
 exports["default"] = MegaMenu;
-//# sourceMappingURL=amegmen.cjs.map

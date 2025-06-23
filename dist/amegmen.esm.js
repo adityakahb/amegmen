@@ -47,4 +47,3 @@ function createMegaMenu(options) {
 }
 
 export { createMegaMenu, MegaMenu as default };
-//# sourceMappingURL=amegmen.esm.js.map

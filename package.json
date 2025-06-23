@@ -16,13 +16,12 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist",
-    "build:js": "rollup -c --config-file rollup.config.js --environment NODE_ENV:development",
-    "build:css": "rollup -c --config-file rollup.config.js --environment NODE_ENV:development",
-    "build": "npm-run-all clean build:js build:css",
-    "build:prod": "cross-env NODE_ENV=production npm-run-all clean build:js build:css",
-    "serve": "browser-sync start --server public --files 'public/**/*', 'dist/**/*', 'src/**/*'",
-    "dev": "npm-run-all -p --race \"rollup -c -w --config-file rollup.config.js\" serve",
-    "prepublishOnly": "npm run build:prod"
+    "crossenv:build": "cross-env GENERATE_SOURCEMAPS=true rollup -c",
+    "crossenv:dev": "cross-env GENERATE_SOURCEMAPS=false rollup -c -w",
+    "build:all": "cross-env GENERATE_SOURCEMAPS=false rollup -c",
+    "build:sourcemaps": "npm-run-all clean crossenv:build",
+    "serve": "browser-sync start --server . --files 'index.html', 'public/**/*', 'dist/**/*', 'src/**/*'",
+    "dev": "npm-run-all clean --parallel crossenv:dev serve"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
