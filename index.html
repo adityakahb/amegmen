@@ -4,45 +4,82 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MegaMenu Plugin Test Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="./dist/amegmen.css" />
   </head>
   <body>
-    <div class="container">
-      <h1>MegaMenu Plugin Example</h1>
-
-      <nav class="megamenu" data-amegmen="{'idPrefix': '__new'}">
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li>
-            <a href="#">Products</a>
-            <div class="megamenu-content">
-              <h3>Product Categories</h3>
-              <ul>
-                <li><a href="#">Electronics</a></li>
-                <li><a href="#">Apparel</a></li>
-                <li><a href="#">Books</a></li>
-                <li><a href="#">Software</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
-
-      <p>
-        Hover over "Products" to see the megamenu in action. This is some placeholder content below
-        the menu.
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
+    <h1>MegaMenu Plugin Example</h1>
+    <!-- START -->
+    <div class="amegmen-nav" data-amegmen>
+      <div class="amegmen-nav-cta">
+        <button type="button">Open</button>
+        <button type="button">Close</button>
+      </div>
+      <div class="amegmen-nav-wrapper">
+        <nav>
+          <ul class="amegmen-ul-0">
+            <li>
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#">Recipes</a>
+              <div class="amegmen-container">
+                <h2><a href="#">All Recipes</a></h2>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed malesuada massa.
+                  Nulla ac molestie lacus. Vestibulum ut efficitur lorem. Ut tortor urna, malesuada
+                  nec arcu sit amet, lobortis efficitur ipsum.
+                </p>
+                <ul class="amegmen-ul-1">
+                  <li>
+                    <h3><a href="#">By Occasion</a></h3>
+                    <ul class="amegmen-ul-2">
+                      <li><a href="#">Weeknight Dinners</a></li>
+                      <li><a href="#">Holiday Feasts</a></li>
+                      <li><a href="#">Seasonal Cooking</a></li>
+                      <li><a href="#">Entertaining &amp; Parties</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <h3><a href="#">By Diet</a></h3>
+                    <ul class="amegmen-ul-2">
+                      <li><a href="#">Vegan</a></li>
+                      <li><a href="#">Vegetarian</a></li>
+                      <li><a href="#">Gluten-Free</a></li>
+                      <li><a href="#">High-Protein</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <h3><a href="#">By Course</a></h3>
+                    <ul class="amegmen-ul-2">
+                      <li><a href="#">Breakfast</a></li>
+                      <li><a href="#">Lunch</a></li>
+                      <li><a href="#">Dinner</a></li>
+                      <li><a href="#">Dessert</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <h3><a href="#">Quick &amp; Easy</a></h3>
+                    <ul class="amegmen-ul-2">
+                      <li><a href="#">One-Pot Meals</a></li>
+                      <li><a href="#">Under 30 Minutes</a></li>
+                      <li><a href="#">5 Ingredients or Less</a></li>
+                      <li><a href="#">No-Cook &amp; Prep-Free</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
+    <!-- END -->
 
     <script src="./dist/amegmen.umd.js"></script>
     <script>

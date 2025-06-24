@@ -1,8 +1,8 @@
 declare namespace AMegMen {
-    class Root {
+    interface ISettings {
+        idPrefix: string;
     }
-    export const init: () => Root;
-    export const destroy: () => Root;
+    export const init: (root: Element, options: ISettings) => void;
     export const initGlobal: () => void;
     export const destroyGlobal: () => void;
     export {};

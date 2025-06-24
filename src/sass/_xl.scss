@@ -1,0 +1,7 @@
+$this-block: 'amegmen';
+
+.#{$this-block} {
+  &-ul-0 {
+    display: flex;
+  }
+}

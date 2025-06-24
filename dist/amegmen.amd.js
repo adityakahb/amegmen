@@ -3,24 +3,27 @@ define((function () { 'use strict';
     var AMegMen;
     (function (AMegMen) {
         const globalEvents = [];
+        const allInstances = {};
         const $$ = (parent, selector) => Array.from(parent.querySelectorAll(selector));
         // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
         const defaults = {
             idPrefix: 'amegmen_id_',
         };
         const toggleUniqueId = (element, settings, unique_number, shouldAddId) => {
-            if (settings.idPrefix) {
-                if (shouldAddId && !element.getAttribute('id')) {
-                    element.setAttribute('id', `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`);
-                }
-                else if (!shouldAddId && element.getAttribute('id')) {
-                    const thisid = element.getAttribute('id');
-                    const regex = new RegExp(settings.idPrefix, 'gi');
-                    if (regex.test(thisid || '')) {
-                        element.removeAttribute('id');
-                    }
+            let instanceId = '';
+            if (shouldAddId && !element.getAttribute('id')) {
+                instanceId = `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`;
+                element.setAttribute('id', instanceId);
+            }
+            else if (!shouldAddId && element.getAttribute('id')) {
+                const thisid = element.getAttribute('id') || '';
+                const regex = new RegExp(settings.idPrefix, 'gi');
+                instanceId = thisid;
+                if (regex.test(thisid || '')) {
+                    element.removeAttribute('id');
                 }
             }
+            return instanceId;
         };
         console.log('==================================================toggleUniqueId', toggleUniqueId);
         console.log('==================================================defaults', defaults);
@@ -43,10 +46,29 @@ define((function () { 'use strict';
             element.addEventListener(type, listener, false);
             return eventHandlerObj;
         };
-        class Root {
+        const initCoreFn = (root, options) => {
+            console.log('==================================================root', root);
+            console.log('==================================================options', options);
+            return {
+                events: [],
+            };
+        };
+        class Core {
+            root;
+            options;
+            constructor(root, options) {
+                this.root = root;
+                this.options = options;
+                initCoreFn(this.root, this.options);
+            }
         }
-        AMegMen.init = () => new Root();
-        AMegMen.destroy = () => new Root();
+        AMegMen.init = (root, options) => {
+            const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
+            if (!allInstances[rootId]) {
+                allInstances[rootId] = new Core(root, options);
+            }
+        };
+        // export const destroy = () => new Root();
         AMegMen.initGlobal = () => {
             const allMenuElements = $$(document, '[data-amegmen]');
             // const allGlobalInstances = [];
@@ -56,9 +78,12 @@ define((function () { 'use strict';
             // );
             allMenuElements.forEach((menuEl) => {
                 try {
-                    const receivedOptions = menuEl.getAttribute('data-amegmen') || '{}';
-                    const menuOptions = { ...defaults, ...JSON.parse(receivedOptions) };
-                    console.log('==================================================menuOptions', menuOptions);
+                    const receivedOptions = Object.fromEntries(Object.entries({
+                        idPrefix: menuEl.dataset.amegmenIdPrefix,
+                    }).filter(([, value]) => value !== undefined));
+                    // menuEl.getAttribute('data-amegmen') || '{}';
+                    const menuOptions = { ...defaults, ...receivedOptions };
+                    AMegMen.init(menuEl, menuOptions);
                 }
                 catch (error) {
                     console.error(error);

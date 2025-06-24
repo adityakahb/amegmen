@@ -1,45 +1,51 @@
-interface IAMegMenSettings {
-  idPrefix?: string;
-}
-interface IEventHandler {
-  element: Element | Document | Window;
-  remove: () => void;
-}
-
-interface ICore {
-  id: string;
-  events: [];
-}
-
 namespace AMegMen {
-  const globalEvents: IEventHandler[] = [];
-  const allInstances: ICore[] = [];
+  interface ISettings {
+    idPrefix: string;
+  }
+  interface IReceivedSettings {
+    idPrefix?: string;
+  }
+  interface IEvent {
+    element: Element | Document | Window;
+    remove: () => void;
+  }
+  interface IInstances {
+    [key: string]: Core;
+  }
+  interface ICore {
+    events: IEvent[];
+  }
+
+  const globalEvents: IEvent[] = [];
+  const allInstances: IInstances = {};
 
   const $$ = (parent: Element | Document, selector: string) =>
     Array.from(parent.querySelectorAll(selector));
   // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
 
-  const defaults: IAMegMenSettings = {
+  const defaults: ISettings = {
     idPrefix: 'amegmen_id_',
   };
 
   const toggleUniqueId = (
-    element: HTMLElement,
-    settings: IAMegMenSettings,
+    element: Element,
+    settings: ISettings,
     unique_number: number,
     shouldAddId: boolean,
-  ) => {
-    if (settings.idPrefix) {
-      if (shouldAddId && !element.getAttribute('id')) {
-        element.setAttribute('id', `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`);
-      } else if (!shouldAddId && element.getAttribute('id')) {
-        const thisid = element.getAttribute('id');
-        const regex = new RegExp(settings.idPrefix, 'gi');
-        if (regex.test(thisid || '')) {
-          element.removeAttribute('id');
-        }
+  ): string => {
+    let instanceId = '';
+    if (shouldAddId && !element.getAttribute('id')) {
+      instanceId = `${settings.idPrefix}_${new Date().getTime()}_${unique_number}`;
+      element.setAttribute('id', instanceId);
+    } else if (!shouldAddId && element.getAttribute('id')) {
+      const thisid = element.getAttribute('id') || '';
+      const regex = new RegExp(settings.idPrefix, 'gi');
+      instanceId = thisid;
+      if (regex.test(thisid || '')) {
+        element.removeAttribute('id');
       }
     }
+    return instanceId;
   };
 
   console.log('==================================================toggleUniqueId', toggleUniqueId);
@@ -60,7 +66,7 @@ namespace AMegMen {
     type: string,
     listener: EventListenerOrEventListenerObject,
   ) => {
-    const eventHandlerObj: IEventHandler = {
+    const eventHandlerObj: IEvent = {
       element,
       remove: () => {
         element.removeEventListener(type, listener, false);
@@ -70,9 +76,32 @@ namespace AMegMen {
     return eventHandlerObj;
   };
 
-  class Root {}
-  export const init = () => new Root();
-  export const destroy = () => new Root();
+  const initCoreFn = (root: Element, options: ISettings): ICore => {
+    console.log('==================================================root', root);
+    console.log('==================================================options', options);
+    return {
+      events: [],
+    };
+  };
+  class Core {
+    private root: Element;
+    private options: ISettings;
+
+    constructor(root: Element, options: ISettings) {
+      this.root = root;
+      this.options = options;
+
+      initCoreFn(this.root, this.options);
+    }
+  }
+
+  export const init = (root: Element, options: ISettings) => {
+    const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
+    if (!allInstances[rootId]) {
+      allInstances[rootId] = new Core(root, options);
+    }
+  };
+  // export const destroy = () => new Root();
 
   export const initGlobal = () => {
     const allMenuElements = $$(document, '[data-amegmen]');
@@ -83,9 +112,14 @@ namespace AMegMen {
     // );
     allMenuElements.forEach((menuEl) => {
       try {
-        const receivedOptions = menuEl.getAttribute('data-amegmen') || '{}';
-        const menuOptions: IAMegMenSettings = { ...defaults, ...JSON.parse(receivedOptions) };
-        console.log('==================================================menuOptions', menuOptions);
+        const receivedOptions: IReceivedSettings = Object.fromEntries(
+          Object.entries({
+            idPrefix: (menuEl as HTMLElement).dataset.amegmenIdPrefix,
+          }).filter(([, value]) => value !== undefined),
+        );
+        // menuEl.getAttribute('data-amegmen') || '{}';
+        const menuOptions: ISettings = { ...defaults, ...receivedOptions };
+        init(menuEl, menuOptions);
       } catch (error) {
         console.error(error);
       }
