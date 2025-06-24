@@ -1,7 +1,14 @@
+@use './config' as *;
+
 $this-block: 'amegmen';
 
-.#{$this-block} {
-  &-ul-0 {
-    display: flex;
+@media (min-width: #{px-to-em(1280px)}) {
+  .#{$this-block} {
+    &-nav-cta {
+      display: none;
+    }
+    &-ul-0 {
+      display: flex;
+    }
   }
 }

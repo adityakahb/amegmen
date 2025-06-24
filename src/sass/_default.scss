@@ -1,6 +1,9 @@
+@use './config' as *;
+
 $this-block: 'amegmen';
 
 .#{$this-block} {
-  &-nav {
+  &-nav-cta {
+    display: block;
   }
 }
