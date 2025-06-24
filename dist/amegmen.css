@@ -1,0 +1,12 @@
+.amegmen-nav-cta {
+  display: block;
+}
+
+@media (min-width: 80em) {
+  .amegmen-nav-cta {
+    display: none;
+  }
+  .amegmen-ul-0 {
+    display: flex;
+  }
+}
