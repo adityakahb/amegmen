@@ -5,7 +5,7 @@ define((function () { 'use strict';
         const globalEvents = [];
         const allInstances = {};
         const $$ = (parent, selector) => Array.from(parent.querySelectorAll(selector));
-        // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
+        const $ = (parent, selector) => $$(parent, selector)[0];
         const defaults = {
             idPrefix: 'amegmen_id_',
         };
@@ -25,8 +25,6 @@ define((function () { 'use strict';
             }
             return instanceId;
         };
-        console.log('==================================================toggleUniqueId', toggleUniqueId);
-        console.log('==================================================defaults', defaults);
         const removeEventListeners = (core, element) => {
             let j = core.eH.length;
             while (j--) {
@@ -47,11 +45,20 @@ define((function () { 'use strict';
             return eventHandlerObj;
         };
         const initCoreFn = (root, options) => {
-            console.log('==================================================root', root);
-            console.log('==================================================options', options);
-            return {
+            const core = {
+                cToggle: $(root, '.amegmen-nav-cta-close'),
                 events: [],
+                options,
+                oToggle: $(root, '.amegmen-nav-cta-open'),
+                root,
             };
+            core.events.push(eventHandler(core.cToggle, 'click', () => {
+                console.log('================================================== toggle mobile close');
+            }));
+            core.events.push(eventHandler(core.oToggle, 'click', () => {
+                console.log('================================================== toggle mobile open');
+            }));
+            return core;
         };
         class Core {
             root;

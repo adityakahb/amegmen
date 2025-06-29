@@ -13,18 +13,44 @@ namespace AMegMen {
     [key: string]: Core;
   }
   interface ICore {
+    cToggle: Element;
     events: IEvent[];
+    options: ISettings;
+    oToggle: Element;
+    root: Element;
   }
 
+  let commonLoopCount = 0;
   const globalEvents: IEvent[] = [];
   const allInstances: IInstances = {};
 
   const $$ = (parent: Element | Document, selector: string) =>
     Array.from(parent.querySelectorAll(selector));
-  // const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
+  const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
 
   const defaults: ISettings = {
     idPrefix: 'amegmen_id_',
+  };
+
+  const stringTrim = (str: string) => {
+    return str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
+  };
+
+  const hasClass = (element: Element, cls: string) =>
+    !!stringTrim(cls)
+      .split(' ')
+      .find((classStr) => element.classList.contains(classStr));
+
+  const addClass = (element: Element, cls: string) => {
+    cls.split(' ').forEach((classStr) => {
+      element.classList.add(classStr);
+    });
+  };
+
+  const removeClass = (element: Element, cls: string) => {
+    cls.split(' ').forEach((classStr) => {
+      element.classList.remove(classStr);
+    });
   };
 
   const toggleUniqueId = (
@@ -47,9 +73,6 @@ namespace AMegMen {
     }
     return instanceId;
   };
-
-  console.log('==================================================toggleUniqueId', toggleUniqueId);
-  console.log('==================================================defaults', defaults);
 
   const removeEventListeners = (core: any, element: Element | Document | Window) => {
     let j = core.eH.length;
@@ -77,11 +100,27 @@ namespace AMegMen {
   };
 
   const initCoreFn = (root: Element, options: ISettings): ICore => {
-    console.log('==================================================root', root);
-    console.log('==================================================options', options);
-    return {
+    const core: ICore = {
+      cToggle: $(root, '.amegmen-nav-cta-close'),
       events: [],
+      options,
+      oToggle: $(root, '.amegmen-nav-cta-open'),
+      root,
     };
+
+    core.events.push(
+      eventHandler(core.cToggle, 'click', () => {
+        console.log('================================================== toggle mobile close');
+      }),
+    );
+
+    core.events.push(
+      eventHandler(core.oToggle, 'click', () => {
+        console.log('================================================== toggle mobile open');
+      }),
+    );
+
+    return core;
   };
   class Core {
     private root: Element;
