@@ -6,21 +6,78 @@ namespace AMegMen {
     idPrefix?: string;
   }
   interface IEvent {
-    element: Element | Document | Window;
+    el: Element | Document | Window;
     remove: () => void;
   }
   interface IInstances {
     [key: string]: Core;
   }
   interface ICore {
-    cToggle: Element;
+    _close: Element;
+    _open: Element;
     events: IEvent[];
-    options: ISettings;
-    oToggle: Element;
+    opts: ISettings;
     root: Element;
   }
 
-  let commonLoopCount = 0;
+  /* SLIDE UP */
+  const slideUp = (target: HTMLElement, duration = 500) => {
+    target.style.transitionProperty = 'height, margin, padding';
+    target.style.transitionDuration = `${duration}ms`;
+    target.style.boxSizing = 'border-box';
+    target.style.height = `${target.offsetHeight}px`;
+    target && target.offsetHeight;
+    target.style.overflow = 'hidden';
+    target.style.height = '0';
+    target.style.paddingTop = '0';
+    target.style.paddingBottom = '0';
+    target.style.marginTop = '0';
+    target.style.marginBottom = '0';
+    window.setTimeout(() => {
+      target.style.display = 'none';
+      target.style.removeProperty('height');
+      target.style.removeProperty('padding-top');
+      target.style.removeProperty('padding-bottom');
+      target.style.removeProperty('margin-top');
+      target.style.removeProperty('margin-bottom');
+      target.style.removeProperty('overflow');
+      target.style.removeProperty('transition-duration');
+      target.style.removeProperty('transition-property');
+    }, duration);
+  };
+
+  /* SLIDE DOWN */
+  const slideDown = (target: HTMLElement, duration = 500) => {
+    target.style.removeProperty('display');
+    let display = window.getComputedStyle(target).display;
+    if (display === 'none') {
+      display = 'block';
+    }
+    target.style.display = display;
+    const height = target.offsetHeight;
+    target.style.overflow = 'hidden';
+    target.style.height = '0';
+    target.style.paddingTop = '0';
+    target.style.paddingBottom = '0';
+    target.style.marginTop = '0';
+    target.style.marginBottom = '0';
+    target && target.offsetHeight;
+    target.style.boxSizing = 'border-box';
+    target.style.transitionProperty = 'height, margin, padding';
+    target.style.transitionDuration = `${duration}ms`;
+    target.style.height = `${height}px`;
+    target.style.removeProperty('padding-top');
+    target.style.removeProperty('padding-bottom');
+    target.style.removeProperty('margin-top');
+    target.style.removeProperty('margin-bottom');
+    window.setTimeout(() => {
+      target.style.removeProperty('height');
+      target.style.removeProperty('overflow');
+      target.style.removeProperty('transition-duration');
+      target.style.removeProperty('transition-property');
+    }, duration);
+  };
+
   const globalEvents: IEvent[] = [];
   const allInstances: IInstances = {};
 
@@ -74,10 +131,10 @@ namespace AMegMen {
     return instanceId;
   };
 
-  const removeEventListeners = (core: any, element: Element | Document | Window) => {
+  const removeEventListeners = (core: any, el: Element | Document | Window) => {
     let j = core.eH.length;
     while (j--) {
-      if (core.eH[j].element.isEqualNode && core.eH[j].element.isEqualNode(element)) {
+      if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
         core.eH[j].remove();
         core.eH.splice(j, 1);
       }
@@ -85,52 +142,51 @@ namespace AMegMen {
   };
 
   const eventHandler = (
-    element: Element | Document | Window,
+    el: Element | Document | Window,
     type: string,
     listener: EventListenerOrEventListenerObject,
   ) => {
     const eventHandlerObj: IEvent = {
-      element,
+      el,
       remove: () => {
-        element.removeEventListener(type, listener, false);
+        el.removeEventListener(type, listener, false);
       },
     };
-    element.addEventListener(type, listener, false);
+    el.addEventListener(type, listener, false);
     return eventHandlerObj;
   };
 
-  const initCoreFn = (root: Element, options: ISettings): ICore => {
+  const initCoreFn = (root: Element, opts: ISettings): ICore => {
     const core: ICore = {
-      cToggle: $(root, '.amegmen-nav-cta-close'),
+      _close: $(root, '.amegmen-nav-cta-close'),
+      _open: $(root, '.amegmen-nav-cta-open'),
       events: [],
-      options,
-      oToggle: $(root, '.amegmen-nav-cta-open'),
+      opts,
       root,
     };
 
+    console.log(
+      '==================================================hasClass, addClass, removeClass',
+      hasClass,
+    );
+
     core.events.push(
-      eventHandler(core.cToggle, 'click', () => {
-        console.log('================================================== toggle mobile close');
+      eventHandler(core._close, 'click', () => {
+        removeClass(root, 'amegmen-root-active');
       }),
     );
 
     core.events.push(
-      eventHandler(core.oToggle, 'click', () => {
-        console.log('================================================== toggle mobile open');
+      eventHandler(core._open, 'click', () => {
+        addClass(root, 'amegmen-root-active');
       }),
     );
 
     return core;
   };
   class Core {
-    private root: Element;
-    private options: ISettings;
-
     constructor(root: Element, options: ISettings) {
-      this.root = root;
-      this.options = options;
-
-      initCoreFn(this.root, this.options);
+      initCoreFn(root, options);
     }
   }
 
@@ -140,9 +196,9 @@ namespace AMegMen {
       allInstances[rootId] = new Core(root, options);
     }
   };
-  // export const destroy = () => new Root();
+  export const destroy = () => {};
 
-  export const initGlobal = () => {
+  const initGlobal = () => {
     const allMenuElements = $$(document, '[data-amegmen]');
     // const allGlobalInstances = [];
     // console.log(
@@ -164,12 +220,18 @@ namespace AMegMen {
       }
     });
   };
-  export const destroyGlobal = () => {
-    console.log(
-      '==================================================removeEventListeners',
-      removeEventListeners,
-    );
-  };
+  // const destroyGlobal = () => {
+  //   console.log(
+  //     '==================================================removeEventListeners',
+  //     removeEventListeners,
+  //   );
+  // };
+  console.log(
+    '==================================================removeEventListeners',
+    removeEventListeners,
+    slideDown,
+    slideUp,
+  );
   globalEvents.push(eventHandler(document as Document, 'DOMContentLoaded', initGlobal));
 }
 

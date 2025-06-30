@@ -4,12 +4,84 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var AMegMen;
 (function (AMegMen) {
+    /* SLIDE UP */
+    const slideUp = (target, duration = 500) => {
+        target.style.transitionProperty = 'height, margin, padding';
+        target.style.transitionDuration = `${duration}ms`;
+        target.style.boxSizing = 'border-box';
+        target.style.height = `${target.offsetHeight}px`;
+        target && target.offsetHeight;
+        target.style.overflow = 'hidden';
+        target.style.height = '0';
+        target.style.paddingTop = '0';
+        target.style.paddingBottom = '0';
+        target.style.marginTop = '0';
+        target.style.marginBottom = '0';
+        window.setTimeout(() => {
+            target.style.display = 'none';
+            target.style.removeProperty('height');
+            target.style.removeProperty('padding-top');
+            target.style.removeProperty('padding-bottom');
+            target.style.removeProperty('margin-top');
+            target.style.removeProperty('margin-bottom');
+            target.style.removeProperty('overflow');
+            target.style.removeProperty('transition-duration');
+            target.style.removeProperty('transition-property');
+        }, duration);
+    };
+    /* SLIDE DOWN */
+    const slideDown = (target, duration = 500) => {
+        target.style.removeProperty('display');
+        let display = window.getComputedStyle(target).display;
+        if (display === 'none') {
+            display = 'block';
+        }
+        target.style.display = display;
+        const height = target.offsetHeight;
+        target.style.overflow = 'hidden';
+        target.style.height = '0';
+        target.style.paddingTop = '0';
+        target.style.paddingBottom = '0';
+        target.style.marginTop = '0';
+        target.style.marginBottom = '0';
+        target && target.offsetHeight;
+        target.style.boxSizing = 'border-box';
+        target.style.transitionProperty = 'height, margin, padding';
+        target.style.transitionDuration = `${duration}ms`;
+        target.style.height = `${height}px`;
+        target.style.removeProperty('padding-top');
+        target.style.removeProperty('padding-bottom');
+        target.style.removeProperty('margin-top');
+        target.style.removeProperty('margin-bottom');
+        window.setTimeout(() => {
+            target.style.removeProperty('height');
+            target.style.removeProperty('overflow');
+            target.style.removeProperty('transition-duration');
+            target.style.removeProperty('transition-property');
+        }, duration);
+    };
     const globalEvents = [];
     const allInstances = {};
     const $$ = (parent, selector) => Array.from(parent.querySelectorAll(selector));
     const $ = (parent, selector) => $$(parent, selector)[0];
     const defaults = {
         idPrefix: 'amegmen_id_',
+    };
+    const stringTrim = (str) => {
+        return str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
+    };
+    const hasClass = (element, cls) => !!stringTrim(cls)
+        .split(' ')
+        .find((classStr) => element.classList.contains(classStr));
+    const addClass = (element, cls) => {
+        cls.split(' ').forEach((classStr) => {
+            element.classList.add(classStr);
+        });
+    };
+    const removeClass = (element, cls) => {
+        cls.split(' ').forEach((classStr) => {
+            element.classList.remove(classStr);
+        });
     };
     const toggleUniqueId = (element, settings, unique_number, shouldAddId) => {
         let instanceId = '';
@@ -27,48 +99,45 @@ var AMegMen;
         }
         return instanceId;
     };
-    const removeEventListeners = (core, element) => {
+    const removeEventListeners = (core, el) => {
         let j = core.eH.length;
         while (j--) {
-            if (core.eH[j].element.isEqualNode && core.eH[j].element.isEqualNode(element)) {
+            if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
                 core.eH[j].remove();
                 core.eH.splice(j, 1);
             }
         }
     };
-    const eventHandler = (element, type, listener) => {
+    const eventHandler = (el, type, listener) => {
         const eventHandlerObj = {
-            element,
+            el,
             remove: () => {
-                element.removeEventListener(type, listener, false);
+                el.removeEventListener(type, listener, false);
             },
         };
-        element.addEventListener(type, listener, false);
+        el.addEventListener(type, listener, false);
         return eventHandlerObj;
     };
-    const initCoreFn = (root, options) => {
+    const initCoreFn = (root, opts) => {
         const core = {
-            cToggle: $(root, '.amegmen-nav-cta-close'),
+            _close: $(root, '.amegmen-nav-cta-close'),
+            _open: $(root, '.amegmen-nav-cta-open'),
             events: [],
-            options,
-            oToggle: $(root, '.amegmen-nav-cta-open'),
+            opts,
             root,
         };
-        core.events.push(eventHandler(core.cToggle, 'click', () => {
-            console.log('================================================== toggle mobile close');
+        console.log('==================================================hasClass, addClass, removeClass', hasClass);
+        core.events.push(eventHandler(core._close, 'click', () => {
+            removeClass(root, 'amegmen-root-active');
         }));
-        core.events.push(eventHandler(core.oToggle, 'click', () => {
-            console.log('================================================== toggle mobile open');
+        core.events.push(eventHandler(core._open, 'click', () => {
+            addClass(root, 'amegmen-root-active');
         }));
         return core;
     };
     class Core {
-        root;
-        options;
         constructor(root, options) {
-            this.root = root;
-            this.options = options;
-            initCoreFn(this.root, this.options);
+            initCoreFn(root, options);
         }
     }
     AMegMen.init = (root, options) => {
@@ -77,8 +146,8 @@ var AMegMen;
             allInstances[rootId] = new Core(root, options);
         }
     };
-    // export const destroy = () => new Root();
-    AMegMen.initGlobal = () => {
+    AMegMen.destroy = () => { };
+    const initGlobal = () => {
         const allMenuElements = $$(document, '[data-amegmen]');
         // const allGlobalInstances = [];
         // console.log(
@@ -99,10 +168,14 @@ var AMegMen;
             }
         });
     };
-    AMegMen.destroyGlobal = () => {
-        console.log('==================================================removeEventListeners', removeEventListeners);
-    };
-    globalEvents.push(eventHandler(document, 'DOMContentLoaded', AMegMen.initGlobal));
+    // const destroyGlobal = () => {
+    //   console.log(
+    //     '==================================================removeEventListeners',
+    //     removeEventListeners,
+    //   );
+    // };
+    console.log('==================================================removeEventListeners', removeEventListeners, slideDown, slideUp);
+    globalEvents.push(eventHandler(document, 'DOMContentLoaded', initGlobal));
 })(AMegMen || (AMegMen = {}));
 var AMegMen$1 = AMegMen;
 

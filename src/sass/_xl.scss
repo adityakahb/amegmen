@@ -4,11 +4,28 @@ $this-block: 'amegmen';
 
 @media (min-width: #{px-to-em(1280px)}) {
   .#{$this-block} {
+    margin: 0 auto;
+    max-width: px-to-rem(1400px);
+    width: 100%;
+    &-wrapper {
+      background-color: #ccc;
+      display: flex;
+      position: relative;
+    }
     &-nav-cta {
       display: none;
     }
     &-ul-0 {
       display: flex;
+    }
+    &-nav-wrapper {
+      height: auto;
+      position: static;
+    }
+    &-ul-0 {
+      > li {
+        border: 0;
+      }
     }
   }
 }
