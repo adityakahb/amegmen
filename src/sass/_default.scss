@@ -10,6 +10,19 @@ $this-block: 'amegmen';
   ::after {
     box-sizing: border-box;
   }
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    border-bottom: 0;
+    display: inline;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+  }
   svg {
     height: 100%;
     width: 100%;
@@ -43,6 +56,7 @@ $this-block: 'amegmen';
     }
   }
   &-nav-wrapper {
+    background-color: #ccc;
     height: calc(100% - #{px-to-rem(48px)});
     left: 0;
     overflow-y: auto;
@@ -54,41 +68,43 @@ $this-block: 'amegmen';
     z-index: 11;
     transition: transform 0.25s linear;
   }
-  &-container {
+  &-subnav {
+    background-color: #ddd;
+    border-top: px-to-rem(1px) solid #aaa;
     display: none;
   }
   &-ul-0 {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: px-to-rem(1px) solid #aaa;
     > li {
       display: block;
       border-bottom: px-to-rem(1px) solid #aaa;
-      > h2 {
-        margin: 0;
-        font-weight: 400;
-        a {
-          align-items: center;
-          background: transparent;
-          border: 0;
-          color: #000;
+      .#{$this-block}-nav-item {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        color: #000;
+        display: flex;
+        font-size: px-to-rem(16px);
+        padding: px-to-rem(14.82px) px-to-rem(24px);
+        text-decoration: none;
+        width: 100%;
+        justify-content: space-between;
+        span {
           display: flex;
-          font-size: px-to-rem(16px);
-          padding: px-to-rem(14.82px) px-to-rem(24px);
-          text-decoration: none;
-          width: 100%;
-          justify-content: space-between;
-          span {
-            display: flex;
-            &:nth-child(2) {
-              height: px-to-rem(18px);
-              width: px-to-rem(18px);
-            }
+          &:nth-child(2) {
+            height: px-to-rem(18px);
+            width: px-to-rem(18px);
           }
         }
       }
     }
+  }
+  &-ul-1 {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
   &-root-active {
     .#{$this-block} {

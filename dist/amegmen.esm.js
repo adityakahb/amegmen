@@ -1,10 +1,10 @@
 var AMegMen;
 (function (AMegMen) {
     /* SLIDE UP */
-    const slideUp = (target, duration = 500) => {
+    const slideUp = (target, duration = 250) => {
         target.style.transitionProperty = 'height, margin, padding';
         target.style.transitionDuration = `${duration}ms`;
-        target.style.boxSizing = 'border-box';
+        // target.style.boxSizing = 'border-box';
         target.style.height = `${target.offsetHeight}px`;
         target && target.offsetHeight;
         target.style.overflow = 'hidden';
@@ -26,7 +26,7 @@ var AMegMen;
         }, duration);
     };
     /* SLIDE DOWN */
-    const slideDown = (target, duration = 500) => {
+    const slideDown = (target, duration = 250) => {
         target.style.removeProperty('display');
         let display = window.getComputedStyle(target).display;
         if (display === 'none') {
@@ -41,7 +41,7 @@ var AMegMen;
         target.style.marginTop = '0';
         target.style.marginBottom = '0';
         target && target.offsetHeight;
-        target.style.boxSizing = 'border-box';
+        // target.style.boxSizing = 'border-box';
         target.style.transitionProperty = 'height, margin, padding';
         target.style.transitionDuration = `${duration}ms`;
         target.style.height = `${height}px`;
@@ -114,21 +114,79 @@ var AMegMen;
         el.addEventListener(type, listener, false);
         return eventHandlerObj;
     };
-    const initCoreFn = (root, opts) => {
-        const core = {
-            _close: $(root, '.amegmen-nav-cta-close'),
-            _open: $(root, '.amegmen-nav-cta-open'),
+    const addEvents = (core) => {
+        core.events.push(eventHandler(core._close, 'click', () => {
+            removeClass(core.root, 'amegmen-root-active');
+        }));
+        core.events.push(eventHandler(core._open, 'click', () => {
+            addClass(core.root, 'amegmen-root-active');
+        }));
+        core.l0.l0li.forEach((l0liEl) => {
+            if (l0liEl.subnav?.container) {
+                const subnavContainer = l0liEl.subnav?.container;
+                core.events.push(eventHandler(l0liEl.anchor, 'click', (event) => {
+                    event.preventDefault();
+                    if (hasClass(subnavContainer, 'active')) {
+                        removeClass(subnavContainer, 'active');
+                        slideUp(subnavContainer);
+                    }
+                    else {
+                        addClass(subnavContainer, 'active');
+                        slideDown(subnavContainer);
+                    }
+                }));
+            }
+        });
+    };
+    const constructDOM = (root, opts) => {
+        const toggleOpen = $(root, '.amegmen-nav-cta-open');
+        const toggleClose = $(root, '.amegmen-nav-cta-close');
+        // interface ISubnav0 {
+        //     container: Element;
+        //   }
+        //   interface ILi0 {
+        //     li: Element;
+        //     anchor: Element;
+        //     prev: ILi0 | null;
+        //     next: ILi0 | null;
+        //     subnav: ISubnav0 | null;
+        //   }
+        //   interface IUl0 {
+        //     l0ul: Element;
+        //     l0li: ILi0[];
+        //   }
+        const l0ul = $(root, '.amegmen-ul-0');
+        const l0links = $$(l0ul, ':scope > li');
+        const li0Arr = [];
+        l0links.forEach((li) => {
+            li0Arr.push({
+                li,
+                anchor: $(li, ':scope .amegmen-nav-item'),
+                subnav: {
+                    container: $(li, ':scope > .amegmen-subnav'),
+                },
+            });
+        });
+        li0Arr.forEach((l0item, index) => {
+            li0Arr[index - 1] && (l0item.prev = li0Arr[index - 1]);
+            li0Arr[index + 1] && (l0item.next = li0Arr[index + 1]);
+        });
+        return {
+            _close: toggleClose,
+            _open: toggleOpen,
             events: [],
             opts,
             root,
+            l0: {
+                l0ul,
+                l0li: li0Arr,
+            },
         };
-        console.log('==================================================hasClass, addClass, removeClass', hasClass);
-        core.events.push(eventHandler(core._close, 'click', () => {
-            removeClass(root, 'amegmen-root-active');
-        }));
-        core.events.push(eventHandler(core._open, 'click', () => {
-            addClass(root, 'amegmen-root-active');
-        }));
+    };
+    const initCoreFn = (root, opts) => {
+        const core = constructDOM(root, opts);
+        addEvents(core);
+        console.log('==================================================hasClass', hasClass);
         return core;
     };
     class Core {
