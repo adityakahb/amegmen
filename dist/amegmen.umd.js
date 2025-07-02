@@ -7,7 +7,7 @@
     var AMegMen;
     (function (AMegMen) {
         /* SLIDE UP */
-        const slideUp = (target, duration = 250) => {
+        const slideUp = (target, duration, callback) => {
             target.style.transitionProperty = 'height, margin, padding';
             target.style.transitionDuration = `${duration}ms`;
             // target.style.boxSizing = 'border-box';
@@ -29,10 +29,11 @@
                 target.style.removeProperty('overflow');
                 target.style.removeProperty('transition-duration');
                 target.style.removeProperty('transition-property');
+                callback && callback();
             }, duration);
         };
         /* SLIDE DOWN */
-        const slideDown = (target, duration = 250) => {
+        const slideDown = (target, duration, callback) => {
             target.style.removeProperty('display');
             let display = window.getComputedStyle(target).display;
             if (display === 'none') {
@@ -60,6 +61,7 @@
                 target.style.removeProperty('overflow');
                 target.style.removeProperty('transition-duration');
                 target.style.removeProperty('transition-property');
+                callback && callback();
             }, duration);
         };
         const globalEvents = [];
@@ -77,6 +79,7 @@
         };
         const defaults = {
             idPrefix: 'amegmen_id_',
+            duration: 250,
         };
         const stringTrim = (str) => {
             return str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
@@ -134,11 +137,24 @@
         };
         const closeAllSubnavs = (core, presentAnchor) => {
             core.l0.l0li.forEach((l0liEl_2) => {
-                if (l0liEl_2.subnav?.container && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
-                    removeClass(l0liEl_2.subnav?.container, 'amegmen-subnav-active');
-                    slideUp(l0liEl_2.subnav?.container);
+                const subnavContainer = l0liEl_2.subnav?.container;
+                if (subnavContainer && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
+                    removeClass(subnavContainer, 'amegmen-subnav-active');
+                    slideUp(subnavContainer, core.opts.duration, () => {
+                        removeClass(l0liEl_2.anchor, 'amegmen-nav-item-active');
+                    });
                 }
             });
+        };
+        const performArrowRight = (core, current) => {
+            if (current.next) {
+                current.next.anchor.focus();
+            }
+        };
+        const performArrowLeft = (core, current) => {
+            if (current.prev) {
+                current.prev.anchor.focus();
+            }
         };
         const addBasicEvents = (core) => {
             core.events.push(eventHandler(core._close, 'click', () => {
@@ -155,15 +171,29 @@
                         toggleClass(subnavContainer, 'amegmen-subnav-active');
                         closeAllSubnavs(core, l0liEl.anchor);
                         if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
-                            slideDown(subnavContainer);
-                            addClass(core.root, 'amegmen-root-active');
+                            addClass(l0liEl.anchor, 'amegmen-nav-item-active');
+                            slideDown(subnavContainer, core.opts.duration, () => {
+                                addClass(core.root, 'amegmen-root-active');
+                            });
                         }
                         else {
-                            slideUp(subnavContainer);
-                            removeClass(core.root, 'amegmen-root-active');
+                            slideUp(subnavContainer, core.opts.duration, () => {
+                                removeClass(core.root, 'amegmen-root-active');
+                                removeClass(l0liEl.anchor, 'amegmen-nav-item-active');
+                            });
                         }
                     }));
                 }
+                core.events.push(eventHandler(l0liEl.anchor, 'keyup', (event) => {
+                    switch (event.key) {
+                        case 'ArrowRight':
+                            performArrowRight(core, l0liEl);
+                            break;
+                        case 'ArrowLeft':
+                            performArrowLeft(core, l0liEl);
+                            break;
+                    }
+                }));
             });
             core.events.push(eventHandler(window, 'resize', debounce(() => {
                 closeAllSubnavs(core);

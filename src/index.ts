@@ -1,5 +1,6 @@
 namespace AMegMen {
   interface ISettings {
+    duration: number;
     idPrefix: string;
   }
   interface IReceivedSettings {
@@ -36,7 +37,7 @@ namespace AMegMen {
   }
 
   /* SLIDE UP */
-  const slideUp = (target: HTMLElement, duration = 250) => {
+  const slideUp = (target: HTMLElement, duration: number, callback?: Function) => {
     target.style.transitionProperty = 'height, margin, padding';
     target.style.transitionDuration = `${duration}ms`;
     // target.style.boxSizing = 'border-box';
@@ -58,11 +59,12 @@ namespace AMegMen {
       target.style.removeProperty('overflow');
       target.style.removeProperty('transition-duration');
       target.style.removeProperty('transition-property');
+      callback && callback();
     }, duration);
   };
 
   /* SLIDE DOWN */
-  const slideDown = (target: HTMLElement, duration = 250) => {
+  const slideDown = (target: HTMLElement, duration: number, callback?: Function) => {
     target.style.removeProperty('display');
     let display = window.getComputedStyle(target).display;
     if (display === 'none') {
@@ -90,6 +92,7 @@ namespace AMegMen {
       target.style.removeProperty('overflow');
       target.style.removeProperty('transition-duration');
       target.style.removeProperty('transition-property');
+      callback && callback();
     }, duration);
   };
 
@@ -112,6 +115,7 @@ namespace AMegMen {
 
   const defaults: ISettings = {
     idPrefix: 'amegmen_id_',
+    duration: 250,
   };
 
   const stringTrim = (str: string) => {
@@ -187,11 +191,25 @@ namespace AMegMen {
 
   const closeAllSubnavs = (core: ICore, presentAnchor?: Element) => {
     core.l0.l0li.forEach((l0liEl_2) => {
-      if (l0liEl_2.subnav?.container && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
-        removeClass(l0liEl_2.subnav?.container, 'amegmen-subnav-active');
-        slideUp(l0liEl_2.subnav?.container as HTMLElement);
+      const subnavContainer = l0liEl_2.subnav?.container;
+      if (subnavContainer && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
+        removeClass(subnavContainer, 'amegmen-subnav-active');
+        slideUp(subnavContainer as HTMLElement, core.opts.duration, () => {
+          removeClass(l0liEl_2.anchor, 'amegmen-nav-item-active');
+        });
       }
     });
+  };
+
+  const performArrowRight = (core: ICore, current: ILi0) => {
+    if (current.next) {
+      (current.next.anchor as HTMLElement).focus();
+    }
+  };
+  const performArrowLeft = (core: ICore, current: ILi0) => {
+    if (current.prev) {
+      (current.prev.anchor as HTMLElement).focus();
+    }
   };
 
   const addBasicEvents = (core: ICore) => {
@@ -216,15 +234,39 @@ namespace AMegMen {
             toggleClass(subnavContainer, 'amegmen-subnav-active');
             closeAllSubnavs(core, l0liEl.anchor);
             if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
-              slideDown(subnavContainer as HTMLElement);
-              addClass(core.root, 'amegmen-root-active');
+              addClass(l0liEl.anchor, 'amegmen-nav-item-active');
+              slideDown(subnavContainer as HTMLElement, core.opts.duration, () => {
+                addClass(core.root, 'amegmen-root-active');
+              });
             } else {
-              slideUp(subnavContainer as HTMLElement);
-              removeClass(core.root, 'amegmen-root-active');
+              slideUp(subnavContainer as HTMLElement, core.opts.duration, () => {
+                removeClass(core.root, 'amegmen-root-active');
+                removeClass(l0liEl.anchor, 'amegmen-nav-item-active');
+              });
             }
           }),
         );
       }
+      core.events.push(
+        eventHandler(l0liEl.anchor, 'keyup', (event) => {
+          switch ((event as KeyboardEvent).key) {
+            case 'ArrowRight':
+              performArrowRight(core, l0liEl);
+              break;
+            case 'ArrowLeft':
+              performArrowLeft(core, l0liEl);
+              break;
+            case 'ArrowUp':
+              break;
+            case 'ArrowDown':
+              break;
+            case 'Tab':
+              break;
+            default:
+              break;
+          }
+        }),
+      );
     });
 
     core.events.push(

@@ -20,7 +20,7 @@
     "crossenv:dev": "cross-env GENERATE_SOURCEMAPS=false rollup -c -w",
     "build:all": "cross-env GENERATE_SOURCEMAPS=false rollup -c",
     "build:sourcemaps": "npm-run-all clean crossenv:build",
-    "serve": "browser-sync start --server . --files 'index.html', 'public/**/*', 'dist/**/*', 'src/**/*'",
+    "serve": "browser-sync start --server . --port 3002 --files 'index.html', 'public/**/*', 'dist/**/*', 'src/**/*'",
     "dev": "npm-run-all clean --parallel crossenv:dev serve"
   },
   "devDependencies": {
