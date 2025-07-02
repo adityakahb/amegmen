@@ -100,6 +100,16 @@ namespace AMegMen {
     Array.from(parent.querySelectorAll(selector));
   const $ = (parent: Element | Document, selector: string) => $$(parent, selector)[0];
 
+  const debounce = (func: Function) => {
+    let timer: any;
+    return function (event: any) {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(func, 100, event);
+    };
+  };
+
   const defaults: ISettings = {
     idPrefix: 'amegmen_id_',
   };
@@ -109,9 +119,9 @@ namespace AMegMen {
   };
 
   const hasClass = (element: Element, cls: string) =>
-    !!stringTrim(cls)
+    stringTrim(cls)
       .split(' ')
-      .find((classStr) => element.classList.contains(classStr));
+      .some((classStr) => element.classList.contains(classStr));
 
   const addClass = (element: Element, cls: string) => {
     cls.split(' ').forEach((classStr) => {
@@ -123,6 +133,10 @@ namespace AMegMen {
     cls.split(' ').forEach((classStr) => {
       element.classList.remove(classStr);
     });
+  };
+
+  const toggleClass = (element: Element, cls: string) => {
+    hasClass(element, cls) ? removeClass(element, cls) : addClass(element, cls);
   };
 
   const toggleUniqueId = (
@@ -171,7 +185,16 @@ namespace AMegMen {
     return eventHandlerObj;
   };
 
-  const addEvents = (core: ICore) => {
+  const closeAllSubnavs = (core: ICore, presentAnchor?: Element) => {
+    core.l0.l0li.forEach((l0liEl_2) => {
+      if (l0liEl_2.subnav?.container && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
+        removeClass(l0liEl_2.subnav?.container, 'amegmen-subnav-active');
+        slideUp(l0liEl_2.subnav?.container as HTMLElement);
+      }
+    });
+  };
+
+  const addBasicEvents = (core: ICore) => {
     core.events.push(
       eventHandler(core._close, 'click', () => {
         removeClass(core.root, 'amegmen-root-active');
@@ -190,17 +213,40 @@ namespace AMegMen {
         core.events.push(
           eventHandler(l0liEl.anchor, 'click', (event) => {
             event.preventDefault();
-            if (hasClass(subnavContainer, 'active')) {
-              removeClass(subnavContainer, 'active');
-              slideUp(subnavContainer as HTMLElement);
-            } else {
-              addClass(subnavContainer, 'active');
+            toggleClass(subnavContainer, 'amegmen-subnav-active');
+            closeAllSubnavs(core, l0liEl.anchor);
+            if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
               slideDown(subnavContainer as HTMLElement);
+              addClass(core.root, 'amegmen-root-active');
+            } else {
+              slideUp(subnavContainer as HTMLElement);
+              removeClass(core.root, 'amegmen-root-active');
             }
           }),
         );
       }
     });
+
+    core.events.push(
+      eventHandler(
+        window,
+        'resize',
+        debounce(() => {
+          closeAllSubnavs(core);
+        }),
+      ),
+    );
+
+    core.events.push(
+      eventHandler(document, 'click', (event) => {
+        if (
+          hasClass(core.root, 'amegmen-root-active') && // Only close if it's currently open
+          !core.root.contains(event.target as Node)
+        ) {
+          closeAllSubnavs(core);
+        }
+      }),
+    );
   };
 
   const constructDOM = (root: Element, opts: ISettings): ICore => {
@@ -256,9 +302,7 @@ namespace AMegMen {
   const initCoreFn = (root: Element, opts: ISettings): ICore => {
     const core: ICore = constructDOM(root, opts);
 
-    addEvents(core);
-
-    console.log('==================================================hasClass', hasClass);
+    addBasicEvents(core);
 
     return core;
   };

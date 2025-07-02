@@ -164,4 +164,7 @@
     width: 100%;
     padding: 0 1rem;
   }
+  .amegmen-root-active .amegmen-nav-wrapper {
+    transform: unset;
+  }
 }

@@ -55,5 +55,8 @@ $this-block: 'amegmen';
         padding: 0 px-to-rem(16px);
       }
     }
+    &-root-active &-nav-wrapper {
+      transform: unset;
+    }
   }
 }

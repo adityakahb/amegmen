@@ -60,15 +60,24 @@ var AMegMen;
     const allInstances = {};
     const $$ = (parent, selector) => Array.from(parent.querySelectorAll(selector));
     const $ = (parent, selector) => $$(parent, selector)[0];
+    const debounce = (func) => {
+        let timer;
+        return function (event) {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(func, 100, event);
+        };
+    };
     const defaults = {
         idPrefix: 'amegmen_id_',
     };
     const stringTrim = (str) => {
         return str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
     };
-    const hasClass = (element, cls) => !!stringTrim(cls)
+    const hasClass = (element, cls) => stringTrim(cls)
         .split(' ')
-        .find((classStr) => element.classList.contains(classStr));
+        .some((classStr) => element.classList.contains(classStr));
     const addClass = (element, cls) => {
         cls.split(' ').forEach((classStr) => {
             element.classList.add(classStr);
@@ -78,6 +87,9 @@ var AMegMen;
         cls.split(' ').forEach((classStr) => {
             element.classList.remove(classStr);
         });
+    };
+    const toggleClass = (element, cls) => {
+        hasClass(element, cls) ? removeClass(element, cls) : addClass(element, cls);
     };
     const toggleUniqueId = (element, settings, unique_number, shouldAddId) => {
         let instanceId = '';
@@ -114,7 +126,15 @@ var AMegMen;
         el.addEventListener(type, listener, false);
         return eventHandlerObj;
     };
-    const addEvents = (core) => {
+    const closeAllSubnavs = (core, presentAnchor) => {
+        core.l0.l0li.forEach((l0liEl_2) => {
+            if (l0liEl_2.subnav?.container && !(presentAnchor && l0liEl_2.anchor === presentAnchor)) {
+                removeClass(l0liEl_2.subnav?.container, 'amegmen-subnav-active');
+                slideUp(l0liEl_2.subnav?.container);
+            }
+        });
+    };
+    const addBasicEvents = (core) => {
         core.events.push(eventHandler(core._close, 'click', () => {
             removeClass(core.root, 'amegmen-root-active');
         }));
@@ -126,17 +146,28 @@ var AMegMen;
                 const subnavContainer = l0liEl.subnav?.container;
                 core.events.push(eventHandler(l0liEl.anchor, 'click', (event) => {
                     event.preventDefault();
-                    if (hasClass(subnavContainer, 'active')) {
-                        removeClass(subnavContainer, 'active');
-                        slideUp(subnavContainer);
+                    toggleClass(subnavContainer, 'amegmen-subnav-active');
+                    closeAllSubnavs(core, l0liEl.anchor);
+                    if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
+                        slideDown(subnavContainer);
+                        addClass(core.root, 'amegmen-root-active');
                     }
                     else {
-                        addClass(subnavContainer, 'active');
-                        slideDown(subnavContainer);
+                        slideUp(subnavContainer);
+                        removeClass(core.root, 'amegmen-root-active');
                     }
                 }));
             }
         });
+        core.events.push(eventHandler(window, 'resize', debounce(() => {
+            closeAllSubnavs(core);
+        })));
+        core.events.push(eventHandler(document, 'click', (event) => {
+            if (hasClass(core.root, 'amegmen-root-active') && // Only close if it's currently open
+                !core.root.contains(event.target)) {
+                closeAllSubnavs(core);
+            }
+        }));
     };
     const constructDOM = (root, opts) => {
         const toggleOpen = $(root, '.amegmen-nav-cta-open');
@@ -185,8 +216,7 @@ var AMegMen;
     };
     const initCoreFn = (root, opts) => {
         const core = constructDOM(root, opts);
-        addEvents(core);
-        console.log('==================================================hasClass', hasClass);
+        addBasicEvents(core);
         return core;
     };
     class Core {
