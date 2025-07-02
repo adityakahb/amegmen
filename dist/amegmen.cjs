@@ -147,12 +147,33 @@ var AMegMen;
     const performArrowRight = (core, current) => {
         if (current.next) {
             current.next.anchor.focus();
+            if (hasClass(core.root, 'amegmen-root-active')) {
+                performArrowDown(core, current.next);
+            }
         }
     };
     const performArrowLeft = (core, current) => {
         if (current.prev) {
             current.prev.anchor.focus();
+            if (hasClass(core.root, 'amegmen-root-active')) {
+                performArrowDown(core, current.prev);
+            }
         }
+    };
+    const performArrowUp = (core, current) => {
+        const subnavContainer = current.subnav?.container;
+        if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
+            current.anchor.click();
+        }
+    };
+    const performArrowDown = (core, current) => {
+        const subnavContainer = current.subnav?.container;
+        if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
+            current.anchor.click();
+        }
+        //  else {
+        //   closeAllSubnavs(core);
+        // }
     };
     const addBasicEvents = (core) => {
         core.events.push(eventHandler(core._close, 'click', () => {
@@ -189,6 +210,12 @@ var AMegMen;
                         break;
                     case 'ArrowLeft':
                         performArrowLeft(core, l0liEl);
+                        break;
+                    case 'ArrowUp':
+                        performArrowUp(core, l0liEl);
+                        break;
+                    case 'ArrowDown':
+                        performArrowDown(core, l0liEl);
                         break;
                 }
             }));

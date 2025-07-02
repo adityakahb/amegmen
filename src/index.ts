@@ -204,12 +204,33 @@ namespace AMegMen {
   const performArrowRight = (core: ICore, current: ILi0) => {
     if (current.next) {
       (current.next.anchor as HTMLElement).focus();
+      if (hasClass(core.root, 'amegmen-root-active')) {
+        performArrowDown(core, current.next);
+      }
     }
   };
   const performArrowLeft = (core: ICore, current: ILi0) => {
     if (current.prev) {
       (current.prev.anchor as HTMLElement).focus();
+      if (hasClass(core.root, 'amegmen-root-active')) {
+        performArrowDown(core, current.prev);
+      }
     }
+  };
+  const performArrowUp = (core: ICore, current: ILi0) => {
+    const subnavContainer = current.subnav?.container;
+    if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
+      (current.anchor as HTMLElement).click();
+    }
+  };
+  const performArrowDown = (core: ICore, current: ILi0) => {
+    const subnavContainer = current.subnav?.container;
+    if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
+      (current.anchor as HTMLElement).click();
+    }
+    //  else {
+    //   closeAllSubnavs(core);
+    // }
   };
 
   const addBasicEvents = (core: ICore) => {
@@ -257,8 +278,10 @@ namespace AMegMen {
               performArrowLeft(core, l0liEl);
               break;
             case 'ArrowUp':
+              performArrowUp(core, l0liEl);
               break;
             case 'ArrowDown':
+              performArrowDown(core, l0liEl);
               break;
             case 'Tab':
               break;

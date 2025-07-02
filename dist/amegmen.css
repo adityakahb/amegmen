@@ -90,6 +90,12 @@
   width: 100%;
   justify-content: space-between;
 }
+.amegmen-ul-0 > li .amegmen-nav-item:focus {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.amegmen-ul-0 > li .amegmen-nav-item-active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
 .amegmen-ul-0 > li .amegmen-nav-item span {
   display: flex;
 }
