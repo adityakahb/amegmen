@@ -3,7 +3,128 @@
 $this-block: 'amegmen';
 
 .#{$this-block} {
+  font-family: sans-serif;
+  &,
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    border-bottom: 0;
+    display: inline;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+  }
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+  &-wrapper {
+    display: inline-flex;
+  }
   &-nav-cta {
     display: block;
+    button {
+      align-items: center;
+      background-color: #ccc;
+      border: px-to-rem(1px) solid transparent;
+      flex-direction: column;
+      height: px-to-rem(48px);
+      justify-content: center;
+      padding: 0;
+      width: px-to-rem(48px);
+    }
+    &-icon {
+      display: flex;
+    }
+    &-text {
+      font-size: px-to-rem(8px);
+    }
+    &-open {
+      display: inline-flex;
+    }
+    &-close {
+      display: none;
+    }
+  }
+  &-nav-wrapper {
+    background-color: #ccc;
+    height: calc(100% - #{px-to-rem(48px)});
+    left: 0;
+    overflow-y: auto;
+    position: fixed;
+    top: px-to-rem(48px);
+    // transform: translate(-101%, 0);
+    transform: translate(0, 0);
+    width: 100%;
+    z-index: 11;
+    transition: transform 0.25s linear;
+  }
+  &-subnav {
+    background-color: #ddd;
+    border-top: px-to-rem(1px) solid #aaa;
+    display: none;
+  }
+  &-ul-0 {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      display: block;
+      border-bottom: px-to-rem(1px) solid #aaa;
+      .#{$this-block}-nav-item {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        color: #000;
+        display: flex;
+        font-size: px-to-rem(16px);
+        padding: px-to-rem(14.82px) px-to-rem(24px);
+        text-decoration: none;
+        width: 100%;
+        justify-content: space-between;
+        &:focus {
+          background-color: rgba(#fff, 0.5);
+        }
+        &-active {
+          background-color: rgba(#fff, 0.25);
+        }
+        span {
+          display: flex;
+          &:nth-child(2) {
+            height: px-to-rem(18px);
+            width: px-to-rem(18px);
+          }
+        }
+      }
+    }
+  }
+  &-ul-1 {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  &-root-active {
+    .#{$this-block} {
+      &-nav-cta {
+        &-open {
+          display: none;
+        }
+        &-close {
+          display: inline-flex;
+        }
+      }
+      &-nav-wrapper {
+        transform: translate(0, 0);
+      }
+    }
   }
 }

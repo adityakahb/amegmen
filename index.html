@@ -5,83 +5,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MegaMenu Plugin Test Page</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-      crossorigin="anonymous"
+      href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
     />
-    <link rel="stylesheet" href="./dist/amegmen.css" />
+    <link rel="stylesheet" href="./dist/amegmen.min.css" />
   </head>
   <body>
-    <h1>MegaMenu Plugin Example</h1>
-    <!-- START -->
-    <div class="amegmen-nav" data-amegmen>
-      <div class="amegmen-nav-cta">
-        <button type="button">Open</button>
-        <button type="button">Close</button>
-      </div>
-      <div class="amegmen-nav-wrapper">
-        <nav>
-          <ul class="amegmen-ul-0">
-            <li>
-              <a href="#">Home</a>
-            </li>
-            <li>
-              <a href="#">Recipes</a>
-              <div class="amegmen-container">
-                <h2><a href="#">All Recipes</a></h2>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed malesuada massa.
-                  Nulla ac molestie lacus. Vestibulum ut efficitur lorem. Ut tortor urna, malesuada
-                  nec arcu sit amet, lobortis efficitur ipsum.
-                </p>
-                <ul class="amegmen-ul-1">
-                  <li>
-                    <h3><a href="#">By Occasion</a></h3>
-                    <ul class="amegmen-ul-2">
-                      <li><a href="#">Weeknight Dinners</a></li>
-                      <li><a href="#">Holiday Feasts</a></li>
-                      <li><a href="#">Seasonal Cooking</a></li>
-                      <li><a href="#">Entertaining &amp; Parties</a></li>
-                    </ul>
-                  </li>
-                  <li>
-                    <h3><a href="#">By Diet</a></h3>
-                    <ul class="amegmen-ul-2">
-                      <li><a href="#">Vegan</a></li>
-                      <li><a href="#">Vegetarian</a></li>
-                      <li><a href="#">Gluten-Free</a></li>
-                      <li><a href="#">High-Protein</a></li>
-                    </ul>
-                  </li>
-                  <li>
-                    <h3><a href="#">By Course</a></h3>
-                    <ul class="amegmen-ul-2">
-                      <li><a href="#">Breakfast</a></li>
-                      <li><a href="#">Lunch</a></li>
-                      <li><a href="#">Dinner</a></li>
-                      <li><a href="#">Dessert</a></li>
-                    </ul>
-                  </li>
-                  <li>
-                    <h3><a href="#">Quick &amp; Easy</a></h3>
-                    <ul class="amegmen-ul-2">
-                      <li><a href="#">One-Pot Meals</a></li>
-                      <li><a href="#">Under 30 Minutes</a></li>
-                      <li><a href="#">5 Ingredients or Less</a></li>
-                      <li><a href="#">No-Cook &amp; Prep-Free</a></li>
-                    </ul>
-                  </li>
-                </ul>
+    <header>
+      <!-- START -->
+      <div class="amegmen-wrapper" data-amegmen>
+        <div class="amegmen">
+          <div class="amegmen-nav-cta">
+            <button type="button" class="amegmen-nav-cta-open">
+              <div class="amegmen-nav-cta-icon">
+                <svg
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="#000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.5625 6C3.5625 5.58579 3.89829 5.25 4.3125 5.25H20.3125C20.7267 5.25 21.0625 5.58579 21.0625 6C21.0625 6.41421 20.7267 6.75 20.3125 6.75L4.3125 6.75C3.89829 6.75 3.5625 6.41422 3.5625 6Z"
+                  />
+                  <path
+                    d="M3.5625 18C3.5625 17.5858 3.89829 17.25 4.3125 17.25L20.3125 17.25C20.7267 17.25 21.0625 17.5858 21.0625 18C21.0625 18.4142 20.7267 18.75 20.3125 18.75L4.3125 18.75C3.89829 18.75 3.5625 18.4142 3.5625 18Z"
+                  />
+                  <path
+                    d="M4.3125 11.25C3.89829 11.25 3.5625 11.5858 3.5625 12C3.5625 12.4142 3.89829 12.75 4.3125 12.75L20.3125 12.75C20.7267 12.75 21.0625 12.4142 21.0625 12C21.0625 11.5858 20.7267 11.25 20.3125 11.25L4.3125 11.25Z"
+                  />
+                </svg>
               </div>
-            </li>
-          </ul>
-        </nav>
+              <div class="amegmen-nav-cta-text">Open</div>
+            </button>
+            <button type="button" class="amegmen-nav-cta-close">
+              <div class="amegmen-nav-cta-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="#000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.21967 7.28033C5.92678 6.98744 5.92678 6.51256 6.21967 6.21967C6.51256 5.92678 6.98744 5.92678 7.28033 6.21967L11.999 10.9384L16.7176 6.2198C17.0105 5.92691 17.4854 5.92691 17.7782 6.2198C18.0711 6.51269 18.0711 6.98757 17.7782 7.28046L13.0597 11.999L17.7782 16.7176C18.0711 17.0105 18.0711 17.4854 17.7782 17.7782C17.4854 18.0711 17.0105 18.0711 16.7176 17.7782L11.999 13.0597L7.28033 17.7784C6.98744 18.0713 6.51256 18.0713 6.21967 17.7784C5.92678 17.4855 5.92678 17.0106 6.21967 16.7177L10.9384 11.999L6.21967 7.28033Z"
+                  />
+                </svg>
+              </div>
+              <div class="amegmen-nav-cta-text">Close</div>
+            </button>
+          </div>
+          <div class="amegmen-nav-wrapper">
+            <nav>
+              <ul class="amegmen-ul-0">
+                <li>
+                  <h2>
+                    <a href="#" class="amegmen-nav-item">Home</a>
+                  </h2>
+                </li>
+                <li>
+                  <a href="#" class="amegmen-nav-item">Recipes</a>
+                  <div class="amegmen-subnav">
+                    <div class="amegmen-container">
+                      <ul class="amegmen-ul-1">
+                        <li>
+                          <h2><a href="#">All Recipes</a></h2>
+                          <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed
+                            malesuada massa. Nulla ac molestie lacus. Vestibulum ut efficitur lorem.
+                            Ut tortor urna, malesuada nec arcu sit amet, lobortis efficitur ipsum.
+                          </p>
+                        </li>
+                      </ul>
+                      <ul class="amegmen-ul-1">
+                        <li>
+                          <h3><a href="#">By Occasion</a></h3>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Weeknight Dinners</a></li>
+                            <li><a href="#">Holiday Feasts</a></li>
+                            <li><a href="#">Seasonal Cooking</a></li>
+                            <li><a href="#">Entertaining &amp; Parties</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <h3><a href="#">By Diet</a></h3>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Vegan</a></li>
+                            <li><a href="#">Vegetarian</a></li>
+                            <li><a href="#">Gluten-Free</a></li>
+                            <li><a href="#">High-Protein</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <h3><a href="#">By Course</a></h3>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Breakfast</a></li>
+                            <li><a href="#">Lunch</a></li>
+                            <li><a href="#">Dinner</a></li>
+                            <li><a href="#">Dessert</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <h3><a href="#">Quick &amp; Easy</a></h3>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">One-Pot Meals</a></li>
+                            <li><a href="#">Under 30 Minutes</a></li>
+                            <li><a href="#">5 Ingredients or Less</a></li>
+                            <li><a href="#">No-Cook &amp; Prep-Free</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#" class="amegmen-nav-item">Cooking guides</a>
+                  <div class="amegmen-subnav">
+                    <div class="amegmen-container">
+                      <ul class="amegmen-ul-1">
+                        <li>
+                          <a href="#">Techniques</a>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Baking Basics</a></li>
+                            <li><a href="#">Knife Skills</a></li>
+                            <li><a href="#">Grilling</a></li>
+                            <li><a href="#">Sautéing &amp; Stir-Fry</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <a href="#">Kitchen Basics</a>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Pantry Setup</a></li>
+                            <li><a href="#">Essential Tools</a></li>
+                            <li><a href="#">Cooking Methods</a></li>
+                            <li><a href="#">Measurements &amp; Conversions</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <a href="#">Ingredient Spotlights</a>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Herbs &amp; Spices</a></li>
+                            <li><a href="#">Grains &amp; Legumes</a></li>
+                            <li><a href="#">Fruits &amp; Vegetables</a></li>
+                            <li><a href="#">Dairy &amp; Alternatives</a></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <a href="#">How-To Videos</a>
+                          <ul class="amegmen-ul-2">
+                            <li><a href="#">Step-by-Step Meals</a></li>
+                            <li><a href="#">Knife Skills</a></li>
+                            <li><a href="#">Baking Tutorials</a></li>
+                            <li><a href="#">Plating &amp; Presentation</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
-    </div>
-    <!-- END -->
-
-    <script src="./dist/amegmen.umd.js"></script>
+      <!-- END -->
+    </header>
+    <script src="./dist/amegmen.umd.min.js"></script>
     <script>
       // Initialize your MegaMenu plugin
       document.addEventListener('DOMContentLoaded', () => {
