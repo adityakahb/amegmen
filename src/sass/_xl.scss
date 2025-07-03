@@ -1,0 +1,62 @@
+@use './config' as *;
+
+$this-block: 'amegmen';
+
+@media (min-width: #{px-to-em(1280px)}) {
+  .#{$this-block} {
+    margin: 0 auto;
+    max-width: px-to-rem(1400px);
+    width: 100%;
+    nav {
+      padding: 0 px-to-rem(16px);
+    }
+    &-wrapper {
+      background-color: #ccc;
+      display: flex;
+      position: relative;
+    }
+    &-nav-cta {
+      display: none;
+    }
+    &-ul-0 {
+      display: flex;
+    }
+    &-nav-wrapper {
+      height: auto;
+      position: static;
+      transform: unset;
+    }
+    &-subnav {
+      background-color: #ddd;
+      left: 0;
+      position: absolute;
+      top: 100%;
+      width: 100%;
+      padding: px-to-rem(16px) 0 0 0;
+    }
+    &-container {
+      margin: 0 auto;
+      max-width: px-to-rem(1400px);
+      padding: 0 px-to-rem(16px);
+      width: 100%;
+    }
+    &-ul-0 {
+      > li {
+        border: 0;
+      }
+    }
+    &-ul-1 {
+      display: flex;
+      margin: 0 px-to-rem(-16px);
+      padding: 0 0 px-to-rem(16px) 0;
+      > li {
+        border: 0;
+        width: 100%;
+        padding: 0 px-to-rem(16px);
+      }
+    }
+    &-root-active &-nav-wrapper {
+      transform: unset;
+    }
+  }
+}
