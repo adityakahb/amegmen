@@ -35,6 +35,14 @@ namespace AMegMen {
     root: Element;
     l0: IUl0;
   }
+  interface IKeyboardFunctions {
+    ArrowLeft: Function;
+    ArrowRight: Function;
+    ArrowUp: Function;
+    ArrowDown: Function;
+    Tab: Function;
+    // Enter: Function;
+  }
 
   /* SLIDE UP */
   const slideUp = (target: HTMLElement, duration: number, callback?: Function) => {
@@ -201,36 +209,65 @@ namespace AMegMen {
     });
   };
 
-  const performArrowRight = (core: ICore, current: ILi0) => {
-    if (current.next) {
-      (current.next.anchor as HTMLElement).focus();
-      if (hasClass(core.root, 'amegmen-root-active')) {
-        performArrowDown(core, current.next);
+  const keyboardFunctions: IKeyboardFunctions = {
+    ArrowLeft: (event: Event, core: ICore, current: ILi0) => {
+      if (current.prev) {
+        (current.prev.anchor as HTMLElement).focus();
+        if (!current.prev.subnav?.container) {
+          closeAllSubnavs(core);
+        }
+        if (hasClass(core.root, 'amegmen-root-active')) {
+          keyboardFunctions.ArrowDown(event, core, current.prev);
+        }
       }
-    }
-  };
-  const performArrowLeft = (core: ICore, current: ILi0) => {
-    if (current.prev) {
-      (current.prev.anchor as HTMLElement).focus();
-      if (hasClass(core.root, 'amegmen-root-active')) {
-        performArrowDown(core, current.prev);
+    },
+    ArrowRight: (event: Event, core: ICore, current: ILi0) => {
+      if (current.next) {
+        (current.next.anchor as HTMLElement).focus();
+        if (!current.next.subnav?.container) {
+          closeAllSubnavs(core);
+        }
+        if (hasClass(core.root, 'amegmen-root-active')) {
+          keyboardFunctions.ArrowDown(event, core, current.next);
+        }
       }
-    }
+    },
+    ArrowUp: (event: Event, core: ICore, current: ILi0) => {
+      const subnavContainer = current.subnav?.container;
+      if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
+        (current.anchor as HTMLElement).click();
+      }
+    },
+    ArrowDown: (event: Event, core: ICore, current: ILi0) => {
+      const subnavContainer = current.subnav?.container;
+      if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
+        (current.anchor as HTMLElement).click();
+      }
+    },
+    Tab: (event: Event, core: ICore, current: ILi0) => {
+      const subnavContainer = current.subnav?.container;
+      if (!subnavContainer) {
+        closeAllSubnavs(core);
+      }
+      if (
+        subnavContainer &&
+        !hasClass(subnavContainer, 'amegmen-subnav-active') &&
+        hasClass(core.root, 'amegmen-root-active')
+      ) {
+        (current.anchor as HTMLElement).click();
+      }
+    },
+    // Enter: (event: Event, core: ICore, current: ILi0) => {
+    //   event.preventDefault();
+    //   (current.anchor as HTMLElement).click();
+    // },
   };
-  const performArrowUp = (core: ICore, current: ILi0) => {
-    const subnavContainer = current.subnav?.container;
-    if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
-      (current.anchor as HTMLElement).click();
+
+  const performL0KeyboardActions = (event: Event, core: ICore, current: ILi0) => {
+    const eventKey = (event as KeyboardEvent).key as keyof typeof keyboardFunctions;
+    if (eventKey) {
+      keyboardFunctions[eventKey](event, core, current);
     }
-  };
-  const performArrowDown = (core: ICore, current: ILi0) => {
-    const subnavContainer = current.subnav?.container;
-    if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
-      (current.anchor as HTMLElement).click();
-    }
-    //  else {
-    //   closeAllSubnavs(core);
-    // }
   };
 
   const addBasicEvents = (core: ICore) => {
@@ -270,24 +307,7 @@ namespace AMegMen {
       }
       core.events.push(
         eventHandler(l0liEl.anchor, 'keyup', (event) => {
-          switch ((event as KeyboardEvent).key) {
-            case 'ArrowRight':
-              performArrowRight(core, l0liEl);
-              break;
-            case 'ArrowLeft':
-              performArrowLeft(core, l0liEl);
-              break;
-            case 'ArrowUp':
-              performArrowUp(core, l0liEl);
-              break;
-            case 'ArrowDown':
-              performArrowDown(core, l0liEl);
-              break;
-            case 'Tab':
-              break;
-            default:
-              break;
-          }
+          performL0KeyboardActions(event, core, l0liEl);
         }),
       );
     });

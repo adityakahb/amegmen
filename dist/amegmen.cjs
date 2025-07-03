@@ -144,36 +144,62 @@ var AMegMen;
             }
         });
     };
-    const performArrowRight = (core, current) => {
-        if (current.next) {
-            current.next.anchor.focus();
-            if (hasClass(core.root, 'amegmen-root-active')) {
-                performArrowDown(core, current.next);
+    const keyboardFunctions = {
+        ArrowLeft: (event, core, current) => {
+            if (current.prev) {
+                current.prev.anchor.focus();
+                if (!current.prev.subnav?.container) {
+                    closeAllSubnavs(core);
+                }
+                if (hasClass(core.root, 'amegmen-root-active')) {
+                    keyboardFunctions.ArrowDown(event, core, current.prev);
+                }
             }
-        }
-    };
-    const performArrowLeft = (core, current) => {
-        if (current.prev) {
-            current.prev.anchor.focus();
-            if (hasClass(core.root, 'amegmen-root-active')) {
-                performArrowDown(core, current.prev);
+        },
+        ArrowRight: (event, core, current) => {
+            if (current.next) {
+                current.next.anchor.focus();
+                if (!current.next.subnav?.container) {
+                    closeAllSubnavs(core);
+                }
+                if (hasClass(core.root, 'amegmen-root-active')) {
+                    keyboardFunctions.ArrowDown(event, core, current.next);
+                }
             }
-        }
+        },
+        ArrowUp: (event, core, current) => {
+            const subnavContainer = current.subnav?.container;
+            if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
+                current.anchor.click();
+            }
+        },
+        ArrowDown: (event, core, current) => {
+            const subnavContainer = current.subnav?.container;
+            if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
+                current.anchor.click();
+            }
+        },
+        Tab: (event, core, current) => {
+            const subnavContainer = current.subnav?.container;
+            if (!subnavContainer) {
+                closeAllSubnavs(core);
+            }
+            if (subnavContainer &&
+                !hasClass(subnavContainer, 'amegmen-subnav-active') &&
+                hasClass(core.root, 'amegmen-root-active')) {
+                current.anchor.click();
+            }
+        },
+        // Enter: (event: Event, core: ICore, current: ILi0) => {
+        //   event.preventDefault();
+        //   (current.anchor as HTMLElement).click();
+        // },
     };
-    const performArrowUp = (core, current) => {
-        const subnavContainer = current.subnav?.container;
-        if (subnavContainer && hasClass(subnavContainer, 'amegmen-subnav-active')) {
-            current.anchor.click();
+    const performL0KeyboardActions = (event, core, current) => {
+        const eventKey = event.key;
+        if (eventKey) {
+            keyboardFunctions[eventKey](event, core, current);
         }
-    };
-    const performArrowDown = (core, current) => {
-        const subnavContainer = current.subnav?.container;
-        if (subnavContainer && !hasClass(subnavContainer, 'amegmen-subnav-active')) {
-            current.anchor.click();
-        }
-        //  else {
-        //   closeAllSubnavs(core);
-        // }
     };
     const addBasicEvents = (core) => {
         core.events.push(eventHandler(core._close, 'click', () => {
@@ -204,20 +230,7 @@ var AMegMen;
                 }));
             }
             core.events.push(eventHandler(l0liEl.anchor, 'keyup', (event) => {
-                switch (event.key) {
-                    case 'ArrowRight':
-                        performArrowRight(core, l0liEl);
-                        break;
-                    case 'ArrowLeft':
-                        performArrowLeft(core, l0liEl);
-                        break;
-                    case 'ArrowUp':
-                        performArrowUp(core, l0liEl);
-                        break;
-                    case 'ArrowDown':
-                        performArrowDown(core, l0liEl);
-                        break;
-                }
+                performL0KeyboardActions(event, core, l0liEl);
             }));
         });
         core.events.push(eventHandler(window, 'resize', debounce(() => {
