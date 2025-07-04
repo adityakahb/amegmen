@@ -112,15 +112,15 @@ define((function () { 'use strict';
             }
             return instanceId;
         };
-        const removeEventListeners = (core, el) => {
-            let j = core.eH.length;
-            while (j--) {
-                if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
-                    core.eH[j].remove();
-                    core.eH.splice(j, 1);
-                }
-            }
-        };
+        // const removeEventListeners = (core: any, el: Element | Document | Window) => {
+        //   let j = core.eH.length;
+        //   while (j--) {
+        //     if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
+        //       core.eH[j].remove();
+        //       core.eH.splice(j, 1);
+        //     }
+        //   }
+        // };
         const eventHandler = (el, type, listener) => {
             const eventHandlerObj = {
                 el,
@@ -140,6 +140,12 @@ define((function () { 'use strict';
                         removeClass(l0liEl_2.anchor, 'amegmen-nav-item-active');
                     });
                 }
+            });
+        };
+        const closeAllMenus = () => {
+            Object.keys(allInstances).forEach((instance) => {
+                removeClass(allInstances[instance].root, 'amegmen-root-active');
+                closeAllSubnavs(allInstances[instance]);
             });
         };
         const keyboardFunctions = {
@@ -195,16 +201,16 @@ define((function () { 'use strict';
         };
         const performL0KeyboardActions = (event, core, current) => {
             const eventKey = event.key;
-            if (eventKey) {
+            if (eventKey && keyboardFunctions[eventKey]) {
                 keyboardFunctions[eventKey](event, core, current);
             }
         };
         const addBasicEvents = (core) => {
             core.events.push(eventHandler(core._close, 'click', () => {
-                removeClass(core.root, 'amegmen-root-active');
+                removeClass(core.root, 'amegmen-mobile-active');
             }));
             core.events.push(eventHandler(core._open, 'click', () => {
-                addClass(core.root, 'amegmen-root-active');
+                addClass(core.root, 'amegmen-mobile-active');
             }));
             core.l0.l0li.forEach((l0liEl) => {
                 if (l0liEl.subnav?.container) {
@@ -215,9 +221,8 @@ define((function () { 'use strict';
                         closeAllSubnavs(core, l0liEl.anchor);
                         if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
                             addClass(l0liEl.anchor, 'amegmen-nav-item-active');
-                            slideDown(subnavContainer, core.opts.duration, () => {
-                                addClass(core.root, 'amegmen-root-active');
-                            });
+                            addClass(core.root, 'amegmen-root-active');
+                            slideDown(subnavContainer, core.opts.duration, () => { });
                         }
                         else {
                             slideUp(subnavContainer, core.opts.duration, () => {
@@ -244,20 +249,6 @@ define((function () { 'use strict';
         const constructDOM = (root, opts) => {
             const toggleOpen = $(root, '.amegmen-nav-cta-open');
             const toggleClose = $(root, '.amegmen-nav-cta-close');
-            // interface ISubnav0 {
-            //     container: Element;
-            //   }
-            //   interface ILi0 {
-            //     li: Element;
-            //     anchor: Element;
-            //     prev: ILi0 | null;
-            //     next: ILi0 | null;
-            //     subnav: ISubnav0 | null;
-            //   }
-            //   interface IUl0 {
-            //     l0ul: Element;
-            //     l0li: ILi0[];
-            //   }
             const l0ul = $(root, '.amegmen-ul-0');
             const l0links = $$(l0ul, ':scope > li');
             const li0Arr = [];
@@ -292,24 +283,19 @@ define((function () { 'use strict';
             return core;
         };
         class Core {
-            constructor(root, options) {
-                initCoreFn(root, options);
+            constructor(rootId, root, options) {
+                allInstances[rootId] = initCoreFn(root, options);
             }
         }
         AMegMen.init = (root, options) => {
             const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
             if (!allInstances[rootId]) {
-                allInstances[rootId] = new Core(root, options);
+                new Core(rootId, root, options);
             }
         };
         AMegMen.destroy = () => { };
         const initGlobal = () => {
             const allMenuElements = $$(document, '[data-amegmen]');
-            // const allGlobalInstances = [];
-            // console.log(
-            //   '==================================================allGlobalInstances',
-            //   allGlobalInstances,
-            // );
             allMenuElements.forEach((menuEl) => {
                 try {
                     const receivedOptions = Object.fromEntries(Object.entries({
@@ -330,8 +316,16 @@ define((function () { 'use strict';
         //     removeEventListeners,
         //   );
         // };
-        console.log('==================================================removeEventListeners', removeEventListeners, slideDown, slideUp);
+        // console.log(
+        //   '==================================================removeEventListeners',
+        //   removeEventListeners,
+        // );
         globalEvents.push(eventHandler(document, 'DOMContentLoaded', initGlobal));
+        globalEvents.push(eventHandler(document, 'keyup', (event) => {
+            if (event.key === 'Escape') {
+                closeAllMenus();
+            }
+        }));
     })(AMegMen || (AMegMen = {}));
     var AMegMen$1 = AMegMen;
 

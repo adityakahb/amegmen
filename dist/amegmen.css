@@ -59,10 +59,10 @@
   overflow-y: auto;
   position: fixed;
   top: 3rem;
-  transform: translate(0, 0);
+  transform: translate(-101%, 0);
+  transition: transform 0.25s linear;
   width: 100%;
   z-index: 11;
-  transition: transform 0.25s linear;
 }
 .amegmen-subnav {
   background-color: #ddd;
@@ -108,13 +108,13 @@
   margin: 0;
   padding: 0;
 }
-.amegmen-root-active .amegmen-nav-cta-open {
+.amegmen-mobile-active .amegmen-nav-cta-open {
   display: none;
 }
-.amegmen-root-active .amegmen-nav-cta-close {
+.amegmen-mobile-active .amegmen-nav-cta-close {
   display: inline-flex;
 }
-.amegmen-root-active .amegmen-nav-wrapper {
+.amegmen-mobile-active .amegmen-nav-wrapper {
   transform: translate(0, 0);
 }
 

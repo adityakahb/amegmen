@@ -11,7 +11,7 @@ namespace AMegMen {
     remove: () => void;
   }
   interface IInstances {
-    [key: string]: Core;
+    [key: string]: ICore;
   }
   interface ISubnav0 {
     container: Element;
@@ -31,9 +31,9 @@ namespace AMegMen {
     _close: Element;
     _open: Element;
     events: IEvent[];
+    l0: IUl0;
     opts: ISettings;
     root: Element;
-    l0: IUl0;
   }
   interface IKeyboardFunctions {
     ArrowLeft: Function;
@@ -172,15 +172,15 @@ namespace AMegMen {
     return instanceId;
   };
 
-  const removeEventListeners = (core: any, el: Element | Document | Window) => {
-    let j = core.eH.length;
-    while (j--) {
-      if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
-        core.eH[j].remove();
-        core.eH.splice(j, 1);
-      }
-    }
-  };
+  // const removeEventListeners = (core: any, el: Element | Document | Window) => {
+  //   let j = core.eH.length;
+  //   while (j--) {
+  //     if (core.eH[j].el.isEqualNode && core.eH[j].element.isEqualNode(el)) {
+  //       core.eH[j].remove();
+  //       core.eH.splice(j, 1);
+  //     }
+  //   }
+  // };
 
   const eventHandler = (
     el: Element | Document | Window,
@@ -206,6 +206,13 @@ namespace AMegMen {
           removeClass(l0liEl_2.anchor, 'amegmen-nav-item-active');
         });
       }
+    });
+  };
+
+  const closeAllMenus = () => {
+    Object.keys(allInstances).forEach((instance) => {
+      removeClass(allInstances[instance].root, 'amegmen-root-active');
+      closeAllSubnavs(allInstances[instance]);
     });
   };
 
@@ -265,7 +272,7 @@ namespace AMegMen {
 
   const performL0KeyboardActions = (event: Event, core: ICore, current: ILi0) => {
     const eventKey = (event as KeyboardEvent).key as keyof typeof keyboardFunctions;
-    if (eventKey) {
+    if (eventKey && keyboardFunctions[eventKey]) {
       keyboardFunctions[eventKey](event, core, current);
     }
   };
@@ -273,13 +280,13 @@ namespace AMegMen {
   const addBasicEvents = (core: ICore) => {
     core.events.push(
       eventHandler(core._close, 'click', () => {
-        removeClass(core.root, 'amegmen-root-active');
+        removeClass(core.root, 'amegmen-mobile-active');
       }),
     );
 
     core.events.push(
       eventHandler(core._open, 'click', () => {
-        addClass(core.root, 'amegmen-root-active');
+        addClass(core.root, 'amegmen-mobile-active');
       }),
     );
 
@@ -293,9 +300,8 @@ namespace AMegMen {
             closeAllSubnavs(core, l0liEl.anchor);
             if (hasClass(subnavContainer, 'amegmen-subnav-active')) {
               addClass(l0liEl.anchor, 'amegmen-nav-item-active');
-              slideDown(subnavContainer as HTMLElement, core.opts.duration, () => {
-                addClass(core.root, 'amegmen-root-active');
-              });
+              addClass(core.root, 'amegmen-root-active');
+              slideDown(subnavContainer as HTMLElement, core.opts.duration, () => {});
             } else {
               slideUp(subnavContainer as HTMLElement, core.opts.duration, () => {
                 removeClass(core.root, 'amegmen-root-active');
@@ -337,25 +343,10 @@ namespace AMegMen {
   const constructDOM = (root: Element, opts: ISettings): ICore => {
     const toggleOpen = $(root, '.amegmen-nav-cta-open');
     const toggleClose = $(root, '.amegmen-nav-cta-close');
-
-    // interface ISubnav0 {
-    //     container: Element;
-    //   }
-    //   interface ILi0 {
-    //     li: Element;
-    //     anchor: Element;
-    //     prev: ILi0 | null;
-    //     next: ILi0 | null;
-    //     subnav: ISubnav0 | null;
-    //   }
-    //   interface IUl0 {
-    //     l0ul: Element;
-    //     l0li: ILi0[];
-    //   }
-
     const l0ul = $(root, '.amegmen-ul-0');
     const l0links = $$(l0ul, ':scope > li');
     const li0Arr: ILi0[] = [];
+
     l0links.forEach((li) => {
       li0Arr.push({
         li,
@@ -386,32 +377,26 @@ namespace AMegMen {
 
   const initCoreFn = (root: Element, opts: ISettings): ICore => {
     const core: ICore = constructDOM(root, opts);
-
     addBasicEvents(core);
 
     return core;
   };
   class Core {
-    constructor(root: Element, options: ISettings) {
-      initCoreFn(root, options);
+    constructor(rootId: string, root: Element, options: ISettings) {
+      allInstances[rootId] = initCoreFn(root, options);
     }
   }
 
   export const init = (root: Element, options: ISettings) => {
     const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
     if (!allInstances[rootId]) {
-      allInstances[rootId] = new Core(root, options);
+      new Core(rootId, root, options);
     }
   };
   export const destroy = () => {};
 
   const initGlobal = () => {
     const allMenuElements = $$(document, '[data-amegmen]');
-    // const allGlobalInstances = [];
-    // console.log(
-    //   '==================================================allGlobalInstances',
-    //   allGlobalInstances,
-    // );
     allMenuElements.forEach((menuEl) => {
       try {
         const receivedOptions: IReceivedSettings = Object.fromEntries(
@@ -433,13 +418,18 @@ namespace AMegMen {
   //     removeEventListeners,
   //   );
   // };
-  console.log(
-    '==================================================removeEventListeners',
-    removeEventListeners,
-    slideDown,
-    slideUp,
-  );
+  // console.log(
+  //   '==================================================removeEventListeners',
+  //   removeEventListeners,
+  // );
   globalEvents.push(eventHandler(document as Document, 'DOMContentLoaded', initGlobal));
+  globalEvents.push(
+    eventHandler(document as Document, 'keyup', (event) => {
+      if ((event as KeyboardEvent).key === 'Escape') {
+        closeAllMenus();
+      }
+    }),
+  );
 }
 
 export default AMegMen;

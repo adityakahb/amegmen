@@ -62,11 +62,10 @@ $this-block: 'amegmen';
     overflow-y: auto;
     position: fixed;
     top: px-to-rem(48px);
-    // transform: translate(-101%, 0);
-    transform: translate(0, 0);
+    transform: translate(-101%, 0);
+    transition: transform 0.25s linear;
     width: 100%;
     z-index: 11;
-    transition: transform 0.25s linear;
   }
   &-subnav {
     background-color: #ddd;
@@ -112,7 +111,7 @@ $this-block: 'amegmen';
     margin: 0;
     padding: 0;
   }
-  &-root-active {
+  &-mobile-active {
     .#{$this-block} {
       &-nav-cta {
         &-open {
