@@ -289,13 +289,25 @@ var AMegMen;
             allInstances[rootId] = initCoreFn(root, options);
         }
     }
-    AMegMen.init = (root, options) => {
+    const init = (root, options) => {
         const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
         if (!allInstances[rootId]) {
             new Core(rootId, root, options);
         }
     };
     AMegMen.destroy = () => { };
+    AMegMen.create = (selector, receivedOptions) => {
+        const allMenuElements = $$(document, selector);
+        allMenuElements.forEach((menuEl) => {
+            try {
+                const menuOptions = { ...defaults, ...receivedOptions };
+                init(menuEl, menuOptions);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    };
     const initGlobal = () => {
         const allMenuElements = $$(document, '[data-amegmen]');
         allMenuElements.forEach((menuEl) => {
@@ -303,9 +315,8 @@ var AMegMen;
                 const receivedOptions = Object.fromEntries(Object.entries({
                     idPrefix: menuEl.dataset.amegmenIdPrefix,
                 }).filter(([, value]) => value !== undefined));
-                // menuEl.getAttribute('data-amegmen') || '{}';
                 const menuOptions = { ...defaults, ...receivedOptions };
-                AMegMen.init(menuEl, menuOptions);
+                init(menuEl, menuOptions);
             }
             catch (error) {
                 console.error(error);

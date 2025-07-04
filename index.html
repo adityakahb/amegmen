@@ -13,7 +13,7 @@
   <body>
     <header>
       <!-- START -->
-      <div class="amegmen-wrapper" data-amegmen>
+      <div class="amegmen-wrapper">
         <div class="amegmen">
           <div class="amegmen-nav-cta">
             <button type="button" class="amegmen-nav-cta-open">
@@ -174,11 +174,7 @@
     <script>
       // Initialize your MegaMenu plugin
       document.addEventListener('DOMContentLoaded', () => {
-        console.log('==============AMegMen', AMegMen);
-        // const myMegaMenu = MegaMenuPlugin.createMegaMenu({
-        //   selector: '#myMegamenu',
-        //   animationSpeed: 400, // Example custom option
-        // });
+        const myMegaMenu = AMegMen.create('.amegmen-wrapper');
 
         // You can also use the default export
         // const AnotherMegaMenu = new MegaMenuPlugin.default({ selector: '#anotherElement' });

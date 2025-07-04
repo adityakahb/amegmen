@@ -1,10 +1,9 @@
 declare namespace AMegMen {
-    interface ISettings {
-        duration: number;
-        idPrefix: string;
+    interface IReceivedSettings {
+        idPrefix?: string;
     }
-    export const init: (root: Element, options: ISettings) => void;
     export const destroy: () => void;
+    export const create: (selector: string, receivedOptions: IReceivedSettings) => void;
     export {};
 }
 export default AMegMen;

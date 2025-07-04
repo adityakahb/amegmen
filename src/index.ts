@@ -387,13 +387,24 @@ namespace AMegMen {
     }
   }
 
-  export const init = (root: Element, options: ISettings) => {
+  const init = (root: Element, options: ISettings) => {
     const rootId = root.getAttribute('id') || toggleUniqueId(root, options, 0, true);
     if (!allInstances[rootId]) {
       new Core(rootId, root, options);
     }
   };
   export const destroy = () => {};
+  export const create = (selector: string, receivedOptions: IReceivedSettings) => {
+    const allMenuElements = $$(document, selector);
+    allMenuElements.forEach((menuEl) => {
+      try {
+        const menuOptions: ISettings = { ...defaults, ...receivedOptions };
+        init(menuEl, menuOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  };
 
   const initGlobal = () => {
     const allMenuElements = $$(document, '[data-amegmen]');
@@ -404,7 +415,6 @@ namespace AMegMen {
             idPrefix: (menuEl as HTMLElement).dataset.amegmenIdPrefix,
           }).filter(([, value]) => value !== undefined),
         );
-        // menuEl.getAttribute('data-amegmen') || '{}';
         const menuOptions: ISettings = { ...defaults, ...receivedOptions };
         init(menuEl, menuOptions);
       } catch (error) {
