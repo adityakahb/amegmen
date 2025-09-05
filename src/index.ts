@@ -126,9 +126,7 @@ namespace AMegMen {
     duration: 250,
   };
 
-  const stringTrim = (str: string) => {
-    return str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
-  };
+  const stringTrim = (str: string) => str.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
 
   const hasClass = (element: Element, cls: string) =>
     stringTrim(cls)
