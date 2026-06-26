@@ -545,8 +545,8 @@ The default stylesheet respects `prefers-reduced-motion` — transition animatio
 - npm 9+
 
 ```bash
-git clone https://github.com/adityakahb-cts/amegmen-cts.git
-cd amegmen-cts
+git clone https://github.com/adityakahb/amegmen.git
+cd amegmen
 npm install
 ```
 
