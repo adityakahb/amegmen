@@ -1,0 +1,28 @@
+/**
+ * AMegMen — Reduced motion overrides
+ *
+ * Suppresses all CSS transitions and animations for users who have enabled
+ * "Reduce motion" in their OS accessibility settings.
+ *
+ * WCAG 2.1 SC 2.3.3 Animation from Interactions (Level AAA) recommends
+ * removing motion for users who are sensitive to it.
+ *
+ * The !important declarations are intentional and necessary here: these
+ * overrides must win over component-level transition rules regardless of
+ * specificity — that is the entire purpose of this block.
+ *
+ * @layer amegmen.motion
+ */
+
+/* stylelint-disable declaration-no-important */
+@media (prefers-reduced-motion: reduce) {
+  .amegmen,
+  .amegmen-panel,
+  .amegmen-top-nav-item > a,
+  .amegmen-top-nav-item > button,
+  .amegmen-toggle {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+/* stylelint-enable declaration-no-important */

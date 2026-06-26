@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AMegMen — Print Demo</title>
+
+    <!-- AMegMen stylesheet (includes print rules in @media print) -->
+    <link rel="stylesheet" href="../styles/amegmen.css" />
+
+    <style>
+      /* ── Demo page chrome ───────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #333;
+        background: #f8f8f8;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #ddd;
+          background: #1a1a1a;
+        }
+      }
+
+      .page-header {
+        padding: 1.5rem 2rem;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .page-header {
+          background: #222;
+          border-color: #444;
+        }
+      }
+
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .subtitle {
+          color: #aaa;
+        }
+      }
+
+      .demo-content {
+        padding: 2rem;
+        max-width: 1000px;
+      }
+
+      .print-controls {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #fffbe6;
+        border-bottom: 1px solid #f0d060;
+        font-size: 0.875rem;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .print-controls {
+          background: #2a2500;
+          border-color: #5a4a00;
+          color: #ffd;
+        }
+      }
+
+      .print-btn {
+        padding: 0.4em 1em;
+        background: #225fd7;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .print-btn:hover {
+        background: #1a4bb0;
+      }
+
+      .print-btn:focus-visible {
+        outline: 2px solid #225fd7;
+        outline-offset: 2px;
+      }
+
+      .print-note {
+        color: #664;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .print-note {
+          color: #cc9;
+        }
+      }
+
+      /* ── Screen-only section ──────────────────────────────────── */
+      .screen-only {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        color: #444;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .screen-only {
+          background: #222;
+          border-color: #444;
+          color: #bbb;
+        }
+      }
+
+      .screen-only h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+      }
+
+      .screen-only ul {
+        margin: 0;
+        padding-inline-start: 1.25rem;
+      }
+
+      .screen-only li + li {
+        margin-top: 0.25rem;
+      }
+
+      /* Hide print instructions on paper */
+      @media print {
+        .print-controls,
+        .screen-only {
+          display: none;
+        }
+
+        .page-header {
+          border-bottom: 2px solid #000;
+          background: #fff;
+          color: #000;
+        }
+
+        body {
+          background: #fff;
+          color: #000;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-header">
+      <h1>AMegMen — Print Demo</h1>
+      <p class="subtitle">Demonstrates how the mega menu renders as a hard-copy navigation list.</p>
+    </div>
+
+    <!-- Print trigger + instructions (hidden when printing) -->
+    <div class="print-controls">
+      <button class="print-btn" type="button" onclick="window.print()">🖨 Print this page</button>
+      <span class="print-note">
+        On print: all panels expand inline, the hamburger button is hidden, and link URLs are printed after each link
+        text.
+      </span>
+    </div>
+
+    <div class="demo-content">
+      <!-- ── Navigation (identical markup to the main demo) ─────── -->
+      <div class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false" type="button">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav class="amegmen-nav" data-amegmen aria-label="Print demo navigation" data-amegmen-desktop-breakpoint="1280">
+          <ul>
+            <li>
+              <a href="#movies">Movies</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <h3>Action</h3>
+                      <ul>
+                        <li><a href="/action-adventure">Action &amp; Adventure</a></li>
+                        <li><a href="/children-family">Children &amp; Family</a></li>
+                        <li><a href="/comedy">Comedy</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <h3>Drama</h3>
+                      <ul>
+                        <li><a href="/dramas">Dramas</a></li>
+                        <li><a href="/foreign">Foreign</a></li>
+                        <li><a href="/indie">Indie</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <h3>Musical</h3>
+                      <ul>
+                        <li><a href="/musicals">Musicals</a></li>
+                        <li><a href="/romance">Romance</a></li>
+                        <li><a href="/sci-fi">Sci-Fi</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#tv">TV Shows</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <h3>Classics</h3>
+                      <ul>
+                        <li><a href="/classic-tv">Classic TV</a></li>
+                        <li><a href="/crime-tv">Crime TV</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <h3>Reality</h3>
+                      <ul>
+                        <li><a href="/reality-tv">Reality TV</a></li>
+                        <li><a href="/tv-action">TV Action</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="/music">Music</a></li>
+            <li>
+              <a href="#games">Games</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <h3>Console</h3>
+                      <ul>
+                        <li><a href="/action-games">Action</a></li>
+                        <li><a href="/rpg">RPG</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <h3>PC</h3>
+                      <ul>
+                        <li><a href="/strategy">Strategy</a></li>
+                        <li><a href="/simulation">Simulation</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Print behaviour notes (screen only) -->
+      <div class="screen-only" aria-label="Print behaviour notes">
+        <h2>What happens when you print:</h2>
+        <ul>
+          <li>All dropdown panels are expanded inline — every navigation link is visible on paper.</li>
+          <li>The hamburger toggle button and backdrop are hidden (not needed on paper).</li>
+          <li>The offcanvas drawer becomes a static, in-flow block.</li>
+          <li>Link URLs are printed after each link text: <em>Movies (/movies)</em>.</li>
+          <li>All CSS transitions are removed for cleaner PDF rendering.</li>
+          <li>The nav bar background is forced to white with black text for legibility.</li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="../scripts/amegmen.cdn.js"></script>
+  </body>
+</html>

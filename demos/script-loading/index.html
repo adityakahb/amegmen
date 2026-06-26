@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AMegMen accessible mega menu — script loading strategies demo (defer vs async vs inline)"
+    />
+    <meta name="theme-color" content="#dfe2e2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1e1e1e" media="(prefers-color-scheme: dark)" />
+
+    <title>AMegMen — Script Loading Strategies</title>
+
+    <!--
+      SCRIPT LOADING STRATEGIES DEMO
+      ================================
+      This demo explains and demonstrates the three ways to load the AMegMen CDN
+      bundle in an HTML page:
+
+        1. defer   — recommended for most sites
+        2. async   — useful when the menu is below the fold or non-critical
+        3. inline  — when you need guaranteed execution order with other scripts
+
+      The demo itself uses `defer` (see bottom of <body>). The markup below
+      explains all three options with code examples.
+    -->
+
+    <link rel="stylesheet" href="../styles/amegmen.css" />
+
+    <style>
+      /* ── Demo page chrome ─────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        background: #f8f8f8;
+        color: #333;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #111;
+          color: #ddd;
+        }
+      }
+
+      /* ── Page layout ─────────────────────────────────────────── */
+      .page-header {
+        padding: 1.5rem 2rem 0;
+      }
+
+      .page-header h1 {
+        font-size: 1.5rem;
+        margin: 0 0 0.25rem;
+      }
+
+      .page-header p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .page-header p {
+          color: #aaa;
+        }
+      }
+
+      .content {
+        max-width: 900px;
+        margin-inline: auto;
+        padding: 2rem;
+      }
+
+      /* ── Strategy cards ──────────────────────────────────────── */
+      .strategy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        margin: 1.5rem 0 2.5rem;
+      }
+
+      .strategy-card {
+        border-radius: 8px;
+        border: 2px solid #ddd;
+        padding: 1.25rem;
+        background: #fff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .strategy-card {
+          border-color: #444;
+          background: #1e1e1e;
+        }
+      }
+
+      .strategy-card--recommended {
+        border-color: #0a7c00;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .strategy-card--recommended {
+          border-color: #3a8a3a;
+        }
+      }
+
+      .strategy-card__tag {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.15rem 0.5rem;
+        border-radius: 3px;
+        margin-bottom: 0.6rem;
+      }
+
+      .tag--green {
+        background: #e6f4e6;
+        color: #0a7c00;
+      }
+
+      .tag--blue {
+        background: #e6eeff;
+        color: #0044cc;
+      }
+
+      .tag--grey {
+        background: #eee;
+        color: #555;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .tag--green {
+          background: #0a2a0a;
+          color: #6be06b;
+        }
+
+        .tag--blue {
+          background: #001a44;
+          color: #88aaff;
+        }
+
+        .tag--grey {
+          background: #333;
+          color: #ccc;
+        }
+      }
+
+      .strategy-card h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.05rem;
+      }
+
+      .strategy-card p {
+        margin: 0 0 0.75rem;
+        font-size: 0.875rem;
+        color: #555;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .strategy-card p {
+          color: #aaa;
+        }
+      }
+
+      .pros-cons {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+
+      .pros-cons li {
+        padding-block: 0.1rem;
+      }
+
+      .pros-cons li[data-type='pro']::before {
+        content: '✓ ';
+        color: #0a7c00;
+        font-weight: 700;
+      }
+
+      .pros-cons li[data-type='con']::before {
+        content: '✗ ';
+        color: #c00;
+        font-weight: 700;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .pros-cons li[data-type='pro']::before {
+          color: #6be06b;
+        }
+
+        .pros-cons li[data-type='con']::before {
+          color: #f77;
+        }
+      }
+
+      /* ── Code blocks ──────────────────────────────────────────── */
+      pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.8rem;
+        overflow-x: auto;
+        line-height: 1.5;
+        margin: 0.5rem 0 1rem;
+      }
+
+      code {
+        font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: inherit;
+        color: inherit;
+      }
+
+      /* ── Comparison table ─────────────────────────────────────── */
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+        margin: 1rem 0 2rem;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ddd;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .comparison-table th,
+        .comparison-table td {
+          border-color: #444;
+        }
+      }
+
+      .comparison-table th {
+        background: #eee;
+        font-weight: 600;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .comparison-table th {
+          background: #2a2a2a;
+        }
+      }
+
+      .comparison-table tr:nth-child(even) td {
+        background: #fafafa;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .comparison-table tr:nth-child(even) td {
+          background: #1a1a1a;
+        }
+      }
+
+      /* ── Live menu section ────────────────────────────────────── */
+      .live-demo-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #666;
+        margin-bottom: 0.4rem;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .live-demo-label {
+          color: #aaa;
+        }
+      }
+
+      /* ── Section headings ────────────────────────────────────── */
+      h2 {
+        margin-top: 2rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 0.25rem;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        h2 {
+          border-color: #444;
+        }
+      }
+
+      .note {
+        background: #fffbea;
+        border-left: 3px solid #e5a800;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        margin: 0.75rem 0 1.25rem;
+        border-radius: 0 4px 4px 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .note {
+          background: #1e1a00;
+          border-color: #a07800;
+          color: #e8d980;
+        }
+      }
+
+      @media print {
+        .strategy-grid {
+          break-inside: avoid;
+        }
+
+        pre {
+          white-space: pre-wrap;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ── Live mega menu (loaded with defer — see bottom of body) ── -->
+    <div class="amegmen-wrapper">
+      <button class="amegmen-toggle" aria-expanded="false" type="button">
+        <span class="amegmen-sr-only">Toggle navigation menu</span>
+      </button>
+      <nav
+        class="amegmen-nav"
+        data-amegmen
+        aria-label="Script loading demo navigation"
+        data-amegmen-announce-open="true"
+      >
+        <ul>
+          <li>
+            <a href="#defer">Defer</a>
+            <div class="amegmen-panel">
+              <ul class="amegmen-panel-group">
+                <li><a href="#defer-how">How it works</a></li>
+                <li><a href="#defer-when">When to use</a></li>
+                <li><a href="#defer-example">Example</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href="#async">Async</a>
+            <div class="amegmen-panel">
+              <ul class="amegmen-panel-group">
+                <li><a href="#async-how">How it works</a></li>
+                <li><a href="#async-when">When to use</a></li>
+                <li><a href="#async-caveat">Caveats</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href="#inline">Inline / no attribute</a>
+            <div class="amegmen-panel">
+              <ul class="amegmen-panel-group">
+                <li><a href="#inline-how">How it works</a></li>
+                <li><a href="#inline-when">When to use</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#comparison">Comparison</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- ── Page content ──────────────────────────────────────────── -->
+    <div class="page-header">
+      <h1>AMegMen — Script Loading Strategies</h1>
+      <p>Choose the right <code>&lt;script&gt;</code> attribute for your deployment context.</p>
+    </div>
+
+    <div class="content">
+      <!-- ── Overview cards ─────────────────────────────────────── -->
+      <h2>At a glance</h2>
+
+      <div class="strategy-grid">
+        <!-- defer card -->
+        <div class="strategy-card strategy-card--recommended" id="defer">
+          <span class="strategy-card__tag tag--green">Recommended</span>
+          <h3><code>defer</code></h3>
+          <p>
+            Script fetches in parallel with HTML parsing and executes <strong>after</strong> the document is fully
+            parsed, in source order. The CDN auto-init fires on <code>DOMContentLoaded</code>, which fires immediately
+            after the deferred script runs — so the menu is always ready when the page becomes interactive.
+          </p>
+          <ul class="pros-cons">
+            <li data-type="pro">Zero parser blocking — fastest possible FCP/LCP</li>
+            <li data-type="pro">DOM is ready when the script runs — no timing race</li>
+            <li data-type="pro">Script order preserved when multiple deferred scripts exist</li>
+            <li data-type="con">Not available for inline <code>&lt;script&gt;</code> blocks</li>
+          </ul>
+        </div>
+
+        <!-- async card -->
+        <div class="strategy-card" id="async">
+          <span class="strategy-card__tag tag--blue">Advanced</span>
+          <h3><code>async</code></h3>
+          <p>
+            Script fetches in parallel with HTML parsing and executes <strong>as soon as it downloads</strong>,
+            potentially before the DOM is complete. The CDN bundle handles this correctly — it defers its own auto-init
+            to <code>DOMContentLoaded</code> internally, so you get the same result as <code>defer</code> at the cost of
+            unpredictable execution order.
+          </p>
+          <ul class="pros-cons">
+            <li data-type="pro">Fastest possible download start — no parse dependency</li>
+            <li data-type="pro">Safe with AMegMen CDN build (internal DOMContentLoaded guard)</li>
+            <li data-type="con">Execution order not guaranteed when multiple async scripts exist</li>
+            <li data-type="con">Slightly more complex mental model</li>
+          </ul>
+        </div>
+
+        <!-- inline / no attribute card -->
+        <div class="strategy-card" id="inline">
+          <span class="strategy-card__tag tag--grey">Fallback</span>
+          <h3>No attribute (blocking)</h3>
+          <p>
+            Script is fetched and executed synchronously, blocking HTML parsing. Appropriate only when the script must
+            run before any subsequent HTML is parsed — rare for UI libraries. Placing the tag at the bottom of
+            <code>&lt;body&gt;</code> mitigates the blocking, but <code>defer</code> is strictly better.
+          </p>
+          <ul class="pros-cons">
+            <li data-type="pro">Guaranteed execution before anything that follows in the HTML</li>
+            <li data-type="con">Blocks HTML parser — harms FCP and LCP</li>
+            <li data-type="con">Prevents browser speculative pre-loading of later resources</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── defer ──────────────────────────────────────────────── -->
+      <h2 id="defer-how">Using <code>defer</code> (recommended)</h2>
+
+      <p>
+        Place the <code>&lt;script&gt;</code> tag anywhere — <code>&lt;head&gt;</code> or end of
+        <code>&lt;body&gt;</code> — with the <code>defer</code> attribute. The browser fetches the script in parallel
+        with HTML parsing. Execution happens after parsing completes, just before <code>DOMContentLoaded</code> fires.
+      </p>
+
+      <div class="note">
+        <strong>Why this works with AMegMen:</strong> The CDN build (<code>amegmen.cdn.js</code>) listens for
+        <code>DOMContentLoaded</code> to run auto-init. When the script is deferred, HTML parsing finishes before the
+        script runs, so <code>DOMContentLoaded</code> fires synchronously after the script executes. The menu is always
+        ready when the page becomes interactive — no race condition.
+      </div>
+
+      <pre><code>&lt;!-- In &lt;head&gt; — preferred for earliest fetch --&gt;
+&lt;link rel="stylesheet" href="dist/styles/amegmen.css" /&gt;
+&lt;script src="dist/scripts/amegmen.cdn.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- HTML nav markup (parsed before script executes) --&gt;
+&lt;nav data-amegmen aria-label="Primary navigation"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="/products"&gt;Products&lt;/a&gt;
+      &lt;div class="amegmen-panel"&gt;
+        &lt;ul class="amegmen-panel-group"&gt;
+          &lt;li&gt;&lt;a href="/software"&gt;Software&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="/services"&gt;Services&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href="/pricing"&gt;Pricing&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+
+      <p id="defer-when">
+        <strong>When to use <code>defer</code>:</strong> This is the default choice for any production deployment. It
+        maximises parse performance, ensures the DOM is ready before the script runs, and preserves script execution
+        order when multiple deferred scripts are present.
+      </p>
+
+      <p id="defer-example">
+        See the <a href="../lighthouse/index.html">Lighthouse demo</a> for a complete example combining
+        <code>defer</code> with critical CSS inlining and stylesheet preloading for a perfect performance score.
+      </p>
+
+      <!-- ── async ──────────────────────────────────────────────── -->
+      <h2 id="async-how">Using <code>async</code></h2>
+
+      <p>
+        The <code>async</code> attribute also fetches the script in parallel with HTML parsing, but execution happens
+        <strong>as soon as the download finishes</strong> — the parser is paused briefly at that point. Because the
+        download may complete before the document is fully parsed, a naive script that reads the DOM immediately would
+        fail. The AMegMen CDN build handles this transparently by checking <code>document.readyState</code> and
+        deferring to <code>DOMContentLoaded</code> when necessary.
+      </p>
+
+      <div class="note">
+        <strong>Internal guard in <code>amegmen.cdn.js</code>:</strong> The CDN auto-init code reads
+        <code>document.readyState</code> at execution time. If the DOM is already complete (readyState
+        <code>'interactive'</code> or <code>'complete'</code>), init runs immediately. Otherwise it registers a one-time
+        <code>DOMContentLoaded</code> listener. This makes the bundle safe for both <code>async</code> and
+        <code>defer</code>.
+      </div>
+
+      <pre><code>&lt;!-- async: script executes as soon as it downloads --&gt;
+&lt;link rel="stylesheet" href="dist/styles/amegmen.css" /&gt;
+&lt;script src="dist/scripts/amegmen.cdn.js" async&gt;&lt;/script&gt;
+
+&lt;!-- AMegMen's internal DOMContentLoaded guard makes this safe --&gt;
+&lt;nav data-amegmen aria-label="Primary navigation"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/products"&gt;Products&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+
+      <p id="async-when">
+        <strong>When to use <code>async</code>:</strong> Consider <code>async</code> when the mega menu is not above the
+        fold on initial load, or when you're aggregating many independent scripts and execution order between them does
+        not matter. For most single-nav pages, <code>defer</code> is simpler and equally fast.
+      </p>
+
+      <p id="async-caveat">
+        <strong>Caveats:</strong> If you also load other scripts that depend on AMegMen (for example, a script that
+        calls <code>new AMegMen(…)</code> programmatically), those scripts must not rely on <code>AMegMen</code> being
+        available in global scope unless they also guard against load order. Use <code>defer</code> in that case —
+        deferred scripts execute in source order, making dependency sequencing predictable.
+      </p>
+
+      <!-- ── inline / no attribute ──────────────────────────────── -->
+      <h2 id="inline-how">No attribute — blocking script</h2>
+
+      <p>
+        Omitting both <code>defer</code> and <code>async</code> causes the browser to pause HTML parsing, fetch the
+        script, execute it, then resume parsing. This is rarely the right choice for a UI library.
+      </p>
+
+      <pre><code>&lt;!-- End-of-body placement reduces (but does not eliminate) blocking --&gt;
+&lt;!-- Prefer defer instead. --&gt;
+&lt;script src="dist/scripts/amegmen.cdn.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+
+      <p id="inline-when">
+        <strong>The one valid case:</strong> If your HTML is assembled server-side with all navigation markup inlined
+        and you have strict control over when every byte of the page is delivered, a blocking script at the very end of
+        <code>&lt;body&gt;</code> works. But a deferred script in <code>&lt;head&gt;</code> starts downloading earlier
+        and imposes less latency overall — it is always the better option.
+      </p>
+
+      <!-- ── comparison table ───────────────────────────────────── -->
+      <h2 id="comparison">Strategy comparison</h2>
+
+      <table class="comparison-table">
+        <caption class="amegmen-sr-only">
+          Comparison of defer, async, and blocking script loading strategies
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Strategy</th>
+            <th scope="col">Blocks HTML parser?</th>
+            <th scope="col">Execution timing</th>
+            <th scope="col">Order guaranteed?</th>
+            <th scope="col">Safe with AMegMen CDN?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>defer</code> ✓</td>
+            <td>No</td>
+            <td>After DOM parsed, before DOMContentLoaded</td>
+            <td>Yes — source order</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><code>async</code></td>
+            <td>Briefly on execute</td>
+            <td>As soon as download completes</td>
+            <td>No</td>
+            <td>Yes — internal guard</td>
+          </tr>
+          <tr>
+            <td>None (blocking)</td>
+            <td>Yes — fully</td>
+            <td>Immediately during parse</td>
+            <td>Yes — source order</td>
+            <td>Yes (with DOM-ready guard)</td>
+          </tr>
+          <tr>
+            <td>None (end of body)</td>
+            <td>Effectively no</td>
+            <td>After all preceding HTML</td>
+            <td>Yes — source order</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── ESM module bundlers ─────────────────────────────────── -->
+      <h2>Module bundlers (webpack, Vite, Rollup, Parcel)</h2>
+
+      <p>
+        When importing AMegMen through a bundler, the <code>defer</code>/<code>async</code> distinction is handled by
+        the bundler's output configuration. The ESM entry point has no auto-init side effect — you control
+        initialization explicitly.
+      </p>
+
+      <pre><code>// Bundler import — no CDN, no global, tree-shakeable
+import { AMegMen, autoInit } from 'amegmen';
+import 'amegmen/dist/styles/amegmen.css';
+
+// Manual init: called after your framework mounts the DOM
+autoInit('[data-amegmen]');
+
+// Or per-element:
+const menu = new AMegMen(document.querySelector('#main-nav'), {
+  openOnMouseover: true,
+});</code></pre>
+
+      <p>
+        The package declares <code>"sideEffects": false</code>, so tree-shaking removes any unused exports from the
+        final bundle.
+      </p>
+
+      <!-- ── Related demos ───────────────────────────────────────── -->
+      <h2>Related demos</h2>
+      <ul>
+        <li><a href="../index.html">Main demo</a> — all five markup patterns</li>
+        <li>
+          <a href="../lighthouse/index.html">Lighthouse demo</a> — <code>defer</code> + critical CSS + perfect scores
+        </li>
+        <li><a href="../print/index.html">Print demo</a> — hard-copy layout</li>
+      </ul>
+    </div>
+
+    <!--
+      defer: the script fetches in parallel with HTML parsing and executes
+      after the document is fully parsed, just before DOMContentLoaded fires.
+      This is the recommended loading strategy for the AMegMen CDN bundle.
+    -->
+    <script src="../scripts/amegmen.cdn.js" defer></script>
+  </body>
+</html>

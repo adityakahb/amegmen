@@ -1,0 +1,229 @@
+/**
+ * AMegMen — Navigation container and offcanvas scaffold
+ *
+ * Covers:
+ *  - .amegmen-nav  — the <nav> root element
+ *  - .amegmen-wrapper  — optional sibling wrapper for the toggle button
+ *  - .amegmen-backdrop — offcanvas overlay
+ *  - .amegmen  — the menu <ul>/<ol> (offcanvas on mobile, flex bar on desktop)
+ *  - Offcanvas direction variants
+ *  - Desktop nav alignment utilities
+ *
+ * All rules are scoped to .amegmen-nav or .amegmen-wrapper so they cannot
+ * leak into the host page's other navigation elements.
+ *
+ * @layer amegmen.base
+ */
+
+/* ── Navigation container ─────────────────────────────────────────── */
+
+/**
+ * Mobile: visible nav bar housing the hamburger button.
+ * The menu <ul> is position:fixed (offcanvas) and sits outside this flow.
+ */
+.amegmen-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--amegmen-item-padding-inline);
+  min-height: var(--amegmen-nav-height);
+  background-color: var(--amegmen-color-bg);
+  color: var(--amegmen-color-text);
+}
+
+/**
+ * Desktop mode: nav becomes a transparent flex wrapper.
+ * .amegmen-desktop is toggled by JS via MediaQueryList.
+ * Compound selector required — desktop class is on the same element as
+ * amegmen-nav, so the mixin's descendant form does not apply here.
+ */
+.amegmen-nav.amegmen-desktop {
+  display: block;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+}
+
+/* ── Wrapper pattern (toggle outside <nav>) ───────────────────────── */
+
+/**
+ * When the toggle button is placed outside <nav> in a sibling wrapper div,
+ * .amegmen-wrapper carries the mobile nav-bar chrome. The inner <nav> is
+ * reset to a transparent flex child on mobile.
+ */
+.amegmen-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--amegmen-item-padding-inline);
+  min-height: var(--amegmen-nav-height);
+  background-color: var(--amegmen-color-bg);
+  color: var(--amegmen-color-text);
+
+  /* Nav inside wrapper: reset mobile chrome */
+  & > .amegmen-nav {
+    min-height: 0;
+    background: transparent;
+    padding: 0;
+  }
+
+  /* Desktop: collapse wrapper chrome — nav handles layout */
+  &.amegmen-desktop {
+    display: block;
+    padding: 0;
+    min-height: 0;
+    background: transparent;
+  }
+}
+
+/* ── Offcanvas backdrop ───────────────────────────────────────────── */
+
+/**
+ * Full-viewport overlay shown when the offcanvas drawer is open on mobile.
+ * Never rendered in desktop mode.
+ */
+.amegmen-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--amegmen-backdrop-bg);
+  z-index: calc(var(--amegmen-z-panel) - 1);
+  cursor: pointer;
+
+  .amegmen-offcanvas-open & {
+    display: block;
+  }
+
+  /* Hidden in desktop mode — !important needed here to override offcanvas-open state */
+  .amegmen-desktop & {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+}
+
+/* ── Offcanvas direction — transform origin per direction ─────────── */
+
+/**
+ * CSS custom property set on the nav/wrapper to control which edge the
+ * drawer slides in from. JS sets data-amegmen-offcanvas-dir on the nav.
+ */
+[data-amegmen-offcanvas-dir="left"] {
+  --amegmen-offcanvas-translate: translateX(-100%);
+}
+
+[data-amegmen-offcanvas-dir="right"] {
+  --amegmen-offcanvas-translate: translateX(100%);
+}
+
+[data-amegmen-offcanvas-dir="top"] {
+  --amegmen-offcanvas-translate: translateY(-100%);
+}
+
+[data-amegmen-offcanvas-dir="bottom"] {
+  --amegmen-offcanvas-translate: translateY(100%);
+}
+
+/* ── Menu list — offcanvas drawer (mobile) / flex bar (desktop) ───── */
+
+/**
+ * Mobile: fixed offcanvas drawer sliding from the right by default.
+ * Desktop (.amegmen-desktop ancestor): becomes a horizontal flex nav bar.
+ */
+.amegmen {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: var(--amegmen-color-bg);
+  color: var(--amegmen-color-text);
+
+  /* Mobile: fixed offcanvas drawer */
+  position: fixed;
+  inset-block: 0;
+  inset-inline: auto 0;
+  width: var(--amegmen-offcanvas-width);
+  max-width: 90vw;
+  overflow-y: auto;
+  z-index: var(--amegmen-z-panel);
+  visibility: hidden;
+  transform: var(--amegmen-offcanvas-translate, translateX(100%));
+  transition:
+    transform var(--amegmen-transition-duration) var(--amegmen-transition-easing),
+    visibility 0s linear var(--amegmen-transition-duration);
+
+  /* Open state */
+  &.amegmen-open {
+    visibility: visible;
+    transform: none;
+    transition:
+      transform var(--amegmen-transition-duration) var(--amegmen-transition-easing),
+      visibility 0s linear 0s;
+  }
+
+  /* Left-edge drawer */
+  [data-amegmen-offcanvas-dir="left"] & {
+    inset-inline: 0 auto;
+  }
+
+  /* Top / bottom full-width drawers */
+  [data-amegmen-offcanvas-dir="top"] &,
+  [data-amegmen-offcanvas-dir="bottom"] & {
+    inset-inline: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  [data-amegmen-offcanvas-dir="top"] & {
+    inset-block: 0 auto;
+  }
+
+  [data-amegmen-offcanvas-dir="bottom"] & {
+    inset-block: auto 0;
+  }
+
+  /* Desktop mode: horizontal navigation bar */
+  .amegmen-desktop & {
+    position: relative;
+    inset: auto;
+    width: auto;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    visibility: visible;
+    transform: none;
+    display: flex;
+    align-items: center;
+    min-height: var(--amegmen-nav-height);
+    transition: none;
+    z-index: var(--amegmen-z-panel);
+  }
+}
+
+/* ── Desktop nav alignment (data-amegmen-nav-align) ──────────────── */
+
+/**
+ * Horizontal alignment of the entire item block within the nav bar.
+ * Applied via data-amegmen-nav-align on the nav element.
+ */
+.amegmen-desktop[data-amegmen-nav-align="center"] .amegmen {
+  justify-content: center;
+}
+
+.amegmen-desktop[data-amegmen-nav-align="right"] .amegmen {
+  justify-content: flex-end;
+}
+
+/* ── Item push utility ────────────────────────────────────────────── */
+
+/**
+ * .amegmen-push-end on a top-level <li> pushes it (and all following items)
+ * to the trailing edge of the flex nav bar — useful for Search / Account.
+ */
+.amegmen-desktop .amegmen-push-end {
+  margin-inline-start: auto;
+}

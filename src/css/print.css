@@ -1,0 +1,115 @@
+/**
+ * AMegMen — Print stylesheet
+ *
+ * When printing, the mega menu should render as a flat, readable navigation
+ * list rather than as an interactive widget. This file:
+ *
+ *   • Expands all panels so their content is visible on paper
+ *   • Removes offcanvas / mobile chrome (hamburger, backdrop)
+ *   • Restores natural document flow (no position: fixed/absolute)
+ *   • Strips decorative animations and box-shadows
+ *   • Improves link readability with printed URLs
+ *
+ * @layer amegmen.print
+ */
+
+@media print {
+  /* ── Show all panels inline ───────────────────────────────────── */
+
+  /**
+   * Force all panels to display regardless of JS open/close state so the
+   * printed page shows the full site navigation structure.
+   */
+  .amegmen-panel {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: block !important;
+    position: static;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    background: #fff;
+    color: #000;
+    break-inside: avoid;
+  }
+
+  /* ── Flatten offcanvas to static flow ─────────────────────────── */
+
+  .amegmen {
+    /* stylelint-disable-next-line declaration-no-important */
+    position: static !important;
+    width: auto;
+    max-width: none;
+    height: auto;
+    overflow: visible;
+    visibility: visible;
+    transform: none;
+    display: block;
+    background: transparent;
+  }
+
+  /* ── Hide non-printing chrome ─────────────────────────────────── */
+
+  /** The toggle button is irrelevant on paper */
+  .amegmen-toggle {
+    display: none;
+  }
+
+  /** The backdrop overlay is invisible on paper */
+  .amegmen-backdrop {
+    display: none;
+  }
+
+  /* ── Nav container print reset ────────────────────────────────── */
+
+  .amegmen-nav,
+  .amegmen-wrapper {
+    display: block;
+    position: static;
+    background: #fff;
+    color: #000;
+    min-height: 0;
+    padding: 0;
+  }
+
+  /* ── Top-level item print layout ──────────────────────────────── */
+
+  .amegmen-top-nav-item {
+    display: block;
+    break-inside: avoid;
+
+    & > h2 > a,
+    & > h2 > button,
+    & > button {
+      display: block;
+      width: auto;
+      border: none;
+      background: transparent;
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Hide the disclosure arrow on print */
+    & > h2 > a[aria-expanded]::after,
+    & > h2 > button[aria-expanded]::after,
+    & > button[aria-expanded]::after {
+      display: none;
+    }
+  }
+
+  /* ── Print link URLs after link text ─────────────────────────── */
+
+  .amegmen-panel-group a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #444;
+    word-break: break-all;
+  }
+
+  /* ── Remove transitions for cleaner PDF rendering ─────────────── */
+
+  /* stylelint-disable declaration-no-important -- transition/animation !important required in @media print to override inline JS styles */
+  .amegmen * {
+    transition: none !important;
+    animation: none !important;
+  }
+  /* stylelint-enable declaration-no-important */
+}
