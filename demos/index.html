@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AMegMen — Demo</title>
+    <link rel="stylesheet" href="./styles/amegmen.css" />
+    <style>
+      /* ── Demo page chrome ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #333;
+        background: #f8f8f8;
+      }
+
+      h1 {
+        padding: 1rem 2rem 0;
+        font-size: 1.5rem;
+      }
+
+      .demo-section {
+        padding: 2rem;
+      }
+
+      .demo-section + .demo-section {
+        border-top: 1px solid #ddd;
+      }
+
+      .demo-section h2 {
+        font-size: 1rem;
+        margin: 0 0 0.75rem;
+        color: #666;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>AMegMen</h1>
+
+    <!-- ── Pattern 1: Link-as-trigger ── -->
+    <section class="demo-section">
+      <h2>Pattern 1 — link as trigger</h2>
+
+      <div class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav
+          aria-label="Primary navigation (pattern 1)"
+          class="amegmen-nav"
+          data-amegmen
+          data-amegmen-desktop-breakpoint="768"
+        >
+          <ul>
+            <li>
+              <a href="#movies">Movies</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Action</h3>
+                        </li>
+                        <li><a href="#action-adventure">Action &amp; Adventure</a></li>
+                        <li><a href="#children-family">Children &amp; Family</a></li>
+                        <li><a href="#comedy">Comedy</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Drama</h3>
+                        </li>
+                        <li><a href="#dramas">Dramas</a></li>
+                        <li><a href="#foreign">Foreign</a></li>
+                        <li><a href="#indie">Indie</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Musical</h3>
+                        </li>
+                        <li><a href="#musicals">Musicals</a></li>
+                        <li><a href="#romance">Romance</a></li>
+                        <li><a href="#sci-fi">Sci-Fi</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#tv">TV Shows</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Classics</h3>
+                        </li>
+                        <li><a href="#classic-tv">Classic TV</a></li>
+                        <li><a href="#crime-tv">Crime TV</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Reality</h3>
+                        </li>
+                        <li><a href="#reality-tv">Reality TV</a></li>
+                        <li><a href="#tv-action">TV Action</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Drama</h3>
+                        </li>
+                        <li><a href="#tv-dramas">TV Dramas</a></li>
+                        <li><a href="#tv-horror">TV Horror</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="#music">Music</a></li>
+            <li>
+              <a href="#games">Games</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Console</h3>
+                        </li>
+                        <li><a href="#action-games">Action</a></li>
+                        <li><a href="#rpg">RPG</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>PC</h3>
+                        </li>
+                        <li><a href="#strategy">Strategy</a></li>
+                        <li><a href="#simulation">Simulation</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ── Pattern 2: Separate disclosure button ── -->
+    <section class="demo-section">
+      <h2>Pattern 2 — separate disclosure button</h2>
+
+      <div class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav
+          class="amegmen-nav"
+          data-amegmen
+          data-amegmen-navigation-label="Primary navigation (pattern 2)"
+          data-amegmen-desktop-breakpoint="768"
+        >
+          <ul>
+            <li>
+              <a href="#about">About</a>
+              <button type="button" aria-expanded="false">
+                <span class="amegmen-sr-only">About submenu</span>
+              </button>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li><a href="#company">Company</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#products">Products</a>
+              <button type="button" aria-expanded="false">
+                <span class="amegmen-sr-only">Products submenu</span>
+              </button>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Software</h3>
+                        </li>
+                        <li><a href="#design">Design</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Services</h3>
+                        </li>
+                        <li><a href="#consulting">Consulting</a></li>
+                        <li><a href="#training">Training</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ── Pattern 3: Explicit JS init with openOnMouseover ── -->
+    <section class="demo-section">
+      <h2>Pattern 3 — explicit JS init with openOnMouseover</h2>
+
+      <div class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav id="menu-3" class="amegmen-nav" data-amegmen-desktop-breakpoint="768">
+          <ul>
+            <li>
+              <a href="#hover-1">Hover me</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li><a href="#h1-a">Item A</a></li>
+                        <li><a href="#h1-b">Item B</a></li>
+                        <li><a href="#h1-c">Item C</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#hover-2">Or me</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li><a href="#h2-a">Item D</a></li>
+                        <li><a href="#h2-b">Item E</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="#hover-3">Plain link</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ── Pattern 4: Form accessibility — panels containing search and account forms ── -->
+    <section class="demo-section">
+      <h2>Pattern 4 — form accessibility</h2>
+
+      <div class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav
+          class="amegmen-nav"
+          data-amegmen
+          data-amegmen-navigation-label="Form accessibility navigation"
+          data-amegmen-desktop-breakpoint="768"
+        >
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li>
+              <a href="#products">Products</a>
+              <button type="button" aria-expanded="false">
+                <span class="amegmen-sr-only">Products submenu</span>
+              </button>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Software</h3>
+                        </li>
+                        <li><a href="#design">Design</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Services</h3>
+                        </li>
+                        <li><a href="#consulting">Consulting</a></li>
+                        <li><a href="#training">Training</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="#blog">Blog</a></li>
+            <li class="amegmen-push-end">
+              <a href="#search">Search</a>
+              <div class="amegmen-panel amegmen-panel-align-end">
+                <form class="amegmen-form" role="search" action="#search" method="get">
+                  <div class="amegmen-field">
+                    <label for="p4-search">Search site</label>
+                    <div class="amegmen-input-group">
+                      <input id="p4-search" type="search" name="q" placeholder="Keywords…" autocomplete="off" />
+                      <button type="submit" class="amegmen-btn amegmen-btn-primary">Search</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+            <li>
+              <a href="#account">Account</a>
+              <div class="amegmen-panel amegmen-panel-align-end">
+                <div class="container">
+                  <div class="row">
+                    <!-- Sign In form -->
+                    <div class="col amegmen-panel-group">
+                      <h3>Sign In</h3>
+                      <form class="amegmen-form" action="#signin" method="post" novalidate>
+                        <div class="amegmen-field">
+                          <label for="p4-signin-email">Email</label>
+                          <input id="p4-signin-email" type="email" name="email" autocomplete="email" />
+                        </div>
+                        <div class="amegmen-field">
+                          <label for="p4-signin-password">Password</label>
+                          <input
+                            id="p4-signin-password"
+                            type="password"
+                            name="password"
+                            autocomplete="current-password"
+                          />
+                        </div>
+                        <div class="amegmen-check">
+                          <input type="checkbox" id="p4-remember-me" name="remember" />
+                          <label for="p4-remember-me">Remember me</label>
+                        </div>
+                        <div class="amegmen-check amegmen-check--disabled">
+                          <input type="checkbox" id="p4-remember-device" name="remember_device" disabled />
+                          <label for="p4-remember-device">
+                            Remember this device
+                            <span class="amegmen-hint">(admin-managed)</span>
+                          </label>
+                        </div>
+                        <div class="amegmen-form-actions">
+                          <button type="submit" class="amegmen-btn amegmen-btn-primary">Sign In</button>
+                        </div>
+                      </form>
+                    </div>
+                    <!-- Create Account form -->
+                    <div class="col amegmen-panel-group">
+                      <h3>Create Account</h3>
+                      <form class="amegmen-form" action="#signup" method="post" novalidate>
+                        <div class="amegmen-field">
+                          <label for="p4-name">Full name</label>
+                          <input id="p4-name" type="text" name="name" autocomplete="name" />
+                        </div>
+                        <div class="amegmen-field">
+                          <label for="p4-signup-email">Email</label>
+                          <input id="p4-signup-email" type="email" name="email" autocomplete="email" />
+                        </div>
+                        <div class="amegmen-field">
+                          <label for="p4-role">Role</label>
+                          <input
+                            id="p4-role"
+                            type="text"
+                            name="role"
+                            value="Member"
+                            readonly
+                            aria-describedby="p4-role-hint"
+                          />
+                          <span id="p4-role-hint" class="amegmen-hint">Assigned by your administrator.</span>
+                        </div>
+                        <div class="amegmen-field">
+                          <label for="p4-signup-password">Password</label>
+                          <input
+                            id="p4-signup-password"
+                            type="password"
+                            name="password"
+                            autocomplete="new-password"
+                            aria-describedby="p4-pass-hint"
+                          />
+                          <span id="p4-pass-hint" class="amegmen-hint">Minimum 8 characters.</span>
+                        </div>
+                        <div class="amegmen-form-actions">
+                          <button type="submit" class="amegmen-btn amegmen-btn-primary">Create Account</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ── Pattern 5: Preferred — link-as-trigger with container/row/col layout ── -->
+    <section class="demo-section">
+      <h2>Pattern 5 — preferred: link as trigger with col layout</h2>
+
+      <div aria-label="Primary navigation (pattern 5)" class="amegmen-wrapper">
+        <button class="amegmen-toggle" aria-expanded="false">
+          <span class="amegmen-sr-only">Toggle Navigation</span>
+        </button>
+        <nav class="amegmen-nav" data-amegmen data-amegmen-desktop-breakpoint="768">
+          <ol>
+            <li>
+              <a href="#movies">Movies</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Action</h3>
+                        </li>
+                        <li><a href="#action-adventure">Action &amp; Adventure</a></li>
+                        <li><a href="#children-family">Children &amp; Family</a></li>
+                        <li><a href="#comedy">Comedy</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Drama</h3>
+                        </li>
+                        <li><a href="#dramas">Dramas</a></li>
+                        <li><a href="#foreign">Foreign</a></li>
+                        <li><a href="#indie">Indie</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Musical</h3>
+                        </li>
+                        <li><a href="#musicals">Musicals</a></li>
+                        <li><a href="#romance">Romance</a></li>
+                        <li><a href="#sci-fi">Sci-Fi</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a href="#tv">TV Shows</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Classics</h3>
+                        </li>
+                        <li><a href="#classic-tv">Classic TV</a></li>
+                        <li><a href="#crime-tv">Crime TV</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Reality</h3>
+                        </li>
+                        <li><a href="#reality-tv">Reality TV</a></li>
+                        <li><a href="#tv-action">TV Action</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Drama</h3>
+                        </li>
+                        <li><a href="#tv-dramas">TV Dramas</a></li>
+                        <li><a href="#tv-horror">TV Horror</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li><a href="#music">Music</a></li>
+            <li>
+              <a href="#games">Games</a>
+              <div class="amegmen-panel">
+                <div class="container">
+                  <div class="row">
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>Console</h3>
+                        </li>
+                        <li><a href="#action-games">Action</a></li>
+                        <li><a href="#rpg">RPG</a></li>
+                      </ul>
+                    </div>
+                    <div class="col amegmen-panel-group">
+                      <ul>
+                        <li>
+                          <h3>PC</h3>
+                        </li>
+                        <li><a href="#strategy">Strategy</a></li>
+                        <li><a href="#simulation">Simulation</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <script src="./scripts/amegmen.cdn.js"></script>
+    <script src="./demo.js"></script>
+  </body>
+</html>

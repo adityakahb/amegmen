@@ -1,0 +1,50 @@
+/**
+ * AMegMen — Accessible Mega Menu
+ *
+ * Main CSS entry point. Import order matters:
+ *   variables → base → nav → panel → forms → toggle → a11y → motion → print
+ *
+ * Each partial uses CSS @import so Vite / esbuild can bundle them at build time.
+ * At runtime the browser receives a single bundled file — no waterfall loading.
+ *
+ * To override design tokens at runtime, override the --amegmen-* custom
+ * properties on any ancestor element that contains the nav:
+ *
+ *   .my-site-header {
+ *     --amegmen-color-bg: #003366;
+ *     --amegmen-color-text: #fff;
+ *   }
+ *
+ * For dark-mode customisation, override inside a prefers-color-scheme block:
+ *
+ *   @media (prefers-color-scheme: dark) {
+ *     :root { --amegmen-color-bg: #111; }
+ *   }
+ */
+
+/* 1. Design tokens (colors, spacing, timing) — exposed as :root custom properties */
+@import url("./variables.css");
+
+/* 2. Nav container, wrapper pattern, offcanvas, menu list */
+@import url("./base.css");
+
+/* 3. Top-level nav items and trigger styles (links, buttons, arrows) */
+@import url("./nav.css");
+
+/* 4. Dropdown panels, column layout, panel groups */
+@import url("./panel.css");
+
+/* 5. Form controls inside panels (inputs, buttons, checkboxes) */
+@import url("./forms.css");
+
+/* 6. Mobile hamburger toggle button */
+@import url("./toggle.css");
+
+/* 7. Accessibility utilities (sr-only, focus management, WHCM) */
+@import url("./a11y.css");
+
+/* 8. Reduced-motion overrides */
+@import url("./motion.css");
+
+/* 9. Print stylesheet (expand panels, remove chrome) */
+@import url("./print.css");

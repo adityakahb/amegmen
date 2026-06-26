@@ -1,0 +1,66 @@
+/**
+ * AMegMen — Mobile hamburger toggle button
+ *
+ * .amegmen-toggle is visible by default (mobile-first) and hidden on desktop.
+ * The hamburger icon is drawn entirely with CSS using a ::before pseudo-element
+ * and box-shadow bars — no extra markup required.
+ *
+ * @layer amegmen.toggle
+ */
+
+/* ── Toggle button ────────────────────────────────────────────────── */
+
+.amegmen-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  background: transparent;
+  border: 1px solid var(--amegmen-color-border);
+  border-radius: var(--amegmen-border-radius);
+  cursor: pointer;
+  color: var(--amegmen-color-text);
+  font: inherit;
+  line-height: 1;
+
+  /* Hidden on desktop — the horizontal nav bar is always visible */
+  .amegmen-desktop & {
+    display: none;
+  }
+
+  &:hover {
+    background-color: var(--amegmen-color-trigger-bg-hover);
+  }
+
+  &:focus-visible {
+    outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+    outline-offset: var(--amegmen-focus-ring-offset);
+    border-radius: var(--amegmen-border-radius);
+  }
+
+  /* ── Hamburger icon (three horizontal bars via box-shadow) ────── */
+
+  &::before {
+    content: "";
+    display: block;
+    /* Bar dimensions: 20px wide × 2px tall, 5px gaps */
+    width: 20px;
+    height: 2px;
+    background: currentcolor;
+    border-radius: 1px;
+    /* Second and third bars drawn with box-shadow to avoid extra elements */
+    box-shadow:
+      0 7px 0 currentcolor,
+      0 14px 0 currentcolor;
+    transition: box-shadow var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+  }
+
+  /* ── Expanded (close / × icon) ──────────────────────────────── */
+
+  &[aria-expanded="true"]::before {
+    box-shadow: none;
+    transform: rotate(45deg);
+    position: relative;
+    inset-block-start: 7px;
+  }
+}

@@ -1,0 +1,126 @@
+/**
+ * AMegMen — Color and theme variables
+ *
+ * All color tokens are defined as CSS custom properties on :root so they
+ * can be overridden at any scope at runtime — no build step required.
+ *
+ * States covered per group: normal · hover · active/open · focus
+ *
+ * @layer amegmen.variables
+ */
+
+:root {
+  /* ── Nav bar / offcanvas ─────────────────────────────────────── */
+
+  /** Nav bar and offcanvas drawer background */
+  --amegmen-color-bg: #dfe2e2;
+  /** All nav text color */
+  --amegmen-color-text: #454545;
+
+  /* ── Dropdown panel ──────────────────────────────────────────── */
+
+  /** Panel background */
+  --amegmen-color-bg-panel: #fff;
+  /** Nav and panel border color */
+  --amegmen-color-border: #c5c5c5;
+
+  /* ── Links (inside panels) ───────────────────────────────────── */
+
+  /** Default link color inside panels */
+  --amegmen-color-link: #225fd7;
+  /** Link hover color */
+  --amegmen-color-link-hover: #1a4bb0;
+
+  /* ── Trigger states ──────────────────────────────────────────── */
+
+  /** Background on trigger hover */
+  --amegmen-color-trigger-bg-hover: rgb(0 0 0 / 0.06);
+  /** Text color on trigger hover (inherit = no change) */
+  --amegmen-color-trigger-text-hover: inherit;
+  /** Background when panel is open */
+  --amegmen-color-trigger-bg-open: #fff;
+  /** Text color when panel is open */
+  --amegmen-color-trigger-text-open: #454545;
+
+  /* ── Focus ring (WCAG 2.2 Focus Appearance) ──────────────────── */
+
+  /** Focus ring outline color */
+  --amegmen-focus-ring-color: rgb(34 95 215 / 0.7);
+  /** Focus ring width */
+  --amegmen-focus-ring-width: 2px;
+  /** Focus ring offset from the element */
+  --amegmen-focus-ring-offset: 2px;
+
+  /* ── Offcanvas backdrop ──────────────────────────────────────── */
+
+  /** Semi-transparent backdrop behind the offcanvas drawer */
+  --amegmen-backdrop-bg: rgb(0 0 0 / 0.5);
+
+  /* ── Form / button colors ────────────────────────────────────── */
+
+  /** Input background */
+  --amegmen-input-bg: #fff;
+  /** Read-only input background */
+  --amegmen-input-bg-readonly: #f0f0f0;
+  /** Disabled input background */
+  --amegmen-input-bg-disabled: #e8e8e8;
+  /** Input border color */
+  --amegmen-input-border: #999;
+  /** Primary button background */
+  --amegmen-btn-bg: #225fd7;
+  /** Primary button hover background */
+  --amegmen-btn-bg-hover: #1a4bb0;
+  /** Primary button text color */
+  --amegmen-btn-text: #fff;
+
+  /* ── Structural tokens ───────────────────────────────────────── */
+
+  /** Nav bar minimum height */
+  --amegmen-nav-height: 3em;
+  /** Block (top/bottom) padding on nav items */
+  --amegmen-item-padding-block: 0.5em;
+  /** Inline (left/right) padding on nav items */
+  --amegmen-item-padding-inline: 1em;
+  /** Padding inside dropdown panels */
+  --amegmen-panel-padding: 1em;
+  /** Minimum column width inside panel column grids */
+  --amegmen-panel-col-min-width: 180px;
+  /** Panel open animation duration (overridden by JS panelOpenDuration option) */
+  --amegmen-transition-duration: 250ms;
+  /** Panel animation easing function */
+  --amegmen-transition-easing: ease-out;
+  /** z-index for dropdown panels */
+  --amegmen-z-panel: 100;
+  /** Border radius on panels, buttons, inputs */
+  --amegmen-border-radius: 3px;
+  /** Max-width of .container divs inside panels */
+  --amegmen-container-max-width: 1200px;
+  /** Width of the offcanvas drawer on mobile */
+  --amegmen-offcanvas-width: 320px;
+  /** Sticky header offset — subtracted from scroll-into-view position */
+  --amegmen-sticky-offset: 0px;
+}
+
+/* ── Dark mode overrides ─────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --amegmen-color-bg: #1e1e1e;
+    --amegmen-color-text: #e0e0e0;
+    --amegmen-color-bg-panel: #2a2a2a;
+    --amegmen-color-border: #444;
+    --amegmen-color-link: #7aabff;
+    --amegmen-color-link-hover: #9bf;
+    --amegmen-color-trigger-bg-hover: rgb(255 255 255 / 0.08);
+    --amegmen-color-trigger-text-hover: inherit;
+    --amegmen-color-trigger-bg-open: #2a2a2a;
+    --amegmen-color-trigger-text-open: #e0e0e0;
+    --amegmen-input-bg: #1e1e1e;
+    --amegmen-input-bg-readonly: #2a2a2a;
+    --amegmen-input-bg-disabled: #333;
+    --amegmen-input-border: #666;
+    --amegmen-btn-bg: #7aabff;
+    --amegmen-btn-bg-hover: #9bf;
+    --amegmen-btn-text: #111;
+  }
+}

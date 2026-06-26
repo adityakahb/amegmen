@@ -1,0 +1,81 @@
+/**
+ * AMegMen — Accessibility utilities
+ *
+ * .amegmen-sr-only         — visually hidden, available to screen readers
+ * Focus management         — :focus / :focus-visible handling
+ * Forced colors            — Windows High Contrast Mode overrides
+ *
+ * @layer amegmen.a11y
+ */
+
+/* ── Screen-reader only (visually hidden) ─────────────────────────── */
+
+/**
+ * Positions the element off-screen and clips it so it is invisible to sighted
+ * users but still announced by screen readers. Uses clip-path (modern) with a
+ * clip fallback for pre-2018 browsers.
+ *
+ * Apply to: sr-only toggle labels, live region container, author-authored
+ * <span class="amegmen-sr-only"> elements.
+ */
+.amegmen-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  /* stylelint-disable-next-line property-no-deprecated -- clip kept as fallback for very old browsers */
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Focus ring ───────────────────────────────────────────────────── */
+
+/**
+ * Removes the native outline (shown for all :focus states in some browsers)
+ * and applies a custom WCAG 2.2 Focus Appearance ring only for keyboard
+ * navigation (:focus-visible). This prevents the outline from appearing for
+ * mouse/pointer users while keeping it for keyboard users.
+ *
+ * Scoped to .amegmen to avoid overriding host-page focus styles globally.
+ */
+.amegmen :focus {
+  outline: none;
+}
+
+.amegmen :focus-visible {
+  outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+  outline-offset: var(--amegmen-focus-ring-offset);
+  border-radius: var(--amegmen-border-radius);
+}
+
+/* ── Forced colors (Windows High Contrast Mode) ───────────────────── */
+
+/**
+ * WHCM overrides ensure panels and triggers remain visible when the OS forces
+ * a limited color palette. forced-color-adjust: none preserves our custom
+ * colors on specific elements; Canvas / ButtonText / HighlightText are
+ * system colors guaranteed to be legible in all contrast modes.
+ */
+@media (forced-colors: active) {
+  .amegmen-panel {
+    forced-color-adjust: none;
+    background: Canvas;
+    border: 1px solid ButtonText;
+    box-shadow: none;
+  }
+
+  .amegmen-top-nav-item > a[aria-expanded="true"],
+  .amegmen-top-nav-item > button[aria-expanded="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .amegmen-panel-group a:focus-visible {
+    outline: 2px solid ButtonText;
+    outline-offset: 2px;
+  }
+}

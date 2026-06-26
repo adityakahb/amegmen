@@ -1,9 +1,36 @@
-.hlx
-coverage
-logs
-node_modules
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
-helix-importer-ui
+# Build output
+build/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
-*.bak
-.idea
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Vitest
+/test-results/
