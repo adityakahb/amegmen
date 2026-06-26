@@ -21,19 +21,19 @@ export default defineConfig({
   // Expose dist/ so CDN bundle, CSS, and other assets are available as ./...
   publicDir: resolve(__dirname, 'dist'),
   build: {
-    outDir: resolve(__dirname, 'docs'),
+    outDir: resolve(__dirname, 'dist-pages'),
     emptyOutDir: true,
   },
   plugins: [
     {
       name: 'copy-demo-assets',
       closeBundle() {
-        const docs = resolve(__dirname, 'docs');
-        mkdirSync(docs, { recursive: true });
+        const distPages = resolve(__dirname, 'dist-pages');
+        mkdirSync(distPages, { recursive: true });
         // Copy demo.js (not a Vite entry, so not automatically included)
-        copyFileSync(resolve(__dirname, 'demos/demo.js'), `${docs}/demo.js`);
+        copyFileSync(resolve(__dirname, 'demos/demo.js'), `${distPages}/demo.js`);
         // Write .nojekyll to prevent GitHub Pages from running Jekyll
-        writeFileSync(`${docs}/.nojekyll`, '');
+        writeFileSync(`${distPages}/.nojekyll`, '');
       },
     },
   ],

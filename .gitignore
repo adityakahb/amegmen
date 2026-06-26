@@ -5,6 +5,7 @@ node_modules/
 
 # Build output
 build/
+dist-pages/
 
 # Test coverage
 coverage/
