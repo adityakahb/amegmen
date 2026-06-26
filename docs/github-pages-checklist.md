@@ -1,7 +1,7 @@
 # GitHub Pages Publish Checklist — AMegMen
 
 Steps to publish the demos as a static site at
-`https://adityakahb-cts.github.io/amegmen/`.
+`https://adityakahb.github.io/amegmen/`.
 
 The site is built from `demos/` into `docs/` by `vite-pages.config.ts`, which
 uses a relative `base: './'` so it works at any sub-path, and writes a
@@ -43,7 +43,7 @@ Originally, the static site built into `docs/`, which deleted the hand-authored 
 
 ## 5. Verify the live site
 
-- [ ] Visit `https://adityakahb-cts.github.io/amegmen/`.
+- [ ] Visit `https://adityakahb.github.io/amegmen/`.
 - [ ] All demos load and assets resolve (no mixed-content or 404 errors).
 - [ ] Run Lighthouse against the `lighthouse/` demo — targets 100/100/100/100.
 - [ ] Test keyboard navigation and a screen reader on the live site.
