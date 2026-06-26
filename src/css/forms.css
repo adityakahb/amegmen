@@ -1,0 +1,181 @@
+/**
+ * AMegMen — Form and button styles inside panels
+ *
+ * Used for search forms, sign-in / create account forms, and any other
+ * form controls placed inside .amegmen-panel elements. All rules are
+ * scoped to .amegmen-panel to avoid polluting the host page's form styles.
+ *
+ * Classes:
+ *   .amegmen-form       — wrapping <form> element
+ *   .amegmen-field      — label + input pair
+ *   .amegmen-input-group — inline label + button row (search pattern)
+ *   .amegmen-check      — checkbox / radio row
+ *   .amegmen-hint       — helper text beneath an input
+ *   .amegmen-form-actions — button row at the bottom of a form
+ *   .amegmen-btn        — generic button
+ *   .amegmen-btn-primary — primary action button
+ *
+ * @layer amegmen.forms
+ */
+
+.amegmen-panel {
+  /* ── Form container ─────────────────────────────────────────── */
+
+  & .amegmen-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
+  /* ── Label + input pair ─────────────────────────────────────── */
+
+  & .amegmen-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    & label {
+      font-size: 0.8125em;
+      font-weight: 600;
+      color: var(--amegmen-color-text);
+    }
+  }
+
+  /* ── Inline search: input + submit button ───────────────────── */
+
+  & .amegmen-input-group {
+    display: flex;
+    gap: 0.375em;
+    align-items: stretch;
+
+    & input[type="search"] {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+  /* ── Text / email / password / search inputs ────────────────── */
+
+  & input[type="text"],
+  & input[type="email"],
+  & input[type="password"],
+  & input[type="search"] {
+    display: block;
+    width: 100%;
+    padding: 0.375em 0.625em;
+    font: inherit;
+    font-size: 0.875em;
+    color: var(--amegmen-color-text);
+    background-color: var(--amegmen-input-bg);
+    border: 1px solid var(--amegmen-input-border);
+    border-radius: var(--amegmen-border-radius);
+    box-sizing: border-box;
+    transition: border-color var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+
+    &:focus-visible {
+      outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+      outline-offset: var(--amegmen-focus-ring-offset);
+      border-radius: var(--amegmen-border-radius);
+    }
+
+    &[readonly] {
+      background-color: var(--amegmen-input-bg-readonly);
+      cursor: default;
+    }
+
+    &:disabled {
+      background-color: var(--amegmen-input-bg-disabled);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  /* ── Checkbox / radio row ───────────────────────────────────── */
+
+  & .amegmen-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+    font-size: 0.875em;
+
+    & input[type="checkbox"] {
+      flex-shrink: 0;
+      margin-block-start: 0.15em;
+
+      &:focus-visible {
+        outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+        outline-offset: var(--amegmen-focus-ring-offset);
+      }
+    }
+
+    & label {
+      color: var(--amegmen-color-text);
+      cursor: pointer;
+    }
+
+    &.amegmen-check--disabled label {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  /* ── Hint / helper text ─────────────────────────────────────── */
+
+  & .amegmen-hint {
+    font-size: 0.75em;
+    color: var(--amegmen-color-text);
+    opacity: 0.7;
+    margin-block-start: 0.1em;
+  }
+
+  /* ── Button row at form bottom ──────────────────────────────── */
+
+  & .amegmen-form-actions {
+    display: flex;
+    gap: 0.5em;
+    padding-block-start: 0.25em;
+  }
+
+  /* ── Generic button ─────────────────────────────────────────── */
+
+  & .amegmen-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375em 0.875em;
+    font: inherit;
+    font-size: 0.875em;
+    font-weight: 600;
+    border: 1px solid var(--amegmen-input-border);
+    border-radius: var(--amegmen-border-radius);
+    background-color: var(--amegmen-color-bg);
+    color: var(--amegmen-color-text);
+    cursor: pointer;
+    transition:
+      background-color var(--amegmen-transition-duration) var(--amegmen-transition-easing),
+      border-color var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+
+    &:hover {
+      background-color: var(--amegmen-color-trigger-bg-hover);
+    }
+
+    &:focus-visible {
+      outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+      outline-offset: var(--amegmen-focus-ring-offset);
+      border-radius: var(--amegmen-border-radius);
+    }
+
+    /* ── Primary action button ──────────────────────────────── */
+
+    &.amegmen-btn-primary {
+      background-color: var(--amegmen-btn-bg);
+      border-color: var(--amegmen-btn-bg);
+      color: var(--amegmen-btn-text);
+
+      &:hover {
+        background-color: var(--amegmen-btn-bg-hover);
+        border-color: var(--amegmen-btn-bg-hover);
+      }
+    }
+  }
+}

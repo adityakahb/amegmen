@@ -1,0 +1,165 @@
+/**
+ * AMegMen — Top-level navigation items and triggers
+ *
+ * Handles three markup patterns:
+ *   Pattern 1 — <a> sibling of panel (link becomes trigger)
+ *   Pattern 2 — <button> sibling of <a> and panel (button is trigger)
+ *   Pattern 3 — <button> only (no navigation link)
+ *
+ * All rules are scoped to .amegmen-top-nav-item so they stay within the
+ * AMegMen component boundary.
+ *
+ * @layer amegmen.nav
+ */
+
+/* ── Top-level navigation item ────────────────────────────────────── */
+
+/**
+ * Mobile: flex row so the navigation link and Pattern-2 disclosure button
+ * sit on the same line. flex-wrap: wrap lets the panel drop to a new row.
+ */
+.amegmen-top-nav-item {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  vertical-align: top;
+
+  /* Desktop: block child of the flex .amegmen bar */
+  .amegmen-desktop & {
+    display: block;
+    width: auto;
+    /* panel's containing block becomes .amegmen (full nav width) */
+    position: static;
+  }
+
+  /* ── <h2> heading wrapper injected by JS ─────────────────────── */
+
+  /**
+   * JS wraps each top-level trigger in an <h2> to maintain heading hierarchy
+   * (panel groups use <h3>). All visual heading defaults are reset here.
+   */
+  & > h2 {
+    /* Mobile: grows beside any sibling disclosure button */
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+
+    /* Desktop: inline to stay in the nav bar flow */
+    .amegmen-desktop & {
+      display: inline;
+    }
+  }
+
+  /* Panel spans the full mobile row, opening below both link and button */
+  & > .amegmen-panel {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  /* ── Trigger link / button styles ───────────────────────────── */
+
+  /**
+   * Covers:
+   *   > h2 > a          — Pattern 1: link-as-trigger
+   *   > h2 > button      — Pattern 3: button wrapped in heading
+   *   > button           — Pattern 2: bare disclosure button
+   */
+  & > h2 > a,
+  & > h2 > button,
+  & > button {
+    /* Mobile: full-width block with bottom border (accordion style) */
+    display: block;
+    width: 100%;
+    padding: var(--amegmen-item-padding-block) var(--amegmen-item-padding-inline);
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid var(--amegmen-color-border);
+    background: transparent;
+    color: var(--amegmen-color-text);
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+    border-radius: 0;
+    transition: background-color var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+
+    /* Desktop: inline-flex tab with transparent border (merges with panel border on open) */
+    .amegmen-desktop & {
+      display: inline-flex;
+      align-items: center;
+      width: auto;
+      margin: 0 0 -1px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition:
+        background-color var(--amegmen-transition-duration) var(--amegmen-transition-easing),
+        border-color var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+    }
+
+    &:hover {
+      background-color: var(--amegmen-color-trigger-bg-hover);
+      color: var(--amegmen-color-trigger-text-hover);
+    }
+
+    &:focus-visible {
+      outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+      outline-offset: var(--amegmen-focus-ring-offset);
+      border-radius: var(--amegmen-border-radius);
+    }
+
+    /* Open / expanded state */
+    &.amegmen-open,
+    &[aria-expanded="true"] {
+      background-color: var(--amegmen-color-trigger-bg-open);
+      color: var(--amegmen-color-trigger-text-open);
+
+      .amegmen-desktop & {
+        border-color: var(--amegmen-color-border);
+        /* Bottom border merges with the panel — uses panel bg to hide the seam */
+        border-bottom-color: var(--amegmen-color-trigger-bg-open);
+      }
+    }
+  }
+
+  /**
+   * Pattern 2 bare disclosure button — compact at trailing edge.
+   * flex: 0 0 auto prevents stretching; width: auto sizes to the arrow content.
+   */
+  & > button {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  /* ── Disclosure arrow (::after on trigger elements) ──────────── */
+
+  /**
+   * CSS triangle drawn with border hack. Rotates 180° when expanded.
+   * Applied to any trigger element that has aria-expanded.
+   */
+  & > h2 > a[aria-expanded]::after,
+  & > h2 > button[aria-expanded]::after,
+  & > button[aria-expanded]::after {
+    content: "";
+    display: inline-block;
+    margin-inline-start: 0.4em;
+    width: 0;
+    height: 0;
+    border-inline: 4px solid transparent;
+    border-block-start: 5px solid currentcolor;
+    transition: transform var(--amegmen-transition-duration) var(--amegmen-transition-easing);
+    vertical-align: middle;
+  }
+
+  & > h2 > a[aria-expanded="true"]::after,
+  & > h2 > button[aria-expanded="true"]::after,
+  & > button[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+  }
+}

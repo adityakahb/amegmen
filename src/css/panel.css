@@ -1,0 +1,164 @@
+/**
+ * AMegMen — Dropdown panels and column layouts
+ *
+ * .amegmen-panel       — the dropdown/accordion content area
+ * .container / .row / .col — Bootstrap-compatible column layout inside panels
+ * .amegmen-panel-align-end — right-anchored panel for utility items (search, account)
+ * .amegmen-panel-group — a column of links with an optional heading
+ *
+ * All panel rules are scoped to .amegmen-panel to avoid collisions with
+ * Bootstrap or other frameworks that use identical class names.
+ *
+ * @layer amegmen.panel
+ */
+
+/* ── Dropdown panel ───────────────────────────────────────────────── */
+
+/**
+ * Hidden by default; JS controls display and height via slideDown/slideUp.
+ * Mobile: static-position accordion (no shadow, no rounded bottom corners).
+ * Desktop: absolutely-positioned dropdown with shadow and border radius.
+ *
+ * Column layout (.container > .row > .col) uses Bootstrap-compatible class
+ * names scoped here to avoid conflicts. All columns are equal-width flex
+ * children by default; on smaller desktops they wrap to a 2-column grid.
+ *
+ * Responsive breakpoints (desktop only — panel is display:none on mobile):
+ *   < 1280px : 2 columns per row  (lone column fills full width)
+ *   ≥ 1280px : all columns on one row
+ */
+.amegmen-panel {
+  display: none;
+  position: static;
+  border: none;
+  border-top: 1px solid var(--amegmen-color-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--amegmen-panel-padding);
+  background-color: var(--amegmen-color-bg-panel);
+
+  /* Desktop: absolutely positioned below the trigger row */
+  .amegmen-desktop & {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    z-index: var(--amegmen-z-panel);
+    min-width: 100%;
+    border: 1px solid var(--amegmen-color-border);
+    border-radius: 0 0 var(--amegmen-border-radius) var(--amegmen-border-radius);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  }
+
+  & .container {
+    max-width: var(--amegmen-container-max-width);
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  & .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--amegmen-panel-padding);
+
+    & > .col {
+      /**
+       * Default (< 1280px): two columns per row.
+       * flex-grow: 1 lets a lone column expand to full width.
+       * Formula: (100% − 1 gap) ÷ 2
+       */
+      flex: 1 1 calc(50% - var(--amegmen-panel-padding) / 2);
+      margin: 0;
+
+      /* Large desktop: all columns share the row */
+      @media (width >= 1280px) {
+        flex: 1 1 0;
+        min-width: var(--amegmen-panel-col-min-width);
+      }
+    }
+  }
+}
+
+/* ── Right-anchored panel ─────────────────────────────────────────── */
+
+/**
+ * For utility items (search, account) at the trailing edge of the nav.
+ * min-width: 0 overrides the full-nav-width default so the panel sizes
+ * to its content rather than the entire nav width.
+ */
+.amegmen-desktop .amegmen-panel.amegmen-panel-align-end {
+  inset-inline: auto 0;
+  min-width: 0;
+}
+
+/* ── Panel group (column of links) ───────────────────────────────── */
+
+/**
+ * Each column inside a panel. Contains an optional heading (h2–h4)
+ * and a list of navigation links.
+ */
+.amegmen-panel-group {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 var(--amegmen-panel-padding) 0 0;
+  padding: 0;
+
+  &:last-child {
+    margin-inline-end: 0;
+  }
+
+  & ul,
+  & ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  & li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  & a {
+    display: block;
+    padding: 0.3em 0;
+    color: var(--amegmen-color-link);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--amegmen-color-link-hover);
+    }
+
+    &:focus-visible {
+      outline: var(--amegmen-focus-ring-width) solid var(--amegmen-focus-ring-color);
+      outline-offset: var(--amegmen-focus-ring-offset);
+      border-radius: var(--amegmen-border-radius);
+    }
+  }
+
+  /* ── Panel group headings (h2, h3, h4) ─────────────────────── */
+
+  & h2,
+  & h3,
+  & h4 {
+    margin: 0 0 0.5em;
+    font-size: 0.875em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--amegmen-color-text);
+  }
+}
+
+/* ── Separator ────────────────────────────────────────────────────── */
+
+/**
+ * <hr role="separator"> elements inside panels — styled as a subtle divider.
+ * The role="separator" attribute is set automatically by JS on init.
+ */
+.amegmen-panel hr[role="separator"] {
+  border: none;
+  border-block-start: 1px solid var(--amegmen-color-border);
+  margin: 0.5em 0;
+}
